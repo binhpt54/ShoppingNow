@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <ListView
+        android:id="@id/android:list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:choiceMode="multipleChoiceModal"
+        android:cacheColorHint="@android:color/transparent"
+	    android:drawSelectorOnTop="false">
+    </ListView>
+
+    <LinearLayout 
+        android:id="@android:id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <ImageView
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="82dp"
+	        android:src="@drawable/calendar_empty" />
+
+	    <TextView
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:textColor="#474747"
+	        android:text="Không có lịch mua sắm"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	    <TextView
+	        android:id="@+id/textView2"
+	        android:layout_width="fill_parent"
+	        android:gravity="center"
+	        android:layout_height="wrap_content"
+	        android:textColor="#838181"
+	        android:text="Bấm nút + để tạo lịch mua sắm"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+    </LinearLayout>
+    
+
+
+</LinearLayout>

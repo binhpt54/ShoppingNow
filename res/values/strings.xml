@@ -1,0 +1,18 @@
+<resources>
+
+    <string name="app_name">ShoppingNow</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">Shopping Now</string>
+    <string name="string_btn_create">Tạo Mới</string>
+    <string name="string_btn_cancel">Hủy</string>
+    <string name="string_label_title">Tên</string>
+    <string name="string_label_priority">Độ Ưu Tiên</string>
+    <string name="string_label_quantity">Số Lượng</string>
+    <string name="string_label_price">Giá</string>
+    <string name="string_label_unit">Đơn Vị</string>
+    <string name="string_btn_more_option">Thêm Tùy Chọn</string>
+    <string name="string_label_place">Địa Điểm</string>
+    <string name="title_activity_welcome_screen">WelcomeScreen</string>
+    <string name="title_activity_add_new">Tạo Mới</string>
+
+</resources>

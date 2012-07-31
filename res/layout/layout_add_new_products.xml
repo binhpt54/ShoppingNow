@@ -1,0 +1,353 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:background="#FFFFFF"
+    android:layout_height="fill_parent" 
+    android:orientation="vertical">
+    
+    <LinearLayout 
+        android:id="@+id/add_new_btn"
+        android:background="#dddddd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+        <Button 
+            android:id="@+id/btn_create"
+            android:textSize="20dp"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:text="@string/string_btn_create"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        
+        <TextView 
+	       android:layout_width="1dp"
+	       android:layout_marginTop="6dp"
+	       android:layout_marginBottom="6dp"
+	       android:layout_height="fill_parent"
+	       android:background="#df5506"/>
+        
+        <Button 
+            android:id="@+id/btn_cancel"
+            android:textSize="20dp"
+            android:text="@string/string_btn_cancel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:layout_weight="1"/>
+        
+    </LinearLayout>
+    
+    <TextView 
+       android:layout_width="fill_parent"
+       android:layout_height="1dp"
+       android:background="#df5506"/>
+    
+    <LinearLayout 
+        android:id="@+id/add_new_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="vertical">
+        
+        <LinearLayout 
+            android:id="@+id/layout_new_title"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal">
+            
+            <TextView 
+                android:id="@+id/label_new_title"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="3"
+                android:layout_margin="4dp"
+                android:text="@string/string_label_title"
+                android:gravity="bottom"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:textColor="#df5506"/>
+            <EditText 
+                android:id="@+id/edit_new_title"
+                android:layout_margin="4dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:padding="4dp"
+                android:textSize="16dp"
+                android:background="@xml/my_textfield_ics"/>
+            
+        </LinearLayout>
+        
+        <TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="1dp"
+       	   android:background="#fea13d"/>
+        
+        <LinearLayout 
+            android:id="@+id/layout_new_priority"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            
+            <TextView 
+                android:id="@+id/label_new_priority"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="3"
+                android:layout_margin="4dp"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:text="@string/string_label_priority"
+                android:textSize="16dp"
+                android:textColor="#df5506"/>
+            <RadioGroup 
+                android:id="@+id/gradio_priority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <RadioButton 
+                    android:id="@+id/pri_normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@xml/radio_button_ics"
+                    android:text="Không"/>
+                <RadioButton 
+                    android:id="@+id/pri_low"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@xml/radio_button_ics"
+                    android:text="Thấp"/>
+                <RadioButton 
+                    android:id="@+id/pri_medium"
+                    android:layout_width="wrap_content"
+                    android:button="@xml/radio_button_ics"
+                    android:layout_height="wrap_content"
+                    android:text="Trung Bình"/>
+                <RadioButton 
+                    android:id="@+id/pri_hard"
+                    android:layout_width="wrap_content"
+                    android:button="@xml/radio_button_ics"
+                    android:layout_height="wrap_content"
+                    android:text="Quan Trọng"/>
+            </RadioGroup>
+            
+        </LinearLayout>
+        
+       <TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="1dp"
+       	   android:background="#fea13d"/>
+       
+        <LinearLayout 
+            android:id="@+id/layout_new_quantity"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal">
+            
+            <TextView 
+                android:id="@+id/label_new_quantity"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:gravity="bottom"
+                android:textStyle="bold"
+                android:text="@string/string_label_quantity"
+                android:textSize="16dp"
+                android:textColor="#df5506"/>
+            <EditText 
+                android:id="@+id/edit_new_quantity"
+                android:layout_margin="4dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textSize="16dp"
+                android:inputType="number"
+                android:padding="4dp"
+                android:background="@xml/my_textfield_ics"/>
+            <EditText 
+                android:id="@+id/edit_new_money"
+                android:layout_margin="4dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textSize="16dp"
+                android:padding="4dp"
+                android:background="@xml/my_textfield_ics"/>
+            
+        </LinearLayout>
+        
+        <TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="1dp"
+       	   android:background="#fea13d"/>
+        
+        <LinearLayout 
+            android:id="@+id/layout_new_price"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal">
+            
+            <TextView 
+                android:id="@+id/label_new_price"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:textStyle="bold"
+                android:gravity="bottom"
+                android:text="@string/string_label_price"
+                android:textSize="16dp"
+                android:textColor="#df5506"/>
+            <EditText 
+                android:id="@+id/edit_new_price"
+                android:layout_margin="4dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textSize="16dp"
+                android:inputType="number"
+                android:padding="4dp"
+                android:background="@xml/my_textfield_ics"/>
+            
+            <TextView 
+                android:id="@+id/label_new_unit"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:gravity="bottom"
+                android:textStyle="bold"
+                android:text="@string/string_label_unit"
+                android:textSize="16dp"
+                android:textColor="#df5506"/>
+            <Spinner 
+                android:id="@+id/edit_new_unit"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textSize="16dp"
+                android:padding="4dp"
+                android:background="@xml/my_spinner_ics"/>
+            
+        </LinearLayout>
+        
+        <TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="1dp"
+       	   android:background="#fea13d"/>
+        
+        <LinearLayout 
+            android:id="@+id/layout_more_option"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+        	android:orientation="vertical"
+        	android:textStyle="bold"
+        	android:visibility="gone"
+            >
+            <LinearLayout 
+	            android:layout_width="fill_parent"
+	            android:layout_height="48dp"
+	            android:orientation="horizontal">
+	            <TextView 
+	                android:id="@+id/label_new_place"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:layout_margin="4dp"
+	                android:gravity="bottom"
+	                android:textStyle="bold"
+	                android:text="@string/string_label_place"
+	                android:textSize="16dp"
+	                android:textColor="#df5506"/>
+	            <AutoCompleteTextView 
+	                android:id="@+id/edit_new_place"
+	                android:layout_margin="4dp"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:textSize="16dp"
+	                android:padding="4dp"
+	                android:background="@xml/my_textfield_ics"/>
+	        </LinearLayout>
+	        
+            <TextView 
+		       android:layout_width="fill_parent"
+		       android:layout_height="1dp"
+	       	   android:background="#fea13d"/>
+        
+	        <LinearLayout 
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	        	android:orientation="horizontal"
+	            >
+	            <TextView 
+	                android:id="@+id/label_new_time"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:layout_margin="4dp"
+	                android:textStyle="bold"
+	                android:gravity="bottom"
+	                android:text="Due Time"
+	                android:textSize="16dp"
+	                android:textColor="#df5506"/>
+	            <EditText
+	                android:id="@+id/edit_new_time"
+	                android:layout_margin="4dp"
+	                android:text="Set Time"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:textSize="16dp"
+	                android:padding="4dp"
+	                android:background="@android:color/transparent"/>
+	       	 </LinearLayout>
+	       	  <LinearLayout 
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	        	android:orientation="horizontal"
+	            >
+	            <TextView 
+	                android:id="@+id/label_new_date"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:layout_margin="4dp"
+	                android:textStyle="bold"
+	                android:gravity="bottom"
+	                android:text="Due date"
+	                android:textSize="16dp"
+	                android:textColor="#df5506"/>
+	            <EditText
+	                android:id="@+id/edit_new_date"
+	                android:layout_margin="4dp"
+	                android:text="Set Date"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:textSize="16dp"
+	                android:padding="4dp"
+	                android:background="@android:color/transparent"/>
+	       	 </LinearLayout>
+        </LinearLayout>
+        <Button 
+            android:id="@+id/btn_more_option"
+            android:layout_marginTop="19dp"
+            android:textSize="16dp"
+            android:background="@xml/my_btn_ics"
+            android:gravity="center"
+            android:text="@string/string_btn_more_option"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>        
+        
+        
+    </LinearLayout>
+
+    
+
+</LinearLayout>

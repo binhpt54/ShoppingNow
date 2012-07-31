@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="horizontal" >
+
+    <CheckBox
+        android:id="@+id/list_item_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@xml/checkbox_ics"
+        android:layout_alignParentLeft="true"
+        android:focusable="false"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/list_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/list_item_checkbox"
+        android:text="TextView" 
+        android:textSize="20dp"/>
+
+    <ImageView
+        android:id="@+id/list_item_priority"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignBottom="@+id/list_item_name"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/priority_medium" />
+
+    <Button
+        android:id="@+id/list_item_delete"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignLeft="@+id/list_item_priority"
+        android:layout_alignTop="@+id/list_item_priority"
+        android:background="@xml/my_btn_delete_circle" />
+
+</RelativeLayout>

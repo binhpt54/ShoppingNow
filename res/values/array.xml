@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sections">
+        <item>Xem Theo Ngày</item>
+        <item>Xem Theo Tháng</item>
+        <item>Hẹn Giờ</item>
+        <item>Lịch Sử</item>
+    </string-array>
+    
+</resources>

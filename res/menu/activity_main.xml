@@ -1,0 +1,45 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_search"
+        android:showAsAction="always"
+        android:title="Tìm Kiếm"
+        android:icon="@drawable/icon_action_search"/>
+    <item 
+        android:id="@+id/menu_create"
+        android:showAsAction="always"
+        android:title="Tạo Mới"
+        android:icon="@drawable/icon_content_new"/>
+    <item 
+        android:id="@+id/menu_sort"
+        android:showAsAction="ifRoom"
+        android:title="Sắp Xếp"
+        android:icon="@drawable/icon_sort"
+        />
+    
+    <item 
+        android:id="@+id/menu_share"
+        android:showAsAction="always"
+        android:title="Chia Sẻ"
+        android:icon="@drawable/icon_share"/>
+    
+    <item 
+        android:id="@+id/menu_refresh"
+        android:icon="@drawable/icon_navigation_refresh"
+        android:showAsAction="ifRoom"
+        android:title="Làm Mới Danh Sách"/>
+    <item 
+        android:id="@+id/menu_setting"
+        android:icon="@drawable/icon_action_setting"
+        android:showAsAction="ifRoom|withText"
+        android:title="Cài Đặt"/>
+    <item 
+        android:id="@+id/menu_help"
+        android:icon="@drawable/icon_action_help"
+        android:showAsAction="ifRoom"
+        android:title="Giúp Đỡ"/>
+    
+    <item 
+        android:id="@+id/menu_about"
+        android:icon="@drawable/icon_action_about"
+        android:showAsAction="ifRoom"
+        android:title="Giới Thiệu"/>
+</menu>

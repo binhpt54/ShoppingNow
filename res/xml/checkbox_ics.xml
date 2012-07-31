@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_checked="true" android:state_focused="true"
+        android:drawable="@drawable/cb_check_focused"></item>
+    <item android:state_checked="true" android:state_focused="true" android:state_enabled="false"
+        android:drawable="@drawable/cb_check_disbable_focused"></item>
+    <item android:state_checked="true" android:state_enabled="false" 
+        android:drawable="@drawable/cb_check_disbable"></item>
+    <item android:state_checked="true"
+        android:drawable="@drawable/cb_check_normal"></item>
+    
+    <item android:state_checked="false" android:state_focused="true"
+        android:drawable="@drawable/cb_uncheck_focused"></item>
+    <item android:state_checked="false" android:state_enabled="false"
+        android:drawable="@drawable/cb_uncheck_disbable"></item>
+    <item android:state_checked="false" android:state_focused="true" android:state_enabled="false"
+        android:drawable="@drawable/cb_uncheck_disbable_focused"></item>
+    <item android:state_checked="false"
+        android:drawable="@drawable/cb_uncheck_normal"></item>
+    
+    
+
+</selector>
