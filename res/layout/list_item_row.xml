@@ -8,35 +8,71 @@
         android:id="@+id/list_item_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:button="@xml/checkbox_ics"
         android:layout_alignParentLeft="true"
-        android:focusable="false"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        android:button="@xml/checkbox_ics"
+        android:focusable="false" />
 
     <TextView
         android:id="@+id/list_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_alignTop="@+id/list_item_checkbox"
+        android:layout_marginLeft="15dp"
         android:layout_toRightOf="@+id/list_item_checkbox"
-        android:text="TextView" 
-        android:textSize="20dp"/>
+        android:text="TextView"
+        android:textSize="18dp" />
 
-    <ImageView
-        android:id="@+id/list_item_priority"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_alignBottom="@+id/list_item_name"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="15dp"
-        android:src="@drawable/priority_medium" />
+    <TextView
+        android:id="@+id/list_item_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/list_item_checkbox"
+        android:layout_alignLeft="@+id/list_item_name"
+        android:text="Siêu Thị BigC"
+        android:textColor="#353333"
+        android:textSize="14dp" />
 
     <Button
         android:id="@+id/list_item_delete"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_alignLeft="@+id/list_item_priority"
-        android:layout_alignTop="@+id/list_item_priority"
-        android:background="@xml/my_btn_delete_circle" />
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:background="@xml/my_btn_delete_circle"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/list_item_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/list_item_name"
+        android:layout_marginRight="14dp"
+        android:text="1 Kg"
+        android:textSize="14dp"
+        android:visibility="visible"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/list_item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/list_item_subtitle"
+        android:layout_alignBottom="@+id/list_item_subtitle"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="14dp"
+        android:textSize="14dp"
+        android:text="235.000"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:textColor="#FFFFFF" />
 
 </RelativeLayout>
