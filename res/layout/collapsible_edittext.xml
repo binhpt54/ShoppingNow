@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:hint="Tìm Kiếm"
+    android:textSize="16dp"
+    android:focusable="true"
+    android:textColor="#FFFFFF"
+    android:background="@xml/my_textfield_ics"
+    android:imeOptions="actionSearch"/>
