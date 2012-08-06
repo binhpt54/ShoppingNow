@@ -1,13 +1,18 @@
 package com.vinova_g12.shoppingnow_app;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.example.shoppingnow.R;
 import com.viewpagerindicator.PageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 import com.vinova_g12.shoppingnow.fragment.FragmentAdapter_Viewbydate;
 import com.vinova_g12.shoppingnow.fragment.FragmentTitleAdapter_Viewbydate;
+import com.vinova_g12.shoppingnow.quickaction.QuickAction;
 import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 
 import android.os.Bundle;
@@ -26,16 +31,21 @@ import android.support.v4.view.ViewPager;
 @SuppressLint("ParserError")
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.OnNavigationListener{
 
-	FragmentAdapter_Viewbydate mAdapter;
-    ViewPager mPager;
-    TitlePageIndicator mIndicator;
-    ActionBar ab;
+	private FragmentAdapter_Viewbydate mAdapter;
+    private ViewPager mPager;
+    private TitlePageIndicator mIndicator;
+    private ActionBar ab;
+    //Count of checked
+    public static int countChecked;
+  	public static List<Integer> list_item_checked;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        list_item_checked = new ArrayList<Integer>();
+        countChecked = 0;
         //Setting actionbar
         ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(false);
@@ -61,28 +71,20 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         mIndicator.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
         mIndicator.setTitlePadding(50);
     }
+    
 
 	@Override
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
-		// Set file with share history to the provider and set the share intent.
-        //MenuItem actionItem = (MenuItem) menu.findItem(R.id.menu_share);
-        //ShareActionProvider actionProvider = (ShareActionProvider) actionItem.getActionProvider();
-        //actionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
-        // Note that you can set/change the intent any time,
-        // say when the user has selected an image.
-        //actionProvider.setShareIntent(createShareIntent());		
+		getSupportMenuInflater().inflate(R.menu.activity_main, menu);	
 		return super.onCreateOptionsMenu(menu);
 	}
-	
-	
 
 	@Override
 	public boolean onOptionsItemSelected(
 			com.actionbarsherlock.view.MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_create:
-			Intent intent = new Intent(getApplicationContext(), AddNewItem.class);
+			Intent intent = new Intent(getApplicationContext(), AddNew.class);
 			startActivity(intent);
 			break;
 
@@ -96,7 +98,4 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		// TODO Auto-generated method stub
 		return false;
 	}
-    
-    
-    
 }
