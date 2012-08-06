@@ -89,8 +89,6 @@ public class AddNewItem extends Activity implements OnClickListener, OnCheckedCh
         etquantity = (EditText) findViewById(R.id.edit_new_quantity);
         etprice = (EditText) findViewById(R.id.edit_new_price);
         etplace = (EditText) findViewById(R.id.edit_new_place);
-        ettime = (EditText) findViewById(R.id.edit_new_time);
-        etdate = (EditText) findViewById(R.id.edit_new_date);
         
            
         
@@ -186,20 +184,7 @@ public class AddNewItem extends Activity implements OnClickListener, OnCheckedCh
 			setResult(RESULT_OK, intent);
 			finish();
 			break;
-			
-		// DONE pop up date picker
-		case R.id.edit_new_date:
-			DatePickerDialog dlogdate = new DatePickerDialog(this, this, 1990, 0, 1);
-			dlogdate.setTitle("Chọn ngày mua:");
-			dlogdate.show();
-			break;
-				
-		// DONE pop up time picker
-		case R.id.edit_new_time:
-			TimePickerDialog dlogtime = new TimePickerDialog(this, this, 0, 0, true);
-			dlogtime.setTitle("Chọn giờ mua:");
-			dlogtime.show();
-			break;
+		
 		
 		}
 	}

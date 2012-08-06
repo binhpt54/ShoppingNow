@@ -44,54 +44,75 @@
        android:layout_height="1dp"
        android:background="#df5506"/>
     
-    <LinearLayout 
-        android:id="@+id/add_new_content"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="16dp"
+    <ScrollView 
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:orientation="vertical">
-        
+	    android:scrollbars="none" >
+    	
         <LinearLayout 
-            android:id="@+id/layout_new_title"
-            android:layout_width="fill_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal">
-            
-            <TextView 
-                android:id="@+id/label_new_title"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="3"
-                android:layout_margin="4dp"
-                android:text="@string/string_label_title"
-                android:gravity="bottom"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:textColor="#df5506"/>
-            <EditText 
-                android:id="@+id/edit_new_title"
-                android:layout_margin="4dp"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:padding="4dp"
-                android:textSize="16dp"
-                android:background="@xml/my_textfield_ics"/>
-            
-        </LinearLayout>
+	        android:id="@+id/add_new_content"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:orientation="vertical">
+	    	
+            <!--Edit text to user enter name of product and 
+        	cancel button to make empty edittext  -->
         
-        <TextView 
-	       android:layout_width="fill_parent"
-	       android:layout_height="1dp"
-       	   android:background="#fea13d"/>
+	        <LinearLayout 
+	            android:id="@+id/layout_new_title"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical">
+	            
+	            <TextView 
+	                android:id="@+id/label_new_title"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="3"
+	                android:layout_margin="4dp"
+	                android:text="@string/string_label_title"
+	                android:gravity="bottom"
+	                android:textSize="16dp"
+	                android:textStyle="bold"
+	                android:textColor="#df5506"/>
+	            <TextView 
+			       android:layout_width="fill_parent"
+			       android:layout_height="1dp"
+		       	   android:background="#fea13d"/>
+	            <LinearLayout 
+	                android:layout_width="fill_parent"
+	            	android:layout_height="48dp"
+	            	android:orientation="horizontal">
+	                <EditText 
+		                android:id="@+id/edit_new_title"
+		                android:layout_margin="4dp"
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:layout_weight="1"
+		                android:hint="Tên Sản Phẩm"
+		                android:padding="4dp"
+		                android:textSize="16dp"
+		                android:background="@xml/my_textfield_ics"/>
+	                <Button 
+	                    android:id="@+id/btn_cancel_title"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="fill_parent"
+	                    android:background="@xml/btn_cancel"
+	                    android:visibility="gone"/>
+	            </LinearLayout>
+	        </LinearLayout>
+	        
+	        <!--Checkboxes implements levels of priority  -->
         
         <LinearLayout 
             android:id="@+id/layout_new_priority"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="6dp"
+            android:orientation="vertical">
             
             <TextView 
                 android:id="@+id/label_new_priority"
@@ -104,49 +125,80 @@
                 android:text="@string/string_label_priority"
                 android:textSize="16dp"
                 android:textColor="#df5506"/>
+            <TextView 
+			       android:layout_width="fill_parent"
+			       android:layout_height="1dp"
+		       	   android:background="#fea13d"/>
             <RadioGroup 
                 android:id="@+id/gradio_priority"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <RadioButton 
-                    android:id="@+id/pri_normal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:button="@xml/radio_button_ics"
-                    android:text="Không"/>
-                <RadioButton 
-                    android:id="@+id/pri_low"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:button="@xml/radio_button_ics"
-                    android:text="Thấp"/>
-                <RadioButton 
-                    android:id="@+id/pri_medium"
-                    android:layout_width="wrap_content"
-                    android:button="@xml/radio_button_ics"
-                    android:layout_height="wrap_content"
-                    android:text="Trung Bình"/>
-                <RadioButton 
-                    android:id="@+id/pri_hard"
-                    android:layout_width="wrap_content"
-                    android:button="@xml/radio_button_ics"
-                    android:layout_height="wrap_content"
-                    android:text="Quan Trọng"/>
+                android:orientation="horizontal">
+                    <RadioButton 
+	                    android:id="@+id/pri_normal"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="wrap_content"
+	             		android:checked="true"
+	                    android:layout_weight="1"
+	                    android:button="@xml/radio_button_ics"
+	                    android:text="0"
+	                    android:textSize="20dp"
+	                    android:textStyle="normal"
+	                    android:textColor="#353333"
+	                    android:shadowColor="#000000"
+				        android:shadowDx="1"
+				        android:shadowDy="2"
+				        android:shadowRadius="2"/>
+	                <RadioButton 
+	                    android:id="@+id/pri_low"
+	                    android:layout_weight="1"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="wrap_content"
+	                    android:button="@xml/radio_button_ics"
+	                    android:text="1"
+	                    android:textSize="20dp"
+	                    android:textStyle="bold"
+	                    android:textColor="#8cc23f"
+	                    android:shadowColor="#000000"
+				        android:shadowDx="1"
+				        android:shadowDy="2"
+				        android:shadowRadius="2"/>
+	                <RadioButton 
+	                    android:id="@+id/pri_medium"
+	                    android:layout_width="fill_parent"
+	                    android:layout_weight="1"
+	                    android:button="@xml/radio_button_ics"
+	                    android:layout_height="wrap_content"
+	                    android:text="2"
+	                    android:textSize="20dp"
+	                    android:textStyle="bold"
+	                    android:textColor="#6093cd"
+	                    android:shadowColor="#000000"
+				        android:shadowDx="1"
+				        android:shadowDy="2"
+				        android:shadowRadius="2"/>
+	                <RadioButton 
+	                    android:id="@+id/pri_hard"
+	                    android:layout_width="fill_parent"
+	                    android:layout_weight="1"
+	                    android:button="@xml/radio_button_ics"
+	                    android:layout_height="wrap_content"
+	                    android:text="3"
+	                    android:textSize="20dp"
+	                    android:textStyle="bold"
+	                    android:textColor="#f86626"
+	                    android:shadowColor="#000000"
+				        android:shadowDx="1"
+				        android:shadowDy="2"
+				        android:shadowRadius="2"/>
             </RadioGroup>
-            
         </LinearLayout>
         
-       <TextView 
-	       android:layout_width="fill_parent"
-	       android:layout_height="1dp"
-       	   android:background="#fea13d"/>
-       
         <LinearLayout 
             android:id="@+id/layout_new_quantity"
             android:layout_width="fill_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
             
             <TextView 
                 android:id="@+id/label_new_quantity"
@@ -159,38 +211,45 @@
                 android:text="@string/string_label_quantity"
                 android:textSize="16dp"
                 android:textColor="#df5506"/>
-            <EditText 
-                android:id="@+id/edit_new_quantity"
-                android:layout_margin="4dp"
+            <TextView 
+		       android:layout_width="fill_parent"
+		       android:layout_height="1dp"
+	       	   android:background="#fea13d"/>
+            <LinearLayout 
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="16dp"
-                android:inputType="number"
-                android:padding="4dp"
-                android:background="@xml/my_textfield_ics"/>
-            <EditText 
-                android:id="@+id/edit_new_money"
-                android:layout_margin="4dp"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="16dp"
-                android:padding="4dp"
-                android:background="@xml/my_textfield_ics"/>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <EditText 
+	                android:id="@+id/edit_new_quantity"
+	                android:layout_margin="4dp"
+	                android:layout_width="wrap_content"
+	                android:layout_height="fill_parent"
+	                android:textSize="16dp"
+	                android:hint="0"
+	                android:inputType="number"
+	                android:padding="4dp"
+	                android:background="@xml/my_textfield_ics"/>
+                <Spinner 
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+	                android:textSize="16dp"
+	                android:padding="4dp"/>
+                <Button 
+                    android:id="@+id/btn_cancel_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:background="@xml/btn_cancel"/>
+            </LinearLayout>
+            
             
         </LinearLayout>
-        
-        <TextView 
-	       android:layout_width="fill_parent"
-	       android:layout_height="1dp"
-       	   android:background="#fea13d"/>
         
         <LinearLayout 
             android:id="@+id/layout_new_price"
             android:layout_width="fill_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
             
             <TextView 
                 android:id="@+id/label_new_price"
@@ -203,56 +262,92 @@
                 android:text="@string/string_label_price"
                 android:textSize="16dp"
                 android:textColor="#df5506"/>
-            <EditText 
-                android:id="@+id/edit_new_price"
-                android:layout_margin="4dp"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="16dp"
-                android:inputType="number"
-                android:padding="4dp"
-                android:background="@xml/my_textfield_ics"/>
-            
             <TextView 
-                android:id="@+id/label_new_unit"
+		       android:layout_width="fill_parent"
+		       android:layout_height="1dp"
+	       	   android:background="#fea13d"/>
+            <LinearLayout 
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:layout_margin="4dp"
-                android:gravity="bottom"
-                android:textStyle="bold"
-                android:text="@string/string_label_unit"
-                android:textSize="16dp"
-                android:textColor="#df5506"/>
-            <Spinner 
-                android:id="@+id/edit_new_unit"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:textSize="16dp"
-                android:padding="4dp"
-                android:background="@xml/my_spinner_ics"/>
-            
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <EditText 
+	                android:id="@+id/edit_new_price"
+	                android:layout_margin="4dp"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:hint="0"
+	                android:textSize="16dp"
+	                android:inputType="number"
+	                android:padding="4dp"
+	                android:background="@xml/my_textfield_ics"/>
+           	 	<Spinner 
+	                android:id="@+id/edit_new_unit"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:textSize="16dp"/>
+                
+            </LinearLayout>
         </LinearLayout>
         
-        <TextView 
-	       android:layout_width="fill_parent"
-	       android:layout_height="1dp"
-       	   android:background="#fea13d"/>
+        <LinearLayout 
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	        	android:orientation="vertical"
+	            >
+	            <TextView 
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:layout_margin="4dp"
+	                android:textStyle="bold"
+	                android:gravity="bottom"
+	                android:text="Ngày Hoàn Thành"
+	                android:textSize="16dp"
+	                android:textColor="#df5506"/>
+	            <TextView 
+			       android:layout_width="fill_parent"
+			       android:layout_height="1dp"
+		       	   android:background="#fea13d"/>
+
+	            <LinearLayout
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:orientation="horizontal" >
+	            
+		            <Button 
+		                android:id="@+id/edit_new_duedate"
+		                android:layout_margin="4dp"
+		                android:text="Đặt Ngày Giờ"
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:layout_weight="1"
+		                android:textSize="16dp"
+		                android:padding="4dp"
+		                android:background="@xml/my_btn_ics_transfrent"/>
+		            <Button 
+	                    android:id="@+id/btn_cancel_duedate"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="fill_parent"
+	                    android:background="@xml/btn_cancel"
+	                    android:visibility="gone"/>
+	            </LinearLayout>
+	       	 </LinearLayout>
+	    
         
+        <!-- Layout include more options : alarm date and time, due date and time -->
         <LinearLayout 
             android:id="@+id/layout_more_option"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
         	android:orientation="vertical"
-        	android:textStyle="bold"
         	android:visibility="gone"
             >
             <LinearLayout 
 	            android:layout_width="fill_parent"
-	            android:layout_height="48dp"
-	            android:orientation="horizontal">
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical">
 	            <TextView 
 	                android:id="@+id/label_new_place"
 	                android:layout_width="fill_parent"
@@ -264,77 +359,85 @@
 	                android:text="@string/string_label_place"
 	                android:textSize="16dp"
 	                android:textColor="#df5506"/>
-	            <AutoCompleteTextView 
-	                android:id="@+id/edit_new_place"
-	                android:layout_margin="4dp"
+	            <TextView 
+			       android:layout_width="fill_parent"
+			       android:layout_height="1dp"
+		       	   android:background="#fea13d"/>
+
+	            <LinearLayout
 	                android:layout_width="fill_parent"
 	                android:layout_height="fill_parent"
-	                android:layout_weight="1"
-	                android:textSize="16dp"
-	                android:padding="4dp"
-	                android:background="@xml/my_textfield_ics"/>
+	                android:orientation="horizontal" >
+
+		            <AutoCompleteTextView 
+		                android:id="@+id/edit_new_place"
+		                android:layout_margin="4dp"
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:hint="Ví dụ : Siêu Thị BigC"
+		                android:layout_weight="1"
+		                android:textSize="16dp"
+		                android:padding="4dp"
+		                android:background="@xml/my_textfield_ics"/>
+		            <Button 
+	                    android:id="@+id/btn_cancel_place"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="fill_parent"
+	                    android:background="@xml/btn_cancel"
+	                    android:visibility="gone"/>
+	            </LinearLayout>
 	        </LinearLayout>
 	        
-            <TextView 
-		       android:layout_width="fill_parent"
-		       android:layout_height="1dp"
-	       	   android:background="#fea13d"/>
+            
         
+	        
+	       	 
 	        <LinearLayout 
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
-	        	android:orientation="horizontal"
+	        	android:orientation="vertical"
 	            >
 	            <TextView 
-	                android:id="@+id/label_new_time"
+	                android:id="@+id/label_new_alarm"
 	                android:layout_width="fill_parent"
 	                android:layout_height="fill_parent"
 	                android:layout_weight="1"
 	                android:layout_margin="4dp"
 	                android:textStyle="bold"
 	                android:gravity="bottom"
-	                android:text="Due Time"
+	                android:text="Hẹn Giờ Nhắc Nhở"
 	                android:textSize="16dp"
 	                android:textColor="#df5506"/>
-	            <EditText
-	                android:id="@+id/edit_new_time"
-	                android:layout_margin="4dp"
-	                android:text="Set Time"
-	                android:layout_width="fill_parent"
-	                android:layout_height="fill_parent"
-	                android:layout_weight="1"
-	                android:textSize="16dp"
-	                android:padding="4dp"
-	                android:background="@android:color/transparent"/>
-	       	 </LinearLayout>
-	       	  <LinearLayout 
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	        	android:orientation="horizontal"
-	            >
 	            <TextView 
-	                android:id="@+id/label_new_date"
-	                android:layout_width="fill_parent"
-	                android:layout_height="fill_parent"
-	                android:layout_weight="1"
-	                android:layout_margin="4dp"
-	                android:textStyle="bold"
-	                android:gravity="bottom"
-	                android:text="Due date"
-	                android:textSize="16dp"
-	                android:textColor="#df5506"/>
-	            <EditText
-	                android:id="@+id/edit_new_date"
-	                android:layout_margin="4dp"
-	                android:text="Set Date"
-	                android:layout_width="fill_parent"
-	                android:layout_height="fill_parent"
-	                android:layout_weight="1"
-	                android:textSize="16dp"
-	                android:padding="4dp"
-	                android:background="@android:color/transparent"/>
+			       android:layout_width="fill_parent"
+			       android:layout_height="1dp"
+		       	   android:background="#fea13d"/>
+
+	            <LinearLayout
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:orientation="horizontal" >
+	            
+		            <Button 
+		                android:id="@+id/edit_new_alarm"
+		                android:layout_margin="4dp"
+		                android:text="Đặt Ngày Giờ"
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:layout_weight="1"
+		                android:textSize="16dp"
+		                android:padding="4dp"
+		                android:background="@xml/my_btn_ics_transfrent"/>
+		            <Button 
+	                    android:id="@+id/btn_cancel_alarm"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="fill_parent"
+	                    android:background="@xml/btn_cancel"
+	                    android:visibility="visible"/>
+	            </LinearLayout>
 	       	 </LinearLayout>
         </LinearLayout>
+        
         <Button 
             android:id="@+id/btn_more_option"
             android:layout_marginTop="19dp"
@@ -343,11 +446,9 @@
             android:gravity="center"
             android:text="@string/string_btn_more_option"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>        
-        
-        
-    </LinearLayout>
-
-    
-
+            android:layout_height="wrap_content"/>
+	        
+	        
+	    </LinearLayout>
+    </ScrollView>
 </LinearLayout>
