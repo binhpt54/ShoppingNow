@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item 
+        android:id="@+id/acm_done" 
+        android:showAsAction="never" 
+        android:icon="@drawable/icon_content_done"
+        android:title="Xong">
+        
+    </item>
+    
+    <item 
+        android:id="@+id/acm_delete" 
+        android:showAsAction="never" 
+        android:icon="@drawable/icon_action_discard"
+        android:title="Xóa">
+        
+    </item>
+    
+    <item 
+        android:id="@+id/acm_share" 
+        android:showAsAction="never" 
+        android:icon="@drawable/icon_share"
+        android:title="Chia Sẻ">
+        
+    </item>
+    
+    <item 
+        android:id="@+id/acm_select_all" 
+        android:showAsAction="always" 
+        android:icon="@drawable/light_content_select_all"
+        android:title="Chọn Tất Cả">
+        
+    </item>
+    
+    <item 
+        android:id="@+id/acm_unselect_all" 
+        android:showAsAction="never" 
+        android:icon="@drawable/icon_content_select_all"
+        android:title="Bỏ Chọn Tất Cả">
+        
+    </item>
+    
+    <item 
+        android:id="@+id/acm_undone" 
+        android:showAsAction="never" 
+        android:icon="@drawable/icon_content_select_all"
+        android:title="Chưa Xong">
+        
+    </item>
+    
+
+</menu>
