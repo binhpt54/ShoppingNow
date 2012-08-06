@@ -10,7 +10,7 @@
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock.Light.DarkActionBar.ForceOverflow" >
+        android:theme="@style/Theme.Sherlock.Light.ForceOverflow" >
         <activity
             android:name="com.vinova_g12.shoppingnow_app.WelcomeScreen"
             android:label="@string/title_activity_main" 
@@ -23,11 +23,10 @@
         </activity>
         <activity
             android:name="com.vinova_g12.shoppingnow_app.MainActivity"
-            android:label="@string/title_activity_main"
-            android:uiOptions="splitActionBarWhenNarrow" >
+            android:label="@string/title_activity_main" >
         </activity>
         <activity
-            android:name="com.vinova_g12.shoppingnow_app.AddNewItem"
+            android:name="com.vinova_g12.shoppingnow_app.AddNew"
             android:label="@string/title_activity_add_new" >
         </activity>
     </application>
