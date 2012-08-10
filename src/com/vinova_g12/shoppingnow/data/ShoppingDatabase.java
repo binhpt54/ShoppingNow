@@ -1,7 +1,12 @@
 package com.vinova_g12.shoppingnow.data;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
+import com.vinova_g12.shoppingnow_app.AddNew;
+
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -21,6 +26,7 @@ public class ShoppingDatabase {
 	public static final String DUE = "due_date";
 	public static final String ALARM = "alarm_date";
 	public static final String STATUS = "status";
+	public static final String PLACE = "place";
 	
 	private static Context mContext;
 	private SQLiteDatabase shoppingDB;
@@ -32,18 +38,30 @@ public class ShoppingDatabase {
 			+ ID + " integer primary key autoincrement,"
 			+ NAME + " text not null,"
 			+ PRIO + " integer default 0,"
-			+ QUANT + " integer not null default 0,"
+			+ QUANT + " float not null default 0,"
 			+ UNIT + " text ,"
-			+ PRICE + " integer default 0,"
+			+ PRICE + " float default 0,"
 			+ MONEY + " text,"
 			+ DUE + " text,"
 			+ ALARM + " text,"
-			+ STATUS + " integer default 0" + ")";
+			+ STATUS + " integer default 0," 
+			+ PLACE + " text default \" \" " + ")";
 	private static final String DROP_TABLE = 
 			"drop table if exists " + TABLE_NAME;
 	private DataHelper mHelper;
+	private Calendar today,tomorrow,yesterday,thisweek,lastweek,nextweek,later;
+	private SimpleDateFormat format;
+	
 	
 	public ShoppingDatabase(Context context) {
+		today = Calendar.getInstance();
+		tomorrow = Calendar.getInstance();
+		yesterday = Calendar.getInstance();
+		thisweek = Calendar.getInstance();
+		nextweek = Calendar.getInstance();
+		lastweek = Calendar.getInstance();
+		later = Calendar.getInstance();
+		format = new SimpleDateFormat("dd-MM-yyyy");
 		this.mContext = context;
 	}
 	//Open database to write
@@ -65,12 +83,32 @@ public class ShoppingDatabase {
 	}
 	//Get all item in a date (Today, Tomorrow, Yesterday)
 	public Cursor getAll_inDate(String date) {
-		if (date.equals("Today"))
-			return null;
-		else if (date.equals("Tomorrow"))
-			return null;
-		else if (date.equals("Yesterday"))
-			return null;
+		Cursor cur = null;
+		String sql;
+		if (date.equals("Today")) {
+			date = format.format(today.getTime());
+			Log.v("DataHelper", date);
+			sql = "select * from " + TABLE_NAME + " where " + DUE + "=\"" + date + "\"";
+			Log.v("DataHelper", sql);
+			cur = shoppingDB.rawQuery(sql, null);
+			return cur;
+		}
+		else if (date.equals("Tomorrow")) {
+			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+			date = format.format(tomorrow.getTime());
+			Log.v("Tomorrow", date);
+			sql = "select * from " + TABLE_NAME + " where " + DUE + "=\"" + date + "\"";
+			cur = shoppingDB.rawQuery(sql, null);
+			return cur;
+		}
+		else if (date.equals("Yesterday")) {
+			yesterday.add(Calendar.DAY_OF_MONTH, -1);
+			date = format.format(yesterday.getTime());
+			Log.v("Yesterday", date);
+			sql = "select * from " + TABLE_NAME + " where " + DUE + "=\"" + date + "\"";
+			cur = shoppingDB.rawQuery(sql, null);
+			return cur;
+		}
 		return null;
 	}
 	//Get all item in a week (This week, Next week, last week)
@@ -91,7 +129,15 @@ public class ShoppingDatabase {
 	//If user want delete all item in a date or week, then list is all item checked 
 	//in a date or week (use function getAll_inDate or getAll_inWeek to instead)
 	public int deleteSome(List<Integer> checked) {
-		return 0;
+		int count = checked.size();
+		for (int i=0; i<count; i++) 
+			delte(checked.get(i));
+		return 1;
+	}
+	
+	public int delte(int id) {
+		Log.d("id delte", id + "");
+		return shoppingDB.delete(TABLE_NAME, ID + "=" + id, null);
 	}
 	
 	
