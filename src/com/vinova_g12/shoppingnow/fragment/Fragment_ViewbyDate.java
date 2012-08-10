@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,7 @@ import com.vinova_g12.shoppingnow.quickaction.ActionItem;
 import com.vinova_g12.shoppingnow.quickaction.QuickAction;
 import com.vinova_g12.shoppingnow_app.AddNew;
 import com.vinova_g12.shoppingnow_app.MainActivity;
+import com.vinova_g12.shoppingnow_app.UpdateItem;
 
 @SuppressLint({ "ParserError", "ParserError" })
 public class Fragment_ViewbyDate extends SherlockListFragment{
@@ -155,13 +157,19 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 							case ID_ALERT:
 								break;
 							case ID_DELETE:
-								db.delte(data.get(checked).id);
+								db.delete(data.get(checked).id);
 								data.remove(checked);
 								adapter.notifyDataSetChanged();
 								break;
 							case ID_DONE:
 								break;
 							case ID_EDIT:
+								Intent intent = new Intent(getActivity(),AddNew.class);
+								Bundle update = new Bundle();
+								update.putInt ("id", data.get(checked).id);
+								intent.putExtras(update);
+								startActivity(intent);
+								adapter.notifyDataSetChanged();
 								break;
 							case ID_SHARE:
 								break;
@@ -177,7 +185,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_LONG).show();
+		Toast.makeText(getActivity(), "Clicked "+ position+ " " + id, Toast.LENGTH_LONG).show();
 		super.onListItemClick(l, v, position, id);
 	}
 

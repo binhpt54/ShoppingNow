@@ -1,6 +1,7 @@
 package com.vinova_g12.shoppingnow.data;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -58,6 +59,10 @@ public class ShoppingDatabase {
 		tomorrow = Calendar.getInstance();
 		yesterday = Calendar.getInstance();
 		thisweek = Calendar.getInstance();
+		//thisweek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		//thisweek.add(Calendar.DAY_OF_WEEK, 1);
+		//thisweek.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+		//format.format(thisweek.getTime())
 		nextweek = Calendar.getInstance();
 		lastweek = Calendar.getInstance();
 		later = Calendar.getInstance();
@@ -79,6 +84,12 @@ public class ShoppingDatabase {
 	public long insert(ContentValues values) {
 		if (values != null)
 			return shoppingDB.insert(TABLE_NAME, null, values);
+		return -1;
+	}
+	//Update Item
+	public long update(int id, ContentValues values){
+		if (values!=null)
+			return shoppingDB.update(TABLE_NAME, values, ID+ "="+id,null);
 		return -1;
 	}
 	//Get all item in a date (Today, Tomorrow, Yesterday)
@@ -113,17 +124,82 @@ public class ShoppingDatabase {
 	}
 	//Get all item in a week (This week, Next week, last week)
 	public Cursor getAll_inWeek(String week) {
-		if (week.equals("This week"))
-			return null;
-		if (week.equals("Next week"))
-			return null;
-		if (week.equals("Last week"))
-			return null;
+		Cursor cursor= null;
+		String sql;
+		List<String> date_in_this_week = new ArrayList<String>();
+		List<String> date_in_next_week = new ArrayList<String>();
+		List<String> date_in_last_week = new ArrayList<String>();
+		if (week.equals("This week")){
+			thisweek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+			date_in_this_week.add(format.format(thisweek.getTime()));
+			while(thisweek.get(Calendar.DAY_OF_WEEK)!=Calendar.SUNDAY){
+				thisweek.add(Calendar.DAY_OF_WEEK, 1);
+				date_in_this_week.add(format.format(thisweek.getTime()));
+			}
+			
+			sql="select * from shoppingItem where due_date IN (";
+			for (int i=0; i<date_in_this_week.size(); i++) {
+				sql += "\"";
+				sql += date_in_this_week.get(i);
+				if (i != (date_in_this_week.size() - 1))
+					sql += "\",";
+				else 
+					sql += "\")";
+			}
+			cursor = shoppingDB.rawQuery(sql, null);
+			return cursor;
+		}
+		if (week.equals("Next week")){
+			nextweek.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+			nextweek.add(Calendar.DAY_OF_WEEK,1);
+			date_in_next_week.add(format.format(nextweek.getTime()));
+			while(nextweek.get(Calendar.DAY_OF_WEEK)!=Calendar.MONDAY){
+				nextweek.add(Calendar.DAY_OF_MONTH, 1);
+				date_in_next_week.add(format.format(nextweek.getTime()));
+			}
+			sql="select * from shoppingItem where due_date IN (";
+			for (int i=0; i<date_in_next_week.size(); i++) {
+				sql += "\"";
+				sql += date_in_next_week.get(i);
+				if (i != (date_in_next_week.size() - 1))
+					sql += "\",";
+				else 
+					sql += "\")";
+			}
+			cursor = shoppingDB.rawQuery(sql, null);
+			return cursor;
+		}
+		
+		if (week.equals("Last week")){
+			lastweek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+			lastweek.add(Calendar.DAY_OF_WEEK,-1);
+			date_in_last_week.add(format.format(lastweek.getTime()));
+			while(lastweek.get(Calendar.DAY_OF_WEEK)!=Calendar.SUNDAY){
+				lastweek.add(Calendar.DAY_OF_MONTH, -1);
+				date_in_last_week.add(format.format(lastweek.getTime()));
+			}
+			sql="select * from shoppingItem where due_date IN (";
+			for (int i=0; i<date_in_last_week.size(); i++) {
+				sql += "\"";
+				sql += date_in_last_week.get(i);
+				if (i != (date_in_last_week.size() - 1))
+					sql += "\",";
+				else 
+					sql += "\")";
+			}
+			cursor = shoppingDB.rawQuery(sql, null);
+			return cursor;
+		}
 		return null;
 	}
 	//Get all item later
 	public Cursor getAll_Later() {
 		return null;
+	}
+	
+	public Cursor getItem(int id){
+		Log.d("ID edit item", id + "");
+		return shoppingDB.rawQuery("select * from "+TABLE_NAME +" where _id = "+id, null);
 	}
 	//Delete some item is checked
 	//If user want delete all item in a date or week, then list is all item checked 
@@ -131,11 +207,11 @@ public class ShoppingDatabase {
 	public int deleteSome(List<Integer> checked) {
 		int count = checked.size();
 		for (int i=0; i<count; i++) 
-			delte(checked.get(i));
+			delete(checked.get(i));
 		return 1;
 	}
 	
-	public int delte(int id) {
+	public int delete(int id) {
 		Log.d("id delte", id + "");
 		return shoppingDB.delete(TABLE_NAME, ID + "=" + id, null);
 	}
