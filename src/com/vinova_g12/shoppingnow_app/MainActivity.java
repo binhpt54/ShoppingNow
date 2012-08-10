@@ -87,7 +87,10 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			com.actionbarsherlock.view.MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_create:
-			Intent intent = new Intent(getApplicationContext(), AddNew.class);
+			Intent intent = new Intent(getApplicationContext(),AddNew.class);
+			Bundle update = new Bundle();
+			update.putInt ("id", 1000);
+			intent.putExtras(update);
 			startActivity(intent);
 			break;
 

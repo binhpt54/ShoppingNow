@@ -29,6 +29,8 @@
             android:name="com.vinova_g12.shoppingnow_app.AddNew"
             android:label="@string/title_activity_add_new" >
         </activity>
+        <activity android:name="com.vinova_g12.shoppingnow_app.UpdateItem" >
+        </activity>
     </application>
 
 </manifest>

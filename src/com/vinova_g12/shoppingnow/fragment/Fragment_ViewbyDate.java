@@ -26,8 +26,6 @@ import com.vinova_g12.shoppingnow.quickaction.ActionItem;
 import com.vinova_g12.shoppingnow.quickaction.QuickAction;
 import com.vinova_g12.shoppingnow_app.AddNew;
 import com.vinova_g12.shoppingnow_app.MainActivity;
-import com.vinova_g12.shoppingnow_app.UpdateItem;
-
 @SuppressLint({ "ParserError", "ParserError" })
 public class Fragment_ViewbyDate extends SherlockListFragment{
 	//Attributes of class
