@@ -9,12 +9,13 @@ public class ListItem {
 	public int id;
 	public String name;
 	public int priority;
-	public int quantity;
-	public int price;
+	public float quantity;
+	public float price;
 	public String unit;
 	public String money;
-	public Double due_date;
-	public Double alarm;
+	public String due_date;
+	public String alarm;
+	public String place;
 	public int status;
 	
 	public ListItem() {
@@ -24,14 +25,16 @@ public class ListItem {
 	
 	public ListItem(Cursor cursor) {
 		super();
+		id = cursor.getInt(0);
 		name = cursor.getString(1);
 		priority = cursor.getInt(2);
-		quantity = cursor.getInt(3);
+		quantity = cursor.getFloat(3);
 		unit = cursor.getString(4);
-		price = cursor.getInt(5);
+		price = cursor.getFloat(5);
 		money = cursor.getString(6);
-		due_date = cursor.getDouble(7);
-		alarm = cursor.getDouble(8);
+		due_date = cursor.getString(7);
+		alarm = cursor.getString(8);
 		status = cursor.getInt(9);
+		place = cursor.getString(10);
 	}
 }

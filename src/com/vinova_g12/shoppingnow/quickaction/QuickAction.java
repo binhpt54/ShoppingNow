@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ScrollView;
@@ -38,7 +39,7 @@ public class QuickAction extends PopupWindows implements OnDismissListener {
 	private ImageView mArrowDown;
 	private LayoutInflater mInflater;
 	private ViewGroup mTrack;
-	private ScrollView mScroller;
+	private HorizontalScrollView mScroller;
 	private OnActionItemClickListener mItemClickListener;
 	private OnDismissListener mDismissListener;
 	
@@ -116,7 +117,7 @@ public class QuickAction extends PopupWindows implements OnDismissListener {
 		mArrowDown 	= (ImageView) mRootView.findViewById(R.id.arrow_down);
 		mArrowUp 	= (ImageView) mRootView.findViewById(R.id.arrow_up);
 
-		mScroller	= (ScrollView) mRootView.findViewById(R.id.scroller);
+		mScroller	= (HorizontalScrollView) mRootView.findViewById(R.id.scroller);
 		
 		//This was previously defined on show() method, moved here to prevent force close that occured
 		//when tapping fastly on a view to show quickaction dialog.

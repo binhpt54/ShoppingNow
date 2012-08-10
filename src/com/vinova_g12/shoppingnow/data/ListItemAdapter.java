@@ -44,6 +44,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 	private Fragment_ViewbyDate listFrament;
 	private boolean selectAll = false;
 	private ActionMode actionMode;
+	public ShoppingDatabase db;
 	
 	public ListItemAdapter(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
@@ -55,6 +56,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 	public ListItemAdapter(Fragment_ViewbyDate list, Context context, int textViewResourceId, List<ListItem> data) {
 		super(context, textViewResourceId, data);
 		this.context = context;
+		db = new ShoppingDatabase(context);
 		this.layoutResource = textViewResourceId;
 		this.data = data;
 		this.listFrament = list;
@@ -65,6 +67,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
 		final Integer id_item = new Integer(data.get(position).id);
+		final Integer pos_item = new Integer(position);
 		if (row == null) {
 			LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             row = inflater.inflate(layoutResource, parent, false);
@@ -96,8 +99,13 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		if (!selectAll) {
 			holder.checkbox.setChecked(false);
 			MainActivity.list_item_checked.clear();
+			Fragment_ViewbyDate.list_item_checked.clear();
 		} else {
 			holder.checkbox.setChecked(true);
+			MainActivity.list_item_checked.clear();
+			Fragment_ViewbyDate.list_item_checked.clear();
+			MainActivity.list_item_checked.add(data.get(position).id);
+			Fragment_ViewbyDate.list_item_checked.add(new Integer(position));
 		}
 		//Name
 		holder.name.setText(data.get(position).name);
@@ -134,6 +142,23 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		}
 			break;
 		}
+		
+		//Set quantity and price
+		if (data.get(position).quantity != 0) {
+			holder.quantity.setText(data.get(position).quantity + "");
+			holder.quantity.setVisibility(View.VISIBLE);
+		}
+		
+		if (data.get(position).price != 0) {
+			holder.price.setText(data.get(position).price + "");
+			holder.price.setVisibility(View.VISIBLE);
+		}
+		//set place
+		if (data.get(position).place != null) {
+			holder.sub.setText(data.get(position).place);
+			holder.sub.setVisibility(View.VISIBLE);
+			Log.d("Place", "IS NULL");
+		} else holder.sub.setVisibility(View.GONE);
 		//Setup behavior for widgets of list item
 		holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			
@@ -141,6 +166,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
 					MainActivity.list_item_checked.add(id_item);
+					Fragment_ViewbyDate.list_item_checked.add(pos_item);
 					MainActivity.countChecked ++;
 					Toast.makeText(context,""+ MainActivity.countChecked, Toast.LENGTH_SHORT).show();
 					if (MainActivity.countChecked != 0) {
@@ -155,6 +181,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 					MainActivity.list_item_checked.remove(id_item);
 					if (actionMode != null) {
 							MainActivity.countChecked --;
+							Fragment_ViewbyDate.list_item_checked.remove(pos_item);
 							Toast.makeText(context,""+ MainActivity.countChecked, Toast.LENGTH_SHORT).show();
 							actionMode.setTitle(MainActivity.countChecked + " Đã Chọn");
 							if (MainActivity.countChecked == 0) {
@@ -184,6 +211,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			activity.getSupportMenuInflater().inflate(R.menu.menu_actionmode, menu);
 			MainActivity.countChecked = 1;
+			db.openDB();
 			return true;
 		}
 
@@ -206,6 +234,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 				break;
 			case R.id.acm_delete:
 				selectAll = false;
+				db.deleteSome(MainActivity.list_item_checked);
 				listFrament.notifyDateChanged();
 				break;
 			case R.id.acm_done:

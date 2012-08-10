@@ -30,6 +30,7 @@
         android:layout_alignBottom="@+id/list_item_checkbox"
         android:layout_alignLeft="@+id/list_item_name"
         android:text="Siêu Thị BigC"
+        android:visibility="gone"
         android:textColor="#353333"
         android:textSize="14dp" />
 
@@ -50,9 +51,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/list_item_name"
         android:layout_marginRight="14dp"
-        android:text="1 Kg"
         android:textSize="14dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:shadowColor="#000000"
         android:shadowDx="1"
         android:shadowDy="2"
@@ -68,7 +68,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="14dp"
         android:textSize="14dp"
-        android:text="235.000"
         android:shadowColor="#000000"
         android:shadowDx="1"
         android:shadowDy="2"

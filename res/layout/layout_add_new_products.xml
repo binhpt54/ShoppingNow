@@ -75,7 +75,7 @@
 	                android:layout_margin="4dp"
 	                android:text="@string/string_label_title"
 	                android:gravity="bottom"
-	                android:textSize="16dp"
+	                android:textSize="14dp"
 	                android:textStyle="bold"
 	                android:textColor="#df5506"/>
 	            <TextView 
@@ -123,7 +123,7 @@
                 android:gravity="center_vertical"
                 android:textStyle="bold"
                 android:text="@string/string_label_priority"
-                android:textSize="16dp"
+                android:textSize="14dp"
                 android:textColor="#df5506"/>
             <TextView 
 			       android:layout_width="fill_parent"
@@ -209,7 +209,7 @@
                 android:gravity="bottom"
                 android:textStyle="bold"
                 android:text="@string/string_label_quantity"
-                android:textSize="16dp"
+                android:textSize="14dp"
                 android:textColor="#df5506"/>
             <TextView 
 		       android:layout_width="fill_parent"
@@ -222,16 +222,18 @@
                 <EditText 
 	                android:id="@+id/edit_new_quantity"
 	                android:layout_margin="4dp"
-	                android:layout_width="wrap_content"
+	                android:layout_width="fill_parent"
 	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
 	                android:textSize="16dp"
 	                android:hint="0"
-	                android:inputType="number"
+	                android:inputType="numberDecimal"
 	                android:padding="4dp"
 	                android:background="@xml/my_textfield_ics"/>
                 <Spinner 
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
+                    android:layout_weight="1"
 	                android:textSize="16dp"
 	                android:padding="4dp"/>
                 <Button 
@@ -260,7 +262,7 @@
                 android:textStyle="bold"
                 android:gravity="bottom"
                 android:text="@string/string_label_price"
-                android:textSize="16dp"
+                android:textSize="14dp"
                 android:textColor="#df5506"/>
             <TextView 
 		       android:layout_width="fill_parent"
@@ -278,7 +280,7 @@
 	                android:layout_weight="1"
 	                android:hint="0"
 	                android:textSize="16dp"
-	                android:inputType="number"
+	                android:inputType="numberDecimal"
 	                android:padding="4dp"
 	                android:background="@xml/my_textfield_ics"/>
            	 	<Spinner 
@@ -304,7 +306,7 @@
 	                android:textStyle="bold"
 	                android:gravity="bottom"
 	                android:text="Ngày Hoàn Thành"
-	                android:textSize="16dp"
+	                android:textSize="14dp"
 	                android:textColor="#df5506"/>
 	            <TextView 
 			       android:layout_width="fill_parent"
@@ -357,7 +359,7 @@
 	                android:gravity="bottom"
 	                android:textStyle="bold"
 	                android:text="@string/string_label_place"
-	                android:textSize="16dp"
+	                android:textSize="14dp"
 	                android:textColor="#df5506"/>
 	            <TextView 
 			       android:layout_width="fill_parent"
@@ -406,7 +408,7 @@
 	                android:textStyle="bold"
 	                android:gravity="bottom"
 	                android:text="Hẹn Giờ Nhắc Nhở"
-	                android:textSize="16dp"
+	                android:textSize="14dp"
 	                android:textColor="#df5506"/>
 	            <TextView 
 			       android:layout_width="fill_parent"
@@ -433,7 +435,7 @@
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="fill_parent"
 	                    android:background="@xml/btn_cancel"
-	                    android:visibility="visible"/>
+	                    android:visibility="gone"/>
 	            </LinearLayout>
 	       	 </LinearLayout>
         </LinearLayout>
@@ -447,8 +449,6 @@
             android:text="@string/string_btn_more_option"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"/>
-	        
-	        
 	    </LinearLayout>
     </ScrollView>
 </LinearLayout>

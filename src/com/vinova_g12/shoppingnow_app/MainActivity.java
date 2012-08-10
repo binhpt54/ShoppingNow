@@ -10,6 +10,7 @@ import com.actionbarsherlock.widget.ShareActionProvider;
 import com.example.shoppingnow.R;
 import com.viewpagerindicator.PageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
+import com.vinova_g12.shoppingnow.data.ShoppingDatabase;
 import com.vinova_g12.shoppingnow.fragment.FragmentAdapter_Viewbydate;
 import com.vinova_g12.shoppingnow.fragment.FragmentTitleAdapter_Viewbydate;
 import com.vinova_g12.shoppingnow.quickaction.QuickAction;
@@ -46,10 +47,12 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         
         list_item_checked = new ArrayList<Integer>();
         countChecked = 0;
+        
         //Setting actionbar
         ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(false);
         ab.setDisplayShowTitleEnabled(false);
+        
         //Setting list navigation
         Context context = getSupportActionBar().getThemedContext();
         ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, 
@@ -98,4 +101,5 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
 }

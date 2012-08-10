@@ -1,12 +1,17 @@
 package com.vinova_g12.shoppingnow.fragment;
 
+import java.text.Bidi;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -15,15 +20,21 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.example.shoppingnow.R;
 import com.vinova_g12.shoppingnow.data.ListItem;
 import com.vinova_g12.shoppingnow.data.ListItemAdapter;
+import com.vinova_g12.shoppingnow.data.ShoppingDatabase;
 import com.vinova_g12.shoppingnow.quickaction.ActionItem;
 import com.vinova_g12.shoppingnow.quickaction.QuickAction;
+import com.vinova_g12.shoppingnow_app.AddNew;
+import com.vinova_g12.shoppingnow_app.MainActivity;
 
 @SuppressLint({ "ParserError", "ParserError" })
 public class Fragment_ViewbyDate extends SherlockListFragment{
 	//Attributes of class
 	ListItemAdapter adapter;
 	List<ListItem> data;
+	ShoppingDatabase db;
+	private Cursor mCursor;
 	private String mContent = "";
+	private int countProduct = 0;
 	//ID of action item
 	private static final int ID_DONE = 1;
 	private static final int ID_DELETE = 2;
@@ -32,62 +43,70 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	private static final int ID_SHARE = 5;	
 	private QuickAction quickAction;
 	public static boolean actionMode_running = false;
+	public static List<Integer> list_item_checked;
+	//Id of item checked for quickaction
+	private int checked = -1;
 	
 	
 	
-	//Methos of class
+	//Create a new object Fragment with mContent is content
 	public static Fragment newInstance(String content) {
-		Fragment_ViewbyDate fragment = new Fragment_ViewbyDate();
+		Log.d("Fragment", content);
+		Fragment_ViewbyDate fragment = new Fragment_ViewbyDate(content);
 		return fragment;
+	}
+	
+	public Fragment_ViewbyDate(String content) {
+		super();
+		mContent = content;
 	}
 	
 	public Fragment_ViewbyDate() {
 		super();
 	}
 	
+	//Notify to activity, event data of list changed. Activity have to invadilate listview
 	public void notifyDateChanged() {
+		if (MainActivity.list_item_checked.size() != 0)
+			for (int i=0; i<MainActivity.list_item_checked.size(); i++) {
+				Log.d("Delete QuickAction", MainActivity.list_item_checked.get(i) + "");
+				adapter.remove(data.get(MainActivity.list_item_checked.get(i)));
+			}
 		adapter.notifyDataSetChanged();
+	}
+	
+	public void add_data_to_Adapter() {
+		if (mContent.equals("Hôm Nay")) {
+			mCursor = db.getAll_inDate("Today");
+			bindData();
+		}
+		else if (mContent.equals("Ngày Mai")) {
+			mCursor = db.getAll_inDate("Tomorrow");
+			bindData();
+		} else if (mContent.equals("Hôm Qua")) {
+			mCursor = db.getAll_inDate("Yesterday");
+			bindData();
+		}
+	}
+	
+	//Add data from cursor to list adapter of list fragment
+	public void bindData() {
+		if (mCursor.moveToFirst()) {
+			do {
+				Log.d("Do...While", countProduct + "");
+				countProduct ++;
+				data.add(new ListItem(mCursor));
+			} while (mCursor.moveToNext());
+		}
+		Log.d("Count product", countProduct + "");
 	}
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		createQuickAction();
-		
-		//Add item to list view
-		ListItem item1, item2, item3, item4;
-		item1 = new ListItem();
-		item2 = new ListItem();
-		item3 = new ListItem();
-		item4 = new ListItem();
-		data = new ArrayList<ListItem>();
-		
-		item1.name = "Đi chợ cho bữa tối";
-		
-		item1.id = 1;
-		item2.id = 2;
-		item3.id = 3;
-		item1.priority = 1;
-		item2.priority = 2;
-		item3.priority = 3;
-		item4.priority = 0;
-		
-		item2.name = "Đi chợ cho bữa sáng";
-		item3.name = "Đi chợ cho ngày mai";
-		item4.name = "Dầu Hòa Aji-Ngon";
-		
-		data.add(item1);
-		data.add(item2);
-		data.add(item4);
-		data.add(item3);
-		
-		
-		// Setup adapter for list view
-		adapter = new ListItemAdapter(this,getSherlockActivity(), R.layout.list_item_row, data);
-		setListAdapter(adapter);
 		//Setting divider and list selector
 		this.getListView().setDivider(getResources().getDrawable(R.xml.divider_list_item));
 		this.getListView().setDividerHeight(2);
-		
 		this.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
@@ -95,6 +114,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 				//Show quickaction when long click in item
 				if (!actionMode_running)
 					quickAction.show(arg1);
+				checked = pos;
 				Toast.makeText(getActivity(), "Clicked2 " + pos, Toast.LENGTH_LONG).show();
 				return false;
 			}
@@ -133,9 +153,11 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 						//Filter action item have clicked
 						switch (actionId) {
 							case ID_ALERT:
-								
 								break;
 							case ID_DELETE:
+								db.delte(data.get(checked).id);
+								data.remove(checked);
+								adapter.notifyDataSetChanged();
 								break;
 							case ID_DONE:
 								break;
@@ -161,8 +183,33 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		list_item_checked = new ArrayList<Integer>();
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.layout_fragment_viewbydate	, container, false);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		countProduct = 0;
+		data = new ArrayList<ListItem>();	
+		db = new ShoppingDatabase(getSherlockActivity().getApplicationContext());
+		db.openDB();
+		add_data_to_Adapter();
+		// Setup adapter for list view
+				adapter = new ListItemAdapter(this,getSherlockActivity(), R.layout.list_item_row, data);
+				setListAdapter(adapter);
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		db.closeDB();
 	}
 	
 	
