@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 public class FragmentAdapter_Viewbydate extends FragmentPagerAdapter{
 	
 
-	protected static String[] CONTENT = new String[] { "Ngày Mai", "Hôm Nay", "Hôm Qua"};
+	protected static String[] CONTENT = new String[] { "Hôm Qua", "Hôm Nay","Ngày Mai" };
 	private int mCount = CONTENT.length;
 	
 	public static void setContent(String[] cont) {
@@ -16,7 +16,14 @@ public class FragmentAdapter_Viewbydate extends FragmentPagerAdapter{
 	
 	public FragmentAdapter_Viewbydate(FragmentManager fm) {
 		super(fm);
+		mCount = CONTENT.length;
 		// TODO Auto-generated constructor stub
+	}
+	
+	public FragmentAdapter_Viewbydate(FragmentManager fm, String[] cont) {
+		super(fm);
+		CONTENT = cont;
+		mCount = CONTENT.length;
 	}
 
 	@Override
@@ -29,5 +36,4 @@ public class FragmentAdapter_Viewbydate extends FragmentPagerAdapter{
 		// TODO Auto-generated method stub
 		return mCount;
 	}
-
 }

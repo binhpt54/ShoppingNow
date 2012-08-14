@@ -41,9 +41,11 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	private static final int ID_EDIT = 3;
 	private static final int ID_ALERT = 4;
 	private static final int ID_SHARE = 5;	
+	private static final int ID_VIEW_PLACE = 6;
 	private QuickAction quickAction;
 	public static boolean actionMode_running = false;
 	public static List<Integer> list_item_checked;
+	public List<String> category_date_in_week;
 	//Id of item checked for quickaction
 	private int checked = -1;
 	
@@ -59,6 +61,8 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	public Fragment_ViewbyDate(String content) {
 		super();
 		mContent = content;
+		category_date_in_week = new ArrayList<String>();
+		Log.d("content", mContent);
 	}
 	
 	public Fragment_ViewbyDate() {
@@ -66,12 +70,15 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	}
 	
 	//Notify to activity, event data of list changed. Activity have to invadilate listview
-	public void notifyDateChanged() {
-		if (MainActivity.list_item_checked.size() != 0)
-			for (int i=0; i<MainActivity.list_item_checked.size(); i++) {
-				Log.d("Delete QuickAction", MainActivity.list_item_checked.get(i) + "");
-				adapter.remove(data.get(MainActivity.list_item_checked.get(i)));
-			}
+	public void notifyDataChanged(String cmd) {
+		Log.d("SIZE", list_item_checked.size() + "");
+		category_date_in_week.clear();
+		if (cmd.equals("DELETE")) {
+			if (list_item_checked.size() != 0)
+				for (int i=0; i<list_item_checked.size(); i++) {
+					adapter.remove(data.get(list_item_checked.get(i)));
+				}
+		}
 		adapter.notifyDataSetChanged();
 	}
 	
@@ -85,6 +92,15 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 			bindData();
 		} else if (mContent.equals("Hôm Qua")) {
 			mCursor = db.getAll_inDate("Yesterday");
+			bindData();
+		} else if (mContent.equals("Tuần Trước")) {
+			mCursor = db.getAll_inWeek("Last week");
+			bindData();
+		} else if (mContent.equals("Tuần Này")) {
+			mCursor = db.getAll_inWeek("This week");
+			bindData();
+		} else if (mContent.equals("Tuần Sau")) {
+			mCursor = db.getAll_inWeek("Next week");
 			bindData();
 		}
 	}
@@ -107,16 +123,16 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 		//Setting divider and list selector
 		this.getListView().setDivider(getResources().getDrawable(R.xml.divider_list_item));
 		this.getListView().setDividerHeight(2);
-		this.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+		this.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int pos, long arg3) {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
+					long arg3) {
 				//Show quickaction when long click in item
 				if (!actionMode_running)
 					quickAction.show(arg1);
 				checked = pos;
 				Toast.makeText(getActivity(), "Clicked2 " + pos, Toast.LENGTH_LONG).show();
-				return false;
 			}
 		});
 	}
@@ -133,6 +149,8 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 						getResources().getDrawable(R.drawable.icon_devicce_alram));
 				ActionItem shareItem = new ActionItem(ID_SHARE, "Chia Sẻ", 
 						getResources().getDrawable(R.drawable.icon_share));
+				ActionItem viewPlace = new ActionItem(ID_VIEW_PLACE, "Cùng Địa Điểm",
+						getResources().getDrawable(R.drawable.location_place));
 				//Create quickaction window
 				quickAction = new QuickAction(getSherlockActivity(), QuickAction.HORIZONTAL);
 				//Add action items into quickaction
@@ -141,9 +159,8 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 				quickAction.addActionItem(editItem);
 				quickAction.addActionItem(alertItem);
 				quickAction.addActionItem(shareItem);
-				quickAction.addActionItem(shareItem);
-				quickAction.addActionItem(shareItem);
-				quickAction.addActionItem(shareItem);
+				quickAction.addActionItem(viewPlace);
+
 				//Behavior for quickaction
 				quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
 					
@@ -170,6 +187,8 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 								adapter.notifyDataSetChanged();
 								break;
 							case ID_SHARE:
+								break;
+							case ID_VIEW_PLACE:
 								break;
 			
 							default:
@@ -210,6 +229,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 		// Setup adapter for list view
 				adapter = new ListItemAdapter(this,getSherlockActivity(), R.layout.list_item_row, data);
 				setListAdapter(adapter);
+				db.closeDB();
 	}
 
 	@Override

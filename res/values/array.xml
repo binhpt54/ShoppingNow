@@ -2,9 +2,8 @@
 <resources>
     <string-array name="sections">
         <item>Xem Theo Ngày</item>
-        <item>Xem Theo Tháng</item>
+        <item>Xem Theo Tuần</item>
         <item>Hẹn Giờ</item>
-        <item>Lịch Sử</item>
     </string-array>
     
 </resources>

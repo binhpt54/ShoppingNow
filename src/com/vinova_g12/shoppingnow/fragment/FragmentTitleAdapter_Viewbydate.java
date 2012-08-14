@@ -9,6 +9,11 @@ public class FragmentTitleAdapter_Viewbydate extends FragmentAdapter_Viewbydate{
 		// TODO Auto-generated constructor stub
 	}
 	
+	public FragmentTitleAdapter_Viewbydate(FragmentManager fm, String[] cont) {
+		super(fm,cont);
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Override
     public CharSequence getPageTitle(int position) {
         return FragmentAdapter_Viewbydate.CONTENT[position % CONTENT.length];

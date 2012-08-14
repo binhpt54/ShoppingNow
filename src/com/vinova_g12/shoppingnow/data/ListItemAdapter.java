@@ -45,6 +45,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 	private boolean selectAll = false;
 	private ActionMode actionMode;
 	public ShoppingDatabase db;
+	private int flag = 0;
 	
 	public ListItemAdapter(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
@@ -61,6 +62,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		this.data = data;
 		this.listFrament = list;
 		this.activity = (SherlockFragmentActivity) context;
+		this.flag = 0;
 	}
 	
 	@Override
@@ -79,16 +81,28 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
             holder.quantity = (TextView) row.findViewById(R.id.list_item_quantity);
             holder.price = (TextView) row.findViewById(R.id.list_item_price);
             holder.sub = (TextView) row.findViewById(R.id.list_item_subtitle);
+            holder.section = (TextView) row.findViewById(R.id.list_section_header);
+            holder.priority = (TextView) row.findViewById(R.id.list_priority);
             
             holder.name.setTypeface(MyTypeFace_Roboto.Roboto_Medium(context));
             holder.quantity.setTypeface(MyTypeFace_Roboto.Roboto_Regular(context));
-            holder.price.setTypeface(MyTypeFace_Roboto.Roboto_Thin(context));
+            holder.price.setTypeface(MyTypeFace_Roboto.Roboto_Regular(context));
             holder.sub.setTypeface(MyTypeFace_Roboto.Roboto_Regular(context));
  
             row.setTag(holder);
 		} else {
 			holder = (ListItemHolder) row.getTag();
 		}
+		/*Setting section header for listview in view by week*/
+		if (MainActivity.stateView == 2)
+			if (listFrament.category_date_in_week.contains(data.get(position).due_date)) {
+					holder.section.setVisibility(View.GONE);
+			} else {
+				listFrament.category_date_in_week.add(data.get(position).due_date);
+				holder.section.setVisibility(View.VISIBLE);
+				holder.section.setText(data.get(position).due_date);
+			}
+		
 		/*Setting view of row
 		 * Display name
 		 * Display  total : if don't have note have done then display total
@@ -120,28 +134,11 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			holder.name.setPaintFlags(holder.name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			holder.btn_delete.setVisibility(View.VISIBLE);
 		}
-		//priority
-		switch (data.get(position).priority) {
-		case 1:
-			row.setBackgroundResource(R.xml.selector_list_item_low);
-			break;
-		case 2:{
-			row.setBackgroundResource(R.xml.selector_list_item_medium);
-			holder.quantity.setTextColor(Color.parseColor("#FFFFFF"));
-			holder.price.setTextColor(Color.parseColor("#FFFFFF"));
-			break;
-		}
-		case 3:
-			row.setBackgroundResource(R.xml.selector_list_item_hard);
-			break;
-		//Default is GONE
-		default: {
-			row.setBackgroundResource(R.xml.selector_list_item_none);
-			holder.quantity.setTextColor(Color.parseColor("#242222"));
-			holder.price.setTextColor(Color.parseColor("#242222"));
-		}
-			break;
-		}
+		//Set priority
+		if (data.get(position).priority == 0)
+			holder.priority.setVisibility(View.INVISIBLE);
+		else
+			holder.priority.setVisibility(View.INVISIBLE);
 		
 		//Set quantity and price
 		if (data.get(position).quantity != 0) {
@@ -154,7 +151,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			holder.price.setVisibility(View.VISIBLE);
 		}
 		//set place
-		if (data.get(position).place != null) {
+		if (!data.get(position).place.equals(" ")) {
 			holder.sub.setText(data.get(position).place);
 			holder.sub.setVisibility(View.VISIBLE);
 			Log.d("Place", "IS NULL");
@@ -201,6 +198,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		TextView name;
 		Button btn_delete;
 		TextView quantity;
+		TextView priority;
+		TextView section;
 		TextView price;
 		TextView sub;
 	}
@@ -226,28 +225,25 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			switch (item.getItemId()) {
 			case R.id.acm_select_all:
 				selectAll = true;
-				listFrament.notifyDateChanged();
+				listFrament.notifyDataChanged("");
 				break;
 			case R.id.acm_unselect_all:
 				selectAll = false;
-				listFrament.notifyDateChanged();
+				listFrament.notifyDataChanged("");
 				break;
 			case R.id.acm_delete:
 				selectAll = false;
 				db.deleteSome(MainActivity.list_item_checked);
-				listFrament.notifyDateChanged();
+				listFrament.notifyDataChanged("DELETE");
 				break;
 			case R.id.acm_done:
 				selectAll = false;
-				listFrament.notifyDateChanged();
 				break;
 			case R.id.acm_undone:
 				selectAll = false;
-				listFrament.notifyDateChanged();
 				break;
 			case R.id.acm_share:
 				selectAll = false;
-				listFrament.notifyDateChanged();
 				break;
 				
 
@@ -262,7 +258,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			actionMode = null;
 			selectAll = false;
 			MainActivity.countChecked = 0;
-			listFrament.notifyDateChanged();
+			listFrament.notifyDataChanged("");
+			db.closeDB();
 		}
 
 	}
