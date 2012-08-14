@@ -1,13 +1,16 @@
 package com.vinova_g12.shoppingnow_app;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import com.example.shoppingnow.R;
 import com.example.shoppingnow.R.layout;
 import com.example.shoppingnow.R.menu;
 import com.vinova_g12.shoppingnow.data.ListItem;
+import com.vinova_g12.shoppingnow.data.RepoData;
 import com.vinova_g12.shoppingnow.data.ShoppingDatabase;
 
 import android.os.Bundle;
@@ -16,11 +19,16 @@ import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -35,6 +43,7 @@ public class AddNew extends Activity {
 	Button btn_more_option;
 	private ListItem newItem;
 	private ShoppingDatabase database;
+	private RepoData saveData;
 	// Buttons
 	private Button btn_update;
 	private Button btn_cancel;
@@ -47,7 +56,7 @@ public class AddNew extends Activity {
 	// Alarm date
 	private int aYear, aMonth, aDay;
 	// Edittexts and Radio Button
-	private EditText name;
+	private AutoCompleteTextView name;
 	private RadioGroup priority;
 	private EditText price;
 	private EditText quantity;
@@ -79,6 +88,9 @@ public class AddNew extends Activity {
 		database = new ShoppingDatabase(getApplicationContext());
 		// Open database
 		database.openDB();
+		
+		saveData = new RepoData(getApplicationContext());
+		saveData.openDB();
 
 		moreOption = (LinearLayout) findViewById(R.id.layout_more_option);
 		btn_more_option = (Button) findViewById(R.id.btn_more_option);
@@ -89,7 +101,18 @@ public class AddNew extends Activity {
 		btn_cancel_duedate = (Button) findViewById(R.id.btn_cancel_duedate);
 		btn_cancel_alarm = (Button) findViewById(R.id.btn_cancel_alarm);
 
-		name = (EditText) findViewById(R.id.edit_new_title);
+		name = (AutoCompleteTextView) findViewById(R.id.edit_new_title);
+		
+		List<String> auto = new ArrayList<String>();
+		auto = saveData.getAllNames();
+		for (int i = 0; i < auto.size(); i++)
+			Log.w("name", i + " " + auto.get(i));
+		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				R.layout.list_item, auto);
+		name.setAdapter(adapter);
+		name.setTextColor(Color.BLACK);
+
+		
 		price = (EditText) findViewById(R.id.edit_new_price);
 		quantity = (EditText) findViewById(R.id.edit_new_quantity);
 		place = (EditText) findViewById(R.id.edit_new_place);
@@ -112,7 +135,30 @@ public class AddNew extends Activity {
 		aDay = today.get(Calendar.DAY_OF_MONTH);
 
 		newItem.due_date = format.format(today.getTime());
+		//Set click for item in list autocomple
+		name.setOnItemClickListener(new OnItemClickListener() {
 
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long id) {
+				// TODO Auto-generated method stub
+				String name_ = adapter.getItem(position);
+				Log.w("name_",name_);
+				Cursor getData = saveData.getItemFromName(name_);
+				float price_ = 0;
+				Log.w("Size of data return","");
+				if (getData.moveToFirst()){
+					Log.w("move to first","");
+					price_ = getData.getFloat(3);
+					price.setText(price_+"");
+				}
+
+				Toast.makeText(getApplicationContext(),"onClickAutocomplete" ,Toast.LENGTH_SHORT).show();
+				Log.w("Click Autocomplete list","");
+
+			}
+			
+		});
 		/* Display moreoption when user press on button More Options */
 		btn_more_option.setOnClickListener(new OnClickListener() {
 
@@ -254,6 +300,9 @@ public class AddNew extends Activity {
 					Log.d("New Item", newItem.alarm + "alarm");
 
 					ContentValues values = new ContentValues();
+					
+					ContentValues values_ = new ContentValues();
+					
 					values.put(ShoppingDatabase.NAME, newItem.name);
 					values.put(ShoppingDatabase.PRIO, newItem.priority);
 					values.put(ShoppingDatabase.QUANT, newItem.quantity);
@@ -264,12 +313,37 @@ public class AddNew extends Activity {
 
 					if (!btn_set_alarm.getText().equals("Đặt Ngày Giờ"))
 						values.put(ShoppingDatabase.ALARM, newItem.alarm);
-					if (!place.getText().toString().equals(""))
+					if (!place.getText().toString().equals("")){
 						values.put(ShoppingDatabase.PLACE, place.getText()
 								.toString());
+						values_.put(ShoppingDatabase.PLACE, place.getText()
+								.toString());
+					}	
+					
+					
+
+					values_.put(ShoppingDatabase.NAME, newItem.name);
+					values_.put(ShoppingDatabase.PRICE, newItem.price);
 					
 					if (id == 1000) {
-						database.insert(values);
+						List<ListItem> names = new ArrayList<ListItem>();
+						names = database.getAllItems();
+						boolean add = true;
+						for (int i = 0; i < names.size(); i++) {
+							if (names.get(i).name.equals(newItem.name)) {
+								add = false;
+								Log.w("Ten san pham da ton tai", "sfnholush");
+								break;
+							}
+						}
+						if (add) {
+							database.insert(values);
+							saveData.insert(values_);
+						} else
+							Toast.makeText(getApplicationContext(),
+									"Sản phẩm đã tồn tại trong danh sách!",
+									Toast.LENGTH_SHORT).show();
+
 					}
 					else database.update(id, values);
 					database.closeDB();

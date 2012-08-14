@@ -28,7 +28,7 @@ public class ShoppingDatabase {
 	public static final String ALARM = "alarm_date";
 	public static final String STATUS = "status";
 	public static final String PLACE = "place";
-	
+	private static String[] allColumns = {ID,NAME,PRIO,QUANT,UNIT,PRICE,MONEY,PLACE,DUE,ALARM,STATUS};
 	private static Context mContext;
 	private SQLiteDatabase shoppingDB;
 	private static final String DATABASE_NAME = "ShoppingNow";
@@ -195,6 +195,47 @@ public class ShoppingDatabase {
 	//Get all item later
 	public Cursor getAll_Later() {
 		return null;
+	}
+	
+	public List<ListItem> getAllItems(){
+		List<ListItem> items = new ArrayList<ListItem>();
+		Cursor cursor = shoppingDB.query(TABLE_NAME, allColumns, 
+				null, null, null, null, null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()) {
+			ListItem item = cursorToItem(cursor);
+			items.add(item);
+			cursor.moveToNext();
+		}
+		
+		cursor.close();
+		return items;
+	}
+	
+	public Cursor getAllItemInAdrress(String addr){
+		
+		String sql = "select * from " + TABLE_NAME + " where " + PLACE + " like \"%" + addr + "%\"";
+		Log.w("sqlabc",sql);
+		Cursor cursor= shoppingDB.rawQuery(sql,null);
+		return cursor;
+	}
+	
+	private ListItem cursorToItem(Cursor cursor) {
+		ListItem item = new ListItem();
+		item.id = cursor.getInt(0);
+		item.priority = cursor.getInt(2);
+		item.quantity=cursor.getInt(3);		
+		item.price=cursor.getInt(5);
+		item.status=cursor.getInt(10);
+		item.name =cursor.getString(1);		
+		item.unit=cursor.getString(4);		
+		item.money = cursor.getString(6);
+		item.place=cursor.getString(7);
+		item.due_date=cursor.getString(8);
+		item.alarm=cursor.getString(9);
+		
+		return item;
 	}
 	
 	public Cursor getItem(int id){

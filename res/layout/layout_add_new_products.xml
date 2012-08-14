@@ -86,7 +86,7 @@
 	                android:layout_width="fill_parent"
 	            	android:layout_height="48dp"
 	            	android:orientation="horizontal">
-	                <EditText 
+	                <AutoCompleteTextView
 		                android:id="@+id/edit_new_title"
 		                android:layout_margin="4dp"
 		                android:layout_width="fill_parent"
@@ -94,6 +94,7 @@
 		                android:layout_weight="1"
 		                android:hint="Tên Sản Phẩm"
 		                android:padding="4dp"
+		                android:completionThreshold="1"
 		                android:textSize="16dp"
 		                android:background="@xml/my_textfield_ics"/>
 	                <Button 
