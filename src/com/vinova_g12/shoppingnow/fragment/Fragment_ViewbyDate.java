@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -123,6 +125,9 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 		//Setting divider and list selector
 		this.getListView().setDivider(getResources().getDrawable(R.xml.divider_list_item));
 		this.getListView().setDividerHeight(2);
+		LayoutAnimationController controller 
+		   = AnimationUtils.loadLayoutAnimation(getSherlockActivity(), R.anim.list_animation);
+		this.getListView().setLayoutAnimation(controller);
 		this.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
