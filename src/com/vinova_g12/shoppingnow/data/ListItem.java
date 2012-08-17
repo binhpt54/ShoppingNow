@@ -37,4 +37,33 @@ public class ListItem {
 		status = cursor.getInt(9);
 		place = cursor.getString(10);
 	}
+	/*
+	public ListItem(Cursor cursor, int a) {
+		super();
+		id = cursor.getInt(0);
+		name = cursor.getString(1);
+		unit = cursor.getString(2);
+		price = cursor.getFloat(3);
+	}
+	*/
+	
+	public int compareALphabet(ListItem item) {
+		return this.name.compareTo(item.name);
+	}
+	
+	public int comparePriority(ListItem item) {
+		if (this.priority < item.priority)
+			return -1;
+		if (this.priority > item.priority)
+			return 1;
+		return 0;
+	}
+	
+	public int comparePrice(ListItem item) {
+		if (this.price < item.price)
+			return -1;
+		if (this.price > item.price)
+			return 1;
+		return 0;
+	}
 }

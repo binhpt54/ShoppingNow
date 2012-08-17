@@ -78,7 +78,6 @@
 	                android:textSize="14dp"
 	                android:textStyle="bold"
 	                android:textColor="#df5506"/>
-	            
 	            <TextView 
 			       android:layout_width="fill_parent"
 			       android:layout_height="1dp"
@@ -96,6 +95,9 @@
 		                android:hint="Tên Sản Phẩm"
 		                android:padding="4dp"
 		                android:completionThreshold="1"
+		                android:maxLines="1"
+		                android:imeOptions="actionDone"
+		                android:inputType="textCapWords"
 		                android:textSize="16dp"
 		                android:background="@xml/my_textfield_ics"/>
 	                <Button 
@@ -376,9 +378,13 @@
 		            <AutoCompleteTextView 
 		                android:id="@+id/edit_new_place"
 		                android:layout_margin="4dp"
+		                android:inputType="textCapWords"
+		                android:imeOptions="actionDone"
 		                android:layout_width="fill_parent"
 		                android:layout_height="fill_parent"
 		                android:hint="Ví dụ : Siêu Thị BigC"
+		                android:completionThreshold="1"
+		                android:textColor="#000000"
 		                android:layout_weight="1"
 		                android:textSize="16dp"
 		                android:padding="4dp"
@@ -390,11 +396,10 @@
 	                    android:background="@xml/btn_cancel"
 	                    android:visibility="gone"/>
 	            </LinearLayout>
-	        </LinearLayout>
-	        
+	        </LinearLayout> 
             
         
-	        
+	   
 	       	 
 	        <LinearLayout 
 	            android:layout_width="fill_parent"

@@ -10,6 +10,7 @@ import com.example.shoppingnow.R;
 import com.example.shoppingnow.R.layout;
 import com.example.shoppingnow.R.menu;
 import com.vinova_g12.shoppingnow.data.ListItem;
+import com.vinova_g12.shoppingnow.data.PlaceDatabase;
 import com.vinova_g12.shoppingnow.data.RepoData;
 import com.vinova_g12.shoppingnow.data.ShoppingDatabase;
 
@@ -43,7 +44,8 @@ public class AddNew extends Activity {
 	Button btn_more_option;
 	private ListItem newItem;
 	private ShoppingDatabase database;
-	private RepoData saveData;
+	private RepoData nameData;
+	private PlaceDatabase placeData;
 	// Buttons
 	private Button btn_update;
 	private Button btn_cancel;
@@ -60,7 +62,7 @@ public class AddNew extends Activity {
 	private RadioGroup priority;
 	private EditText price;
 	private EditText quantity;
-	private EditText place;
+	private AutoCompleteTextView place;
 	// Radio Button
 	private RadioButton radioLow;
 	private RadioButton radioNone;
@@ -68,6 +70,10 @@ public class AddNew extends Activity {
 	private RadioButton radioHard;
 
 	private int id;
+
+	List<String> address = new ArrayList<String>();
+
+	List<String> autoName = new ArrayList<String>();
 	// Calendar
 	Calendar today = Calendar.getInstance();
 	public SimpleDateFormat format;
@@ -88,9 +94,12 @@ public class AddNew extends Activity {
 		database = new ShoppingDatabase(getApplicationContext());
 		// Open database
 		database.openDB();
-		
-		saveData = new RepoData(getApplicationContext());
-		saveData.openDB();
+
+		nameData = new RepoData(getApplicationContext());
+		nameData.openDB();
+
+		placeData = new PlaceDatabase(getApplicationContext());
+		placeData.openDB();
 
 		moreOption = (LinearLayout) findViewById(R.id.layout_more_option);
 		btn_more_option = (Button) findViewById(R.id.btn_more_option);
@@ -102,20 +111,23 @@ public class AddNew extends Activity {
 		btn_cancel_alarm = (Button) findViewById(R.id.btn_cancel_alarm);
 
 		name = (AutoCompleteTextView) findViewById(R.id.edit_new_title);
-		
-		List<String> auto = new ArrayList<String>();
-		auto = saveData.getAllNames();
-		for (int i = 0; i < auto.size(); i++)
-			Log.w("name", i + " " + auto.get(i));
+
+		autoName = nameData.getAllNames();
 		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				R.layout.list_item, auto);
+				R.layout.list_item, autoName);
 		name.setAdapter(adapter);
 		name.setTextColor(Color.BLACK);
 
-		
 		price = (EditText) findViewById(R.id.edit_new_price);
 		quantity = (EditText) findViewById(R.id.edit_new_quantity);
-		place = (EditText) findViewById(R.id.edit_new_place);
+		place = (AutoCompleteTextView) findViewById(R.id.edit_new_place);
+
+		address = placeData.getAllPlaces();
+		final ArrayAdapter<String> adapterForAddr = new ArrayAdapter<String>(
+				this, R.layout.list_item, address);
+		place.setAdapter(adapterForAddr);
+		place.setTextColor(Color.BLACK);
+
 		priority = (RadioGroup) findViewById(R.id.gradio_priority);
 
 		radioNone = (RadioButton) findViewById(R.id.pri_normal);
@@ -135,29 +147,30 @@ public class AddNew extends Activity {
 		aDay = today.get(Calendar.DAY_OF_MONTH);
 
 		newItem.due_date = format.format(today.getTime());
-		//Set click for item in list autocomple
+		// Set click for item in list autocomple
 		name.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-					long id) {
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long id) {
 				// TODO Auto-generated method stub
 				String name_ = adapter.getItem(position);
-				Log.w("name_",name_);
-				Cursor getData = saveData.getItemFromName(name_);
+				Log.w("name_", name_);
+				Cursor getData = nameData.getItemFromName(name_);
 				float price_ = 0;
-				Log.w("Size of data return","");
-				if (getData.moveToFirst()){
-					Log.w("move to first","");
+				Log.w("Size of data return", "");
+				if (getData.moveToFirst()) {
+					Log.w("move to first", "");
 					price_ = getData.getFloat(3);
-					price.setText(price_+"");
+					price.setText(price_ + "");
 				}
 
-				Toast.makeText(getApplicationContext(),"onClickAutocomplete" ,Toast.LENGTH_SHORT).show();
-				Log.w("Click Autocomplete list","");
+				Toast.makeText(getApplicationContext(), "onClickAutocomplete",
+						Toast.LENGTH_SHORT).show();
+				Log.w("Click Autocomplete list", "");
 
 			}
-			
+
 		});
 		/* Display moreoption when user press on button More Options */
 		btn_more_option.setOnClickListener(new OnClickListener() {
@@ -210,8 +223,8 @@ public class AddNew extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				new DatePickerDialog(AddNew.this, datePickerListener,
-						mYear, mMonth, mDay).show();
+				new DatePickerDialog(AddNew.this, datePickerListener, mYear,
+						mMonth, mDay).show();
 			}
 		});
 
@@ -280,15 +293,17 @@ public class AddNew extends Activity {
 					if (!quantity.getText().toString().equals(""))
 						newItem.quantity = Float.valueOf(
 								quantity.getText().toString()).floatValue();
-					else
-						newItem.quantity = 0;
+					else{
+						newItem.quantity=0;
+					}
 
 					// Set price
 					if (!price.getText().toString().equals(""))
 						newItem.price = Float.valueOf(
 								price.getText().toString()).floatValue();
-					else
+					else{
 						newItem.price = 0;
+					}
 					// Set status is undone
 					newItem.status = 0;
 
@@ -300,9 +315,9 @@ public class AddNew extends Activity {
 					Log.d("New Item", newItem.alarm + "alarm");
 
 					ContentValues values = new ContentValues();
-					
-					ContentValues values_ = new ContentValues();
-					
+
+					ContentValues valuesName = new ContentValues();
+
 					values.put(ShoppingDatabase.NAME, newItem.name);
 					values.put(ShoppingDatabase.PRIO, newItem.priority);
 					values.put(ShoppingDatabase.QUANT, newItem.quantity);
@@ -313,40 +328,67 @@ public class AddNew extends Activity {
 
 					if (!btn_set_alarm.getText().equals("Đặt Ngày Giờ"))
 						values.put(ShoppingDatabase.ALARM, newItem.alarm);
-					if (!place.getText().toString().equals("")){
+					if (!place.getText().toString().equals("")) {
 						values.put(ShoppingDatabase.PLACE, place.getText()
 								.toString());
-						values_.put(ShoppingDatabase.PLACE, place.getText()
+						valuesName.put(ShoppingDatabase.PLACE, place.getText()
 								.toString());
-					}	
-					
-					
+					}
 
-					values_.put(ShoppingDatabase.NAME, newItem.name);
-					values_.put(ShoppingDatabase.PRICE, newItem.price);
-					
+					valuesName.put(ShoppingDatabase.NAME, newItem.name);
+					valuesName.put(ShoppingDatabase.PRICE, newItem.price);
+
 					if (id == 1000) {
-						List<ListItem> names = new ArrayList<ListItem>();
-						names = database.getAllItems();
 						boolean add = true;
-						for (int i = 0; i < names.size(); i++) {
-							if (names.get(i).name.equals(newItem.name)) {
+						/*
+						 * List<String> autoName = new ArrayList<String>();
+						 * autoName = nameData.getAllNames();
+						 */
+						for (int i = 0; i < autoName.size(); i++) {
+							if (autoName.get(i).equals(newItem.name)) {
 								add = false;
 								Log.w("Ten san pham da ton tai", "sfnholush");
 								break;
 							}
 						}
+
 						if (add) {
 							database.insert(values);
-							saveData.insert(values_);
+							// Ko insert neu san pham da duoc luu tru
+							boolean addName = true;
+							for (int i = 0; i < autoName.size(); i++)
+								if (autoName.get(i).equals(newItem.name))
+									addName = false;
+							if (addName)
+								nameData.insert(valuesName);
+							// Ko them neu dia diem da co
+							boolean addAddress = true;
+							/*
+							 * List<String> address = new ArrayList<String>();
+							 * address = placeData.getAllPlaces();
+							 */
+							for (int i = 0; i < address.size(); i++)
+								if (address.get(i).equals(newItem.place))
+									addAddress = false;
+
+							ContentValues valuesAddr = new ContentValues();
+							if (!place.getText().toString().equals("")) {
+								valuesAddr.put(ShoppingDatabase.PLACE, place
+										.getText().toString());
+								placeData.insert(valuesAddr);
+							}
+
 						} else
 							Toast.makeText(getApplicationContext(),
 									"Sản phẩm đã tồn tại trong danh sách!",
 									Toast.LENGTH_SHORT).show();
 
-					}
-					else database.update(id, values);
+					} else
+						database.update(id, values);
 					database.closeDB();
+					nameData.closeDB();
+					placeData.closeDB();
+
 					today.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 					Log.d("Calendar", today.getTime().toString());
 					today.add(Calendar.DAY_OF_WEEK, -7);
@@ -377,11 +419,10 @@ public class AddNew extends Activity {
 				quantity.setText(editItem.quantity + "");
 				price.setText(editItem.price + "");
 				btn_set_duedate.setText(editItem.due_date);
-				btn_set_alarm.setText(editItem.alarm);			
-				
+				btn_set_alarm.setText(editItem.alarm);
+
 			}
-			
-			
+
 		}
 
 	}

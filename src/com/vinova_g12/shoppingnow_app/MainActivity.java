@@ -41,6 +41,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
     private ViewPager mPagerAlarm;
     private TitlePageIndicator mIndicator;
     private ActionBar ab;
+    private ShoppingDatabase db;
     //Count of checked
     public static int countChecked;
   	public static List<Integer> list_item_checked;
@@ -70,7 +71,8 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(false);
         ab.setDisplayShowTitleEnabled(false);
-        
+        db = new ShoppingDatabase(getApplicationContext());
+       
         //Setting list navigation
         Context context = getSupportActionBar().getThemedContext();
         ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, 
@@ -116,7 +118,11 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			intent.putExtras(update);
 			startActivity(intent);
 			break;
-
+		case R.id.menu_search:
+			 db.openDB();
+			db.search("a");
+			db.closeDB();
+			break;
 		default:
 			break;
 		}
@@ -159,6 +165,9 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         	mIndicator.setCurrentItem(1);
 
 		return true;
+		
 	}
+	
+	
 	
 }

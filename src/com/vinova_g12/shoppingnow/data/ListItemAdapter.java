@@ -14,6 +14,7 @@ import android.sax.StartElementListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -125,14 +126,27 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		holder.name.setText(data.get(position).name);
 		//Status
 		if (data.get(position).status == 0) {
+			Log.d("Status", "UNDONE");
 			holder.name.setTextColor(Color.parseColor("#000000"));
 			holder.name.setPaintFlags(holder.name.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
 			holder.btn_delete.setVisibility(View.GONE);
 		}
 		else {
+			Log.d("Status", "DONE");
 			holder.name.setTextColor(Color.parseColor("#777777"));
 			holder.name.setPaintFlags(holder.name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			holder.btn_delete.setVisibility(View.VISIBLE);
+			holder.btn_delete.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					db.openDB();
+					db.delete(id_item);
+					db.closeDB();
+					listFrament.notifyDataChanged(pos_item.toString());
+				}
+			});
 		}
 		//Set priority
 		if (data.get(position).priority == 0)
@@ -169,7 +183,6 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 					if (MainActivity.countChecked != 0) {
 						if (actionMode == null) {
 							actionMode = activity.startActionMode(new MyActionModeCallBack());
-							Fragment_ViewbyDate.actionMode_running = true;
 						}
 						actionMode.setTitle(MainActivity.countChecked + " Đã Chọn");
 					}
@@ -183,7 +196,6 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 							actionMode.setTitle(MainActivity.countChecked + " Đã Chọn");
 							if (MainActivity.countChecked == 0) {
 								actionMode.finish();
-								Fragment_ViewbyDate.actionMode_running = false;
 							}
 						}
 				}
@@ -210,6 +222,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			activity.getSupportMenuInflater().inflate(R.menu.menu_actionmode, menu);
 			MainActivity.countChecked = 1;
+			Fragment_ViewbyDate.actionMode_running = true;
 			db.openDB();
 			return true;
 		}
@@ -238,9 +251,24 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 				break;
 			case R.id.acm_done:
 				selectAll = false;
+				db.updateSomeStatus("Done", MainActivity.list_item_checked);
+				for(int i=0;i< MainActivity.list_item_checked.size();i++)
+				{
+					/*Log.d("Check Done","id "+MainActivity.list_item_checked.get(i));
+					data.get(MainActivity.list_item_checked.get(i)).status = 1;*/
+				}
+				Log.d("DONE IS CLICKED", "CLICKED");
+				listFrament.notifyDataChanged("");
 				break;
 			case R.id.acm_undone:
 				selectAll = false;
+				db.updateSomeStatus("Undone", MainActivity.list_item_checked);
+				for(int i=0;i< MainActivity.list_item_checked.size();i++)
+				{
+					Log.d("Check UnDone","id "+MainActivity.list_item_checked.get(i));
+					data.get(MainActivity.list_item_checked.get(i)).status = 0;
+				}
+				listFrament.notifyDataChanged("");
 				break;
 			case R.id.acm_share:
 				selectAll = false;
@@ -257,6 +285,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		public void onDestroyActionMode(ActionMode mode) {
 			actionMode = null;
 			selectAll = false;
+			Fragment_ViewbyDate.actionMode_running = false;
 			MainActivity.countChecked = 0;
 			listFrament.notifyDataChanged("");
 			db.closeDB();

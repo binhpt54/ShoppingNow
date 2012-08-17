@@ -2,6 +2,7 @@ package com.vinova_g12.shoppingnow.fragment;
 
 import java.text.Bidi;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -50,7 +51,8 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	public List<String> category_date_in_week;
 	//Id of item checked for quickaction
 	private int checked = -1;
-	
+
+	private int sort = 0;
 	
 	
 	//Create a new object Fragment with mContent is content
@@ -80,7 +82,13 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 				for (int i=0; i<list_item_checked.size(); i++) {
 					adapter.remove(data.get(list_item_checked.get(i)));
 				}
+		} else if (!cmd.equals("")) {
+			int pos = Integer.parseInt(cmd);
+			if (pos > 0 && pos < 10000000) {
+				adapter.remove(data.get(pos));
+			}
 		}
+		Log.d("Adapter", "Changed");
 		adapter.notifyDataSetChanged();
 	}
 	
@@ -171,6 +179,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 					
 					@Override
 					public void onItemClick(QuickAction source, int pos, int actionId) {
+						db.openDB();
 						ActionItem actionItem = quickAction.getActionItem(pos);
 						//Filter action item have clicked
 						switch (actionId) {
@@ -182,6 +191,9 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 								adapter.notifyDataSetChanged();
 								break;
 							case ID_DONE:
+								db.updateStatus("Done", data.get(checked).id);
+								data.get(checked).status = 1;
+								adapter.notifyDataSetChanged();
 								break;
 							case ID_EDIT:
 								Intent intent = new Intent(getActivity(),AddNew.class);
@@ -199,7 +211,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 							default:
 								break;
 						}
-						
+						db.closeDB();
 					}
 				});
 	}
@@ -233,6 +245,25 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 		add_data_to_Adapter();
 		// Setup adapter for list view
 				adapter = new ListItemAdapter(this,getSherlockActivity(), R.layout.list_item_row, data);
+				
+				//sort
+				if (adapter.getCount() > 1) {
+					adapter.sort(new Comparator<ListItem>() {
+	
+						@Override
+						public int compare(ListItem lhs, ListItem rhs) {
+							if (sort == 0) {
+								Log.d("Sort by", "Alphabet");
+								return lhs.compareALphabet(rhs);
+							}
+							if (sort == 1)
+								return lhs.comparePriority(rhs);
+							return lhs.comparePrice(rhs);
+						}
+					});
+					adapter.notifyDataSetChanged();
+				}
+				
 				setListAdapter(adapter);
 				db.closeDB();
 	}
