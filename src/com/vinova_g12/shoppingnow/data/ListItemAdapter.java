@@ -1,6 +1,9 @@
 package com.vinova_g12.shoppingnow.data;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -15,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -47,6 +52,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 	private ActionMode actionMode;
 	public ShoppingDatabase db;
 	private int flag = 0;
+	private Animation in;
+	private SimpleDateFormat format;
 	
 	public ListItemAdapter(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
@@ -64,6 +71,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		this.listFrament = list;
 		this.activity = (SherlockFragmentActivity) context;
 		this.flag = 0;
+		in =  AnimationUtils.loadAnimation(context, R.anim.slide_right_to_left);
+		format = new SimpleDateFormat("dd-MM-yyyy");
 	}
 	
 	@Override
@@ -95,13 +104,20 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			holder = (ListItemHolder) row.getTag();
 		}
 		/*Setting section header for listview in view by week*/
-		if (MainActivity.stateView == 2)
+		if (MainActivity.stateView != 1 || MainActivity.stateSearch == 1)
 			if (listFrament.category_date_in_week.contains(data.get(position).due_date)) {
 					holder.section.setVisibility(View.GONE);
 			} else {
 				listFrament.category_date_in_week.add(data.get(position).due_date);
 				holder.section.setVisibility(View.VISIBLE);
-				holder.section.setText(data.get(position).due_date);
+				Calendar cal = Calendar.getInstance();
+				try {
+					cal.setTime(format.parse(data.get(position).due_date));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				holder.section.setText(getDay(cal) + ", " +data.get(position).due_date);
 			}
 		
 		/*Setting view of row
@@ -129,6 +145,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			Log.d("Status", "UNDONE");
 			holder.name.setTextColor(Color.parseColor("#000000"));
 			holder.name.setPaintFlags(holder.name.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+			holder.quantity.setVisibility(View.VISIBLE);
+			holder.price.setVisibility(View.VISIBLE);
 			holder.btn_delete.setVisibility(View.GONE);
 		}
 		else {
@@ -136,6 +154,10 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			holder.name.setTextColor(Color.parseColor("#777777"));
 			holder.name.setPaintFlags(holder.name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			holder.btn_delete.setVisibility(View.VISIBLE);
+			holder.btn_delete.setFocusable(false);
+			holder.btn_delete.startAnimation(in);
+			holder.quantity.setVisibility(View.GONE);
+			holder.price.setVisibility(View.GONE);
 			holder.btn_delete.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -152,7 +174,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		if (data.get(position).priority == 0)
 			holder.priority.setVisibility(View.INVISIBLE);
 		else
-			holder.priority.setVisibility(View.INVISIBLE);
+			holder.priority.setVisibility(View.VISIBLE);
 		
 		//Set quantity and price
 		if (data.get(position).quantity != 0) {
@@ -168,7 +190,6 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		if (!data.get(position).place.equals(" ")) {
 			holder.sub.setText(data.get(position).place);
 			holder.sub.setVisibility(View.VISIBLE);
-			Log.d("Place", "IS NULL");
 		} else holder.sub.setVisibility(View.GONE);
 		//Setup behavior for widgets of list item
 		holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -252,23 +273,12 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			case R.id.acm_done:
 				selectAll = false;
 				db.updateSomeStatus("Done", MainActivity.list_item_checked);
-				for(int i=0;i< MainActivity.list_item_checked.size();i++)
-				{
-					/*Log.d("Check Done","id "+MainActivity.list_item_checked.get(i));
-					data.get(MainActivity.list_item_checked.get(i)).status = 1;*/
-				}
-				Log.d("DONE IS CLICKED", "CLICKED");
-				listFrament.notifyDataChanged("");
+				listFrament.notifyDataChanged("Done");
 				break;
 			case R.id.acm_undone:
 				selectAll = false;
 				db.updateSomeStatus("Undone", MainActivity.list_item_checked);
-				for(int i=0;i< MainActivity.list_item_checked.size();i++)
-				{
-					Log.d("Check UnDone","id "+MainActivity.list_item_checked.get(i));
-					data.get(MainActivity.list_item_checked.get(i)).status = 0;
-				}
-				listFrament.notifyDataChanged("");
+				listFrament.notifyDataChanged("Undone");
 				break;
 			case R.id.acm_share:
 				selectAll = false;
@@ -291,5 +301,21 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			db.closeDB();
 		}
 
+	}
+	
+	public String getDay(Calendar cal) {
+		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
+			return "Thứ Hai";
+		else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY)
+			return "Thứ Ba";
+		else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)
+			return "Thứ Tư";
+		else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY)
+			return "Thứ Năm";
+		else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+			return "Thứ Sáu";
+		else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+			return "Thứ Bảy";
+		return "Chủ Nhật";
 	}
 }

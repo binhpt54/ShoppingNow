@@ -7,7 +7,7 @@
     
     <LinearLayout 
         android:id="@+id/add_new_btn"
-        android:background="#dddddd"
+        android:background="#FFFFFF"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">

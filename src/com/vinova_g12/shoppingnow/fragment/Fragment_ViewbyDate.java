@@ -8,15 +8,21 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -38,6 +44,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	private Cursor mCursor;
 	private String mContent = "";
 	private int countProduct = 0;
+	public Fragment_ViewbyDate fragment;
 	//ID of action item
 	private static final int ID_DONE = 1;
 	private static final int ID_DELETE = 2;
@@ -45,10 +52,14 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	private static final int ID_ALERT = 4;
 	private static final int ID_SHARE = 5;	
 	private static final int ID_VIEW_PLACE = 6;
+	private static final int ID_UNDONE = 7;
 	private QuickAction quickAction;
+	private QuickAction quickAction2;
+	private QuickAction.OnActionItemClickListener quickActionListener;
 	public static boolean actionMode_running = false;
 	public static List<Integer> list_item_checked;
-	public List<String> category_date_in_week;
+	public static List<String> category_date_in_week;
+	private Comparator<ListItem> comparator;
 	//Id of item checked for quickaction
 	private int checked = -1;
 
@@ -56,8 +67,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	
 	
 	//Create a new object Fragment with mContent is content
-	public static Fragment newInstance(String content) {
-		Log.d("Fragment", content);
+	public static Fragment_ViewbyDate newInstance(String content) {
 		Fragment_ViewbyDate fragment = new Fragment_ViewbyDate(content);
 		return fragment;
 	}
@@ -66,7 +76,6 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 		super();
 		mContent = content;
 		category_date_in_week = new ArrayList<String>();
-		Log.d("content", mContent);
 	}
 	
 	public Fragment_ViewbyDate() {
@@ -75,20 +84,26 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	
 	//Notify to activity, event data of list changed. Activity have to invadilate listview
 	public void notifyDataChanged(String cmd) {
-		Log.d("SIZE", list_item_checked.size() + "");
 		category_date_in_week.clear();
+		Log.d("Category in week", category_date_in_week.size() + "");
 		if (cmd.equals("DELETE")) {
 			if (list_item_checked.size() != 0)
 				for (int i=0; i<list_item_checked.size(); i++) {
 					adapter.remove(data.get(list_item_checked.get(i)));
 				}
-		} else if (!cmd.equals("")) {
-			int pos = Integer.parseInt(cmd);
-			if (pos > 0 && pos < 10000000) {
-				adapter.remove(data.get(pos));
+		} else if (cmd.equals("Undone")) {
+			for (int i=0; i<list_item_checked.size(); i++)
+				data.get(i).status = 0;
+			} else if (cmd.equals("Done")) {
+				for (int i=0; i<list_item_checked.size(); i++)
+					data.get(i).status = 1;
+			} else if (!cmd.equals("")) {
+				int pos = Integer.parseInt(cmd);
+				Log.d("Delete button clicked", "" + pos);
+				if (pos >= 0 && pos < 10000000) {
+					adapter.remove(data.get(pos));
+				}
 			}
-		}
-		Log.d("Adapter", "Changed");
 		adapter.notifyDataSetChanged();
 	}
 	
@@ -119,17 +134,16 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	public void bindData() {
 		if (mCursor.moveToFirst()) {
 			do {
-				Log.d("Do...While", countProduct + "");
 				countProduct ++;
 				data.add(new ListItem(mCursor));
 			} while (mCursor.moveToNext());
 		}
-		Log.d("Count product", countProduct + "");
 	}
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		createQuickAction();
+		fragment = this;
 		//Setting divider and list selector
 		this.getListView().setDivider(getResources().getDrawable(R.xml.divider_list_item));
 		this.getListView().setDividerHeight(2);
@@ -143,7 +157,9 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 					long arg3) {
 				//Show quickaction when long click in item
 				if (!actionMode_running)
-					quickAction.show(arg1);
+					if (data.get(pos).status == 0)
+						quickAction.show(arg1);
+					else quickAction2.show(arg1);
 				checked = pos;
 				Toast.makeText(getActivity(), "Clicked2 " + pos, Toast.LENGTH_LONG).show();
 			}
@@ -164,6 +180,8 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 						getResources().getDrawable(R.drawable.icon_share));
 				ActionItem viewPlace = new ActionItem(ID_VIEW_PLACE, "Cùng Địa Điểm",
 						getResources().getDrawable(R.drawable.location_place));
+				ActionItem undoneItem = new ActionItem(ID_UNDONE, "Chưa Xong", 
+						getResources().getDrawable(R.drawable.icon_content_undone));
 				//Create quickaction window
 				quickAction = new QuickAction(getSherlockActivity(), QuickAction.HORIZONTAL);
 				//Add action items into quickaction
@@ -173,9 +191,17 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 				quickAction.addActionItem(alertItem);
 				quickAction.addActionItem(shareItem);
 				quickAction.addActionItem(viewPlace);
-
-				//Behavior for quickaction
-				quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
+				
+				//Create quickaction window
+				quickAction2 = new QuickAction(getSherlockActivity(), QuickAction.HORIZONTAL);
+				//Add action items into quickaction
+				quickAction2.addActionItem(undoneItem);
+				quickAction2.addActionItem(deleteItem);
+				quickAction2.addActionItem(alertItem);
+				quickAction2.addActionItem(shareItem);
+				quickAction2.addActionItem(viewPlace);
+				
+				quickActionListener = new QuickAction.OnActionItemClickListener() {
 					
 					@Override
 					public void onItemClick(QuickAction source, int pos, int actionId) {
@@ -188,12 +214,12 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 							case ID_DELETE:
 								db.delete(data.get(checked).id);
 								data.remove(checked);
-								adapter.notifyDataSetChanged();
+								notifyDataChanged("");
 								break;
 							case ID_DONE:
 								db.updateStatus("Done", data.get(checked).id);
 								data.get(checked).status = 1;
-								adapter.notifyDataSetChanged();
+								notifyDataChanged("");
 								break;
 							case ID_EDIT:
 								Intent intent = new Intent(getActivity(),AddNew.class);
@@ -201,11 +227,18 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 								update.putInt ("id", data.get(checked).id);
 								intent.putExtras(update);
 								startActivity(intent);
-								adapter.notifyDataSetChanged();
+								notifyDataChanged("");
 								break;
 							case ID_SHARE:
+								notifyDataChanged("");
 								break;
 							case ID_VIEW_PLACE:
+								notifyDataChanged("");
+								break;
+							case ID_UNDONE:
+								db.updateStatus("Undone", data.get(checked).id);
+								data.get(checked).status = 0;
+								notifyDataChanged("");
 								break;
 			
 							default:
@@ -213,13 +246,16 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 						}
 						db.closeDB();
 					}
-				});
+				};
+
+				//Behavior for quickaction
+				quickAction.setOnActionItemClickListener(quickActionListener);
+				quickAction2.setOnActionItemClickListener(quickActionListener);
 	}
 	
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		Toast.makeText(getActivity(), "Clicked "+ position+ " " + id, Toast.LENGTH_LONG).show();
 		super.onListItemClick(l, v, position, id);
 	}
 
@@ -239,33 +275,74 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	public void onResume() {
 		super.onResume();
 		countProduct = 0;
+		category_date_in_week.clear();
 		data = new ArrayList<ListItem>();	
 		db = new ShoppingDatabase(getSherlockActivity().getApplicationContext());
 		db.openDB();
 		add_data_to_Adapter();
+		comparator = new Comparator<ListItem>() {
+			
+			@Override
+			public int compare(ListItem lhs, ListItem rhs) {
+				if (sort == 0) {
+					Log.d("Sort by", "Alphabet");
+					return lhs.compareALphabet(rhs);
+				}
+				if (sort == 1)
+					return lhs.comparePriority(rhs);
+				return lhs.comparePrice(rhs);
+			}
+		};
 		// Setup adapter for list view
 				adapter = new ListItemAdapter(this,getSherlockActivity(), R.layout.list_item_row, data);
 				
 				//sort
 				if (adapter.getCount() > 1) {
-					adapter.sort(new Comparator<ListItem>() {
-	
-						@Override
-						public int compare(ListItem lhs, ListItem rhs) {
-							if (sort == 0) {
-								Log.d("Sort by", "Alphabet");
-								return lhs.compareALphabet(rhs);
-							}
-							if (sort == 1)
-								return lhs.comparePriority(rhs);
-							return lhs.comparePrice(rhs);
-						}
-					});
+					adapter.sort(comparator);
 					adapter.notifyDataSetChanged();
 				}
 				
 				setListAdapter(adapter);
 				db.closeDB();
+	}
+	
+	private class SearchData extends AsyncTask<String, Long, Void> {
+		List<ListItem> dataSearch;
+		protected void onPreExecute() {
+			super.onPreExecute();
+			getSherlockActivity().setSupportProgressBarVisibility(true);
+			data = new ArrayList<ListItem>();
+			dataSearch = new ArrayList<ListItem>();
+		}
+
+		@Override
+		protected Void doInBackground(String... params) {
+			dataSearch = db.getAllItems();
+			int length;
+			length = MainActivity.search_bar.length();
+			for (int i=0; i<dataSearch.size(); i++) {
+				if (length <= dataSearch.get(i).name.length())
+					if (MainActivity.search_bar.getText().toString().
+							equalsIgnoreCase((String) data.get(i).name.subSequence(0, length))) {
+						data.add(dataSearch.get(i));
+					}	
+			}
+			publishProgress();
+			return null;
+		}
+		
+		@Override
+		protected void onProgressUpdate(Long... values) {
+			super.onProgressUpdate(values);
+			adapter.notifyDataSetChanged();
+
+		}
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			getSherlockActivity().setSupportProgressBarVisibility(false);
+		}
+		
 	}
 
 	@Override
@@ -273,6 +350,4 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 		super.onDetach();
 		db.closeDB();
 	}
-	
-	
 }

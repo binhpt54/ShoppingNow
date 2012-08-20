@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/acm_select_all" android:showAsAction="always" android:icon="@drawable/light_content_select_all" android:title="Chọn Tất Cả">
         
-    </item><item android:id="@+id/acm_delete" android:showAsAction="never" android:icon="@drawable/light_icon_action_discard" android:title="Xóa">
+    </item><item android:id="@+id/acm_delete" android:showAsAction="ifRoom" android:icon="@drawable/light_icon_action_discard" android:title="Xóa">
         
-    </item><item android:id="@+id/acm_share" android:showAsAction="never" android:icon="@drawable/icon_share" android:title="Chia Sẻ">
+    </item><item android:id="@+id/acm_share" android:showAsAction="ifRoom" android:icon="@drawable/light_icon_share" android:title="Chia Sẻ">
         
     </item><item 
         android:id="@+id/acm_done" 

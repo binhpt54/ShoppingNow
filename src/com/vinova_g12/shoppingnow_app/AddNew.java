@@ -307,13 +307,6 @@ public class AddNew extends Activity {
 					// Set status is undone
 					newItem.status = 0;
 
-					Log.d("New Item", newItem.name);
-					Log.d("New Item", newItem.priority + "");
-					Log.d("New Item", newItem.quantity + "");
-					Log.d("New Item", newItem.price + "");
-					Log.d("New Item", newItem.due_date);
-					Log.d("New Item", newItem.alarm + "alarm");
-
 					ContentValues values = new ContentValues();
 
 					ContentValues valuesName = new ContentValues();
@@ -326,7 +319,7 @@ public class AddNew extends Activity {
 					values.put(ShoppingDatabase.DUE, newItem.due_date);
 					values.put(ShoppingDatabase.MONEY, "VND");
 
-					if (!btn_set_alarm.getText().equals("Đặt Ngày Giờ"))
+					if (!newItem.alarm.equals(""))
 						values.put(ShoppingDatabase.ALARM, newItem.alarm);
 					if (!place.getText().toString().equals("")) {
 						values.put(ShoppingDatabase.PLACE, place.getText()
@@ -338,37 +331,21 @@ public class AddNew extends Activity {
 					valuesName.put(ShoppingDatabase.NAME, newItem.name);
 					valuesName.put(ShoppingDatabase.PRICE, newItem.price);
 
-					if (id == 1000) {
+					if (id == -1) {
 						boolean add = true;
-						/*
-						 * List<String> autoName = new ArrayList<String>();
-						 * autoName = nameData.getAllNames();
-						 */
-						for (int i = 0; i < autoName.size(); i++) {
-							if (autoName.get(i).equals(newItem.name)) {
-								add = false;
-								Log.w("Ten san pham da ton tai", "sfnholush");
-								break;
-							}
-						}
 
-						if (add) {
 							database.insert(values);
-							// Ko insert neu san pham da duoc luu tru
+							// Ko insert neu san pham da duoc luu tru trong bang autotext
 							boolean addName = true;
 							for (int i = 0; i < autoName.size(); i++)
-								if (autoName.get(i).equals(newItem.name))
+								if (autoName.get(i).compareToIgnoreCase(newItem.name) == 0)
 									addName = false;
 							if (addName)
 								nameData.insert(valuesName);
 							// Ko them neu dia diem da co
 							boolean addAddress = true;
-							/*
-							 * List<String> address = new ArrayList<String>();
-							 * address = placeData.getAllPlaces();
-							 */
 							for (int i = 0; i < address.size(); i++)
-								if (address.get(i).equals(newItem.place))
+								if (address.get(i).compareToIgnoreCase(newItem.place) == 0)
 									addAddress = false;
 
 							ContentValues valuesAddr = new ContentValues();
@@ -378,21 +355,12 @@ public class AddNew extends Activity {
 								placeData.insert(valuesAddr);
 							}
 
-						} else
-							Toast.makeText(getApplicationContext(),
-									"Sản phẩm đã tồn tại trong danh sách!",
-									Toast.LENGTH_SHORT).show();
-
-					} else
+					} else {
 						database.update(id, values);
+					}
 					database.closeDB();
 					nameData.closeDB();
 					placeData.closeDB();
-
-					today.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-					Log.d("Calendar", today.getTime().toString());
-					today.add(Calendar.DAY_OF_WEEK, -7);
-					Log.d("Calendar", today.getTime().toString());
 
 					AddNew.this.finish();
 				} else {
@@ -403,23 +371,24 @@ public class AddNew extends Activity {
 
 			}
 		});
-		if (id != 1000) {
-			btn_update.setText("Save");
+		if (id != -1) {
+			btn_update.setText("Lưu Lại");
 			Cursor cur = null;
 			cur = database.getItem(id);
-			int c = cur.getCount();
-			Log.w("count", c + " " + cur.getColumnCount());
 
 			if (cur.moveToFirst()) {
 				ListItem editItem = new ListItem(cur);
-				Log.d("Name", editItem.name);
 				name.setText(editItem.name);
 				priority.check(editItem.priority);
-				place.setText(editItem.place);
-				quantity.setText(editItem.quantity + "");
-				price.setText(editItem.price + "");
+				if (!editItem.place.equals("") && !editItem.place.equals(" "))
+					place.setText(editItem.place);
+				if (editItem.quantity > 0)
+					quantity.setText(editItem.quantity + "");
+				if (editItem.price > 0)
+					price.setText(editItem.price + "");
 				btn_set_duedate.setText(editItem.due_date);
-				btn_set_alarm.setText(editItem.alarm);
+				if (!editItem.alarm.equals("") && !editItem.equals(" "))
+					btn_set_alarm.setText(editItem.alarm);
 
 			}
 

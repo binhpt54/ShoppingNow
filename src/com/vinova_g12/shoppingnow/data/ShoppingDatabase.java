@@ -40,7 +40,7 @@ public class ShoppingDatabase {
 			+ NAME + " text not null," + PRIO + " integer default 0," + QUANT
 			+ " float not null default 0," + UNIT + " text ," + PRICE
 			+ " float default 0," + MONEY + " text," + DUE + " text," + ALARM
-			+ " text," + STATUS + " integer default 0," + PLACE
+			+ " text default \" \"," + STATUS + " integer default 0," + PLACE
 			+ " text default \" \" " + ")";
 	private static final String DROP_TABLE = "drop table if exists "
 			+ TABLE_NAME;
@@ -54,12 +54,11 @@ public class ShoppingDatabase {
 		tomorrow = Calendar.getInstance();
 		yesterday = Calendar.getInstance();
 		thisweek = Calendar.getInstance();
-		// thisweek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		// thisweek.add(Calendar.DAY_OF_WEEK, 1);
-		// thisweek.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
-		// format.format(thisweek.getTime())
+		thisweek.setFirstDayOfWeek(Calendar.MONDAY);
 		nextweek = Calendar.getInstance();
+		nextweek.setFirstDayOfWeek(Calendar.MONDAY);
 		lastweek = Calendar.getInstance();
+		lastweek.setFirstDayOfWeek(Calendar.MONDAY);
 		later = Calendar.getInstance();
 		format = new SimpleDateFormat("dd-MM-yyyy");
 		this.mContext = context;
@@ -149,6 +148,7 @@ public class ShoppingDatabase {
 				else
 					sql += "\")";
 			}
+			Log.d("Select week", sql);
 			cursor = shoppingDB.rawQuery(sql, null);
 			return cursor;
 		}
@@ -169,6 +169,7 @@ public class ShoppingDatabase {
 				else
 					sql += "\")";
 			}
+			Log.d("Select week", sql);
 			cursor = shoppingDB.rawQuery(sql, null);
 			return cursor;
 		}
@@ -190,6 +191,7 @@ public class ShoppingDatabase {
 				else
 					sql += "\")";
 			}
+			Log.d("Select week", sql);
 			cursor = shoppingDB.rawQuery(sql, null);
 			return cursor;
 		}

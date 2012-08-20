@@ -4,7 +4,10 @@
     android:layout_height="wrap_content"
     android:hint="Tìm Kiếm"
     android:textSize="16dp"
+    android:maxLines="1"
+    android:inputType="textCapWords"
     android:focusable="true"
-    android:textColor="#FFFFFF"
+    android:focusableInTouchMode="true"
+    android:textColor="#000000"
     android:background="@xml/my_textfield_ics"
     android:imeOptions="actionSearch"/>

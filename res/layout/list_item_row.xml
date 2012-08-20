@@ -17,7 +17,7 @@
     	 android:visibility="gone"
          android:shadowColor="#000000"
 	     android:shadowDx="1"
-	     android:shadowDy="2"
+	     android:shadowDy="1"
 	     android:shadowRadius="1"/>
     <LinearLayout 
         android:layout_width="match_parent"
@@ -50,7 +50,7 @@
 		        android:textSize="18dp"
 		        android:shadowColor="#FAFFFF"
 			    android:shadowDx="1"
-			    android:shadowDy="2"
+			    android:shadowDy="1"
 			    android:shadowRadius="1" />
             <TextView
 		        android:id="@+id/list_item_subtitle"
@@ -63,7 +63,7 @@
 		        android:textColor="#353333"
 		        android:shadowColor="#FAFFFF"
 			    android:shadowDx="1"
-			    android:shadowDy="2"
+			    android:shadowDy="1"
 			    android:shadowRadius="1"
 		        android:textSize="14dp" />
         </LinearLayout>
@@ -72,15 +72,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <Button
-                android:id="@+id/list_item_delete"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@xml/my_btn_delete_circle"
-                android:visibility="gone" />
             <TextView
 		        android:id="@+id/list_item_quantity"
 		        android:layout_width="wrap_content"
@@ -89,12 +80,12 @@
 		        android:layout_alignTop="@+id/list_item_name"
 		        android:layout_marginRight="14dp"
 		        android:textSize="14dp"
-		        android:visibility="visible"
+		        android:visibility="gone"
 		        android:shadowColor="#FAFFFF"
 			    android:shadowDx="1"
-			    android:shadowDy="2"
+			    android:shadowDy="1"
 			    android:shadowRadius="1"
-		        android:textColor="#000000" />
+		        android:textColor="#0237d1" />
 
             <TextView
                 android:id="@+id/list_item_price"
@@ -104,11 +95,22 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="14dp"
                 android:shadowColor="#FAFFFF"
+                android:visibility="gone"
                 android:shadowDx="1"
-                android:shadowDy="2"
+                android:shadowDy="1"
                 android:shadowRadius="1"
-                android:textColor="#000000"
+                android:textColor="#0237d1"
                 android:textSize="14dp" />
+
+            <Button
+                android:id="@+id/list_item_delete"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="18dp"
+                android:background="@xml/my_btn_delete_circle"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

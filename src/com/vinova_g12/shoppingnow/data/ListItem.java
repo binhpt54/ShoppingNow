@@ -21,6 +21,7 @@ public class ListItem {
 	public ListItem() {
 		super();
 		id = -1;
+		alarm = "";
 	}
 	
 	public ListItem(Cursor cursor) {

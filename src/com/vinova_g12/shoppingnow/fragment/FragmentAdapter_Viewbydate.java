@@ -27,7 +27,7 @@ public class FragmentAdapter_Viewbydate extends FragmentPagerAdapter{
 	}
 
 	@Override
-	public Fragment getItem(int position) {
+	public Fragment_ViewbyDate getItem(int position) {
 		return Fragment_ViewbyDate.newInstance(CONTENT[position % CONTENT.length]);
 	}
 
