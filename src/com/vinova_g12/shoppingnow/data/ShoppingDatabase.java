@@ -28,6 +28,7 @@ public class ShoppingDatabase {
 	public static final String ALARM = "alarm_date";
 	public static final String STATUS = "status";
 	public static final String PLACE = "place";
+	public static final String DONE_DATE = "done_date";
 	private static String[] allColumns = { ID, NAME, PRIO, QUANT, UNIT, PRICE,
 			MONEY, PLACE, DUE, ALARM, STATUS };
 	private static Context mContext;

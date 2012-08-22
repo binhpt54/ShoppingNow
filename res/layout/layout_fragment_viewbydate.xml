@@ -2,14 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
+    android:background="#fff7dd"
     android:layout_height="match_parent"
     android:orientation="vertical" >
     <ListView
         android:id="@id/android:list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#fff7dd"
         android:cacheColorHint="@android:color/transparent"
-	    android:drawSelectorOnTop="false">
+	    android:drawSelectorOnTop="true">
     </ListView>
 
     <LinearLayout 

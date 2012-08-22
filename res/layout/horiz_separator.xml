@@ -9,5 +9,5 @@
 	    android:layout_width="1dp"
 	    android:layout_marginTop="4dp"
 	    android:layout_marginRight="4dp"
-	    android:background="#FFFFFF"/>    
+	    android:background="@xml/bg_divider_gradient"/>    
 </RelativeLayout>

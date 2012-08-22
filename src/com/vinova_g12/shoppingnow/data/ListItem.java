@@ -17,11 +17,14 @@ public class ListItem {
 	public String alarm;
 	public String place;
 	public int status;
+	public long doneDate;
 	
 	public ListItem() {
 		super();
 		id = -1;
 		alarm = "";
+		doneDate = 0;
+		priority = 0;
 	}
 	
 	public ListItem(Cursor cursor) {
@@ -37,6 +40,7 @@ public class ListItem {
 		alarm = cursor.getString(8);
 		status = cursor.getInt(9);
 		place = cursor.getString(10);
+		//doneDate = cursor.getLong(11);
 	}
 	/*
 	public ListItem(Cursor cursor, int a) {

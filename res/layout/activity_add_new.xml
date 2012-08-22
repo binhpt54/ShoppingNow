@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:background="#fbeec0"
+    android:orientation="vertical">
+    
+     <LinearLayout 
+        android:id="@+id/add_new_btn"
+        android:background="#FFFFFF"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+        <Button 
+            android:id="@+id/btn_create"
+            android:textSize="14dp"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:text="@string/string_btn_create"
+            android:layout_width="fill_parent"
+            android:textColor="#6d6e71"
+            android:drawableTop="@drawable/light_content_new"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Button 
+            android:id="@+id/btn_save"
+            android:textSize="14dp"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:text="Lưu Lại"
+            android:layout_width="fill_parent"
+            android:textColor="#6d6e71"
+            android:visibility="gone"
+            android:drawableTop="@drawable/save_icon"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        
+        <TextView 
+            android:id="@+id/divider_btn"
+	       android:layout_width="1dp"
+	       android:layout_marginTop="6dp"
+	       android:layout_marginBottom="6dp"
+	       android:layout_height="fill_parent"
+	       android:background="@xml/bg_divider_gradient"/>
+        
+        <Button 
+            android:id="@+id/btn_done"
+            android:textSize="14dp"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:text="Xong"
+            android:textColor="#6d6e71"
+            android:drawableTop="@drawable/light_icon_content_done"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        
+        <TextView 
+	       android:layout_width="1dp"
+	       android:layout_marginTop="6dp"
+	       android:layout_marginBottom="6dp"
+	       
+	       android:layout_height="fill_parent"
+	       android:background="@xml/bg_divider_gradient"/>
+        
+        <Button 
+            android:id="@+id/btn_cancel"
+            android:textSize="14dp"
+            android:text="@string/string_btn_cancel"
+            android:layout_width="fill_parent"
+            android:textColor="#6d6e71"
+            android:drawableTop="@drawable/light_icon_content_remove"
+            android:layout_height="wrap_content"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:layout_weight="1"/>
+    </LinearLayout>   
+    
+     
+    <ScrollView 
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:scrollbars="none" >
+        <LinearLayout 
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:orientation="vertical">
+	        <TextView 
+		       android:layout_width="fill_parent"
+		       android:layout_height="1dp"
+		       android:background="#bfbfbf"/>
+	        <TextView 
+		        android:layout_width="fill_parent"
+		        android:layout_height="3dp"
+		        android:background="@xml/bg_divider_gradient2"/>
+	        <RelativeLayout 
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content">
+	            
+	            <AutoCompleteTextView
+				   android:id="@+id/edit_new_title"
+				   android:layout_width="fill_parent"
+				   android:layout_height="50dp"
+				   android:hint="Tên Sản Phẩm"
+				   android:paddingLeft="10dp"
+				   android:completionThreshold="1"
+				   android:maxLines="1"
+				   android:imeOptions="actionDone"
+				   android:inputType="textCapWords"
+				   android:textSize="20dp"
+				   android:shadowColor="#FFFFFF"
+	                android:shadowDx="1"
+	                android:shadowDy="2"
+	                android:shadowRadius="2"
+				   android:textColor="#000000"
+				   android:background="#ebe9e9"/>
+
+	            <ImageView
+	                android:id="@+id/banner"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_alignParentRight="true"
+	                android:layout_alignParentTop="true"
+	                android:src="@drawable/new_banner" />
+	            
+	        </RelativeLayout>
+	        
+	        <TextView 
+		        android:layout_width="fill_parent"
+		        android:layout_height="8dp"
+		        android:background="@xml/bg_divider_gradient"/>
+	        
+	        <TextView 
+		       android:layout_width="fill_parent"
+		       android:layout_height="1dp"
+		       android:background="#bfbfbf"/>
+
+	        <RelativeLayout
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_margin="6dp"
+	            android:background="@drawable/rect_rounded"
+	            >
+
+	            <ToggleButton
+	                android:id="@+id/toggle_priority"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:background="@drawable/btn_toggle"
+	                android:textOff="Cần Phải Mua"
+	                android:drawableLeft="@drawable/light_no_important"
+	                android:textOn="Cần Phải Mua"
+	                android:gravity="center_vertical"
+	                android:paddingLeft="10dp"
+	                android:textSize="16dp" />
+
+	        </RelativeLayout>
+		   
+	        
+	        <LinearLayout 
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <EditText 
+	                android:id="@+id/edit_new_quantity"
+	                android:layout_marginLeft="4dp"
+	                android:layout_marginRight="4dp"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:textSize="16dp"
+	                android:hint="Số Lượng"
+	                android:inputType="numberDecimal"
+	                android:padding="10dp"
+	                android:background="@xml/rect_rounded_top"/>
+                <Spinner 
+                    android:id="@+id/edit_new_unit"
+                    android:layout_width="fill_parent"
+                    android:layout_height="39dp"
+                    android:layout_weight="2"
+	                android:textSize="16dp"
+	                android:layout_marginRight="4dp"
+	                android:background="@drawable/spinner"
+	                android:paddingLeft="15dp"/>
+                <Button 
+                    android:id="@+id/btn_cancel_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:background="@xml/btn_cancel"/>
+            </LinearLayout>
+            
+	        
+	         <LinearLayout 
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <EditText 
+	                android:id="@+id/edit_new_price"
+	                android:layout_marginLeft="4dp"
+	                android:layout_marginRight="4dp"
+	                android:layout_marginBottom="4dp"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1"
+	                android:textSize="16dp"
+	                android:hint="Giá"
+	                android:inputType="numberDecimal"
+	                android:padding="10dp"
+	                android:background="@xml/rect_rounded_bottom"/>
+           	 	<TextView 
+           	 	    android:id="@+id/money"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:text="VND"
+	                android:textStyle="bold"
+	                android:layout_marginLeft="2dp"
+	                android:layout_marginRight="3dp"
+	                android:layout_marginBottom="4dp"
+	                android:paddingLeft="10dp"
+	                android:shadowColor="#FFFFFF"
+	                android:shadowDx="1"
+	                android:shadowDy="2"
+	                android:shadowRadius="2"
+	                android:gravity="center_vertical"
+	                android:background="@drawable/rect_rounded"
+	                android:layout_weight="2"
+	                android:textSize="16dp"/>
+                
+            </LinearLayout>
+            
+					<TextView 
+					    android:id="@+id/total"
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:text="= 10.000 VND"
+		                android:paddingLeft="5dp"
+		                android:padding="10dp"
+		                android:gravity="left"
+		                android:shadowColor="#FFFFFF"
+		                android:shadowDx="1"
+		                android:shadowDy="2"
+		                android:shadowRadius="2"
+		                android:layout_weight="1"
+		                android:textSize="16dp"/>
+					
+					<AutoCompleteTextView 
+		                android:id="@+id/edit_new_place"
+		                android:layout_margin="4dp"
+		                android:inputType="textCapWords"
+		                android:imeOptions="actionDone"
+		                android:layout_width="fill_parent"
+		                android:drawableLeft="@drawable/light_place"
+		                android:layout_height="wrap_content"
+		                android:hint="Địa Điểm Mua Sắm"
+		                android:completionThreshold="1"
+		                android:textColor="#000000"
+		                android:textSize="16dp"
+		                android:padding="6dp"
+		                android:background="@drawable/rect_button_rounded"/>
+	            
+		            <Button 
+		                android:id="@+id/edit_new_duedate"
+		                android:layout_margin="4dp"
+		                android:text="Ngày Hoàn Thành"
+		                android:layout_width="fill_parent"
+		                android:layout_height="wrap_content"
+		                android:textSize="16dp"
+		                android:drawableLeft="@drawable/light_calendar"
+		                android:drawableRight="@drawable/arrow"
+		                android:textStyle="bold"
+		                android:padding="6dp"
+		                android:background="@drawable/rect_button_rounded"/>
+		            
+		            <Button 
+		                android:id="@+id/edit_new_alarm"
+		                android:layout_margin="4dp"
+		                android:text="Hẹn Giờ"
+		                android:textStyle="bold"
+		                android:drawableLeft="@drawable/light_icon_devicce_alram"
+		                android:drawableRight="@drawable/arrow"
+		                android:layout_width="fill_parent"
+		                android:layout_height="fill_parent"
+		                android:textSize="16dp"
+		                android:padding="6dp"
+		                android:background="@drawable/rect_button_rounded"/>
+		            
+	       	 </LinearLayout>
+	       	 </ScrollView>
+        </LinearLayout>

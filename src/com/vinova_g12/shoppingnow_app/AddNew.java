@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TooManyListenersException;
 
 import com.example.shoppingnow.R;
 import com.example.shoppingnow.R.layout;
@@ -13,6 +14,7 @@ import com.vinova_g12.shoppingnow.data.ListItem;
 import com.vinova_g12.shoppingnow.data.PlaceDatabase;
 import com.vinova_g12.shoppingnow.data.RepoData;
 import com.vinova_g12.shoppingnow.data.ShoppingDatabase;
+import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -28,372 +30,154 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 import android.support.v4.app.NavUtils;
 
-public class AddNew extends Activity {
-	LinearLayout moreOption;
-	Button btn_more_option;
-	private ListItem newItem;
-	private ShoppingDatabase database;
-	private RepoData nameData;
-	private PlaceDatabase placeData;
-	// Buttons
-	private Button btn_update;
+public class AddNew extends Activity{
+	private ListItem item;
+	//Button
+	private Button btn_create;
+	private Button btn_save;
+	private Button btn_done;
 	private Button btn_cancel;
-	private Button btn_set_duedate;
-	private Button btn_set_alarm;
-	private Button btn_cancel_duedate;
-	private Button btn_cancel_alarm;
-	// Due date
-	private int mYear, mMonth, mDay;
-	// Alarm date
-	private int aYear, aMonth, aDay;
-	// Edittexts and Radio Button
+	private Button btn_due_date;
+	private Button btn_alarm;
+	//Autocomplate name and place
 	private AutoCompleteTextView name;
-	private RadioGroup priority;
-	private EditText price;
-	private EditText quantity;
 	private AutoCompleteTextView place;
-	// Radio Button
-	private RadioButton radioLow;
-	private RadioButton radioNone;
-	private RadioButton radioMedium;
-	private RadioButton radioHard;
-
-	private int id;
-
+	//Toogle Button Priority
+	private ToggleButton toggle_priority;
+	//Edittext Quantity and Price
+	private EditText edit_quantity;
+	private EditText edit_price;
+	//Spinner unit
+	private Spinner edit_unit;
+	//TextView
+	private TextView total;
+	private TextView money;
+	private ImageView banner;
+	
 	List<String> address = new ArrayList<String>();
-
 	List<String> autoName = new ArrayList<String>();
-	// Calendar
+	
+	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	Calendar today = Calendar.getInstance();
-	public SimpleDateFormat format;
-	DatePickerDialog.OnDateSetListener datePickerListener;
-	DatePickerDialog.OnDateSetListener alarmDatePickerListener;
-
+	
+	String[] itemSpinner = new String[] {"Kilogam", "Gam", "Lạng","Chiếc", "Bó", "Mớ", "Túi", "Gói",  "Bình", "Chai", "Lọ", "Thùng", "Hộp" };
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.layout_add_new_products);
-
-		Intent id_receive = getIntent();
-
-		Bundle myBundle = id_receive.getExtras();
-		id = myBundle.getInt("id");
-
-		newItem = new ListItem();
-		database = new ShoppingDatabase(getApplicationContext());
-		// Open database
-		database.openDB();
-
-		nameData = new RepoData(getApplicationContext());
-		nameData.openDB();
-
-		placeData = new PlaceDatabase(getApplicationContext());
-		placeData.openDB();
-
-		moreOption = (LinearLayout) findViewById(R.id.layout_more_option);
-		btn_more_option = (Button) findViewById(R.id.btn_more_option);
-		btn_set_duedate = (Button) findViewById(R.id.edit_new_duedate);
-		btn_set_alarm = (Button) findViewById(R.id.edit_new_alarm);
-		btn_update = (Button) findViewById(R.id.btn_create);
+		setContentView(R.layout.activity_add_new);
+		//Get id widget from file xml layout
+		btn_create = (Button) findViewById(R.id.btn_create);
+		btn_save = (Button) findViewById(R.id.btn_save);
+		btn_done = (Button) findViewById(R.id.btn_done);
 		btn_cancel = (Button) findViewById(R.id.btn_cancel);
-		btn_cancel_duedate = (Button) findViewById(R.id.btn_cancel_duedate);
-		btn_cancel_alarm = (Button) findViewById(R.id.btn_cancel_alarm);
-
+		btn_due_date = (Button) findViewById(R.id.edit_new_duedate);
+		btn_alarm = (Button) findViewById(R.id.edit_new_alarm);
+		
 		name = (AutoCompleteTextView) findViewById(R.id.edit_new_title);
-
-		autoName = nameData.getAllNames();
-		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				R.layout.list_item, autoName);
-		name.setAdapter(adapter);
-		name.setTextColor(Color.BLACK);
-
-		price = (EditText) findViewById(R.id.edit_new_price);
-		quantity = (EditText) findViewById(R.id.edit_new_quantity);
 		place = (AutoCompleteTextView) findViewById(R.id.edit_new_place);
-
-		address = placeData.getAllPlaces();
-		final ArrayAdapter<String> adapterForAddr = new ArrayAdapter<String>(
-				this, R.layout.list_item, address);
-		place.setAdapter(adapterForAddr);
-		place.setTextColor(Color.BLACK);
-
-		priority = (RadioGroup) findViewById(R.id.gradio_priority);
-
-		radioNone = (RadioButton) findViewById(R.id.pri_normal);
-		radioLow = (RadioButton) findViewById(R.id.pri_low);
-		radioMedium = (RadioButton) findViewById(R.id.pri_medium);
-		radioHard = (RadioButton) findViewById(R.id.pri_hard);
-
-		/* Get current day and format date */
-		format = new SimpleDateFormat("dd-MM-yyyy");
-
-		mYear = today.get(Calendar.YEAR);
-		mMonth = today.get(Calendar.MONTH);
-		mDay = today.get(Calendar.DAY_OF_MONTH);
-
-		aYear = today.get(Calendar.YEAR);
-		aMonth = today.get(Calendar.MONTH);
-		aDay = today.get(Calendar.DAY_OF_MONTH);
-
-		newItem.due_date = format.format(today.getTime());
-		// Set click for item in list autocomple
-		name.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				String name_ = adapter.getItem(position);
-				Log.w("name_", name_);
-				Cursor getData = nameData.getItemFromName(name_);
-				float price_ = 0;
-				Log.w("Size of data return", "");
-				if (getData.moveToFirst()) {
-					Log.w("move to first", "");
-					price_ = getData.getFloat(3);
-					price.setText(price_ + "");
-				}
-
-				Toast.makeText(getApplicationContext(), "onClickAutocomplete",
-						Toast.LENGTH_SHORT).show();
-				Log.w("Click Autocomplete list", "");
-
-			}
-
-		});
-		/* Display moreoption when user press on button More Options */
-		btn_more_option.setOnClickListener(new OnClickListener() {
-
+		
+		edit_quantity = (EditText) findViewById(R.id.edit_new_quantity);
+		edit_price = (EditText) findViewById(R.id.edit_new_price);
+		
+		total = (TextView) findViewById(R.id.total);
+		money = (TextView) findViewById(R.id.money);
+		banner = (ImageView) findViewById(R.id.banner);
+		
+		toggle_priority = (ToggleButton) findViewById(R.id.toggle_priority);
+		edit_unit = (Spinner) findViewById(R.id.edit_new_unit);
+		//Set font for widgets
+		btn_create.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
+		btn_save.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
+		btn_done.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
+		btn_cancel.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
+		edit_quantity.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
+		edit_price.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
+		
+		btn_due_date.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getApplicationContext()));
+		btn_alarm.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getApplicationContext()));
+		toggle_priority.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getApplicationContext()));
+		total.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getApplicationContext()));
+		money.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getApplicationContext()));
+		name.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getApplicationContext()));
+		place.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
+		
+		//Create a new item and open database
+		item = new ListItem();
+		
+		//Set behavior for toogle button
+		View.OnClickListener toggleListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (moreOption.getVisibility() == View.GONE) {
-					moreOption.setVisibility(View.VISIBLE);
-					btn_more_option.setText("Ẩn Thông Tin");
+				if (item.priority == 0) {
+					item.priority = 1;
+					toggle_priority.setCompoundDrawablesWithIntrinsicBounds(R.drawable.light_important, 0, 0, 0);
+					toggle_priority.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getApplicationContext()));
 				} else {
-					moreOption.setVisibility(View.GONE);
-					btn_more_option.setText("Thêm Thông Tin");
+					item.priority = 0;
+					toggle_priority.setCompoundDrawablesWithIntrinsicBounds(R.drawable.light_no_important, 0, 0, 0);
+					toggle_priority.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
 				}
-
-			}
-		});
-
-		/* Display dialog to picker due date */
-		datePickerListener = new DatePickerDialog.OnDateSetListener() {
-
-			@Override
-			public void onDateSet(DatePicker view, int year, int monthOfYear,
-					int dayOfMonth) {
-				mYear = year;
-				mMonth = monthOfYear;
-				mDay = dayOfMonth;
-				Toast.makeText(getApplicationContext(),
-						"" + mDay + " " + mMonth + " " + mYear,
-						Toast.LENGTH_SHORT).show();
-				btn_set_duedate.setText(format.format(new Date(mYear - 1900,
-						mMonth, mDay)));
-				newItem.due_date = btn_set_duedate.getText().toString();
-				btn_cancel_duedate.setVisibility(View.VISIBLE);
+				
 			}
 		};
-
-		btn_cancel_duedate.setOnClickListener(new View.OnClickListener() {
+		toggle_priority.setOnClickListener(toggleListener);
+		//Set adapter for spinner
+		ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemSpinner);
+		adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		edit_unit.setAdapter(adapterSpinner);
+		OnItemSelectedListener spinnerListener = new OnItemSelectedListener() {
 
 			@Override
-			public void onClick(View v) {
-				mYear = today.get(Calendar.YEAR);
-				mMonth = today.get(Calendar.MONTH);
-				mDay = today.get(Calendar.DAY_OF_MONTH);
-				btn_set_duedate.setText("Đặt Ngày Giờ");
-				btn_cancel_duedate.setVisibility(View.GONE);
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				item.unit = parent.getItemAtPosition(pos).toString();
 			}
-		});
-
-		btn_set_duedate.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				new DatePickerDialog(AddNew.this, datePickerListener, mYear,
-						mMonth, mDay).show();
-			}
-		});
-
-		/* Display dialog to picker alarm date */
-		alarmDatePickerListener = new DatePickerDialog.OnDateSetListener() {
-
-			@Override
-			public void onDateSet(DatePicker view, int year, int monthOfYear,
-					int dayOfMonth) {
-				aYear = year;
-				aMonth = monthOfYear;
-				aDay = dayOfMonth;
-				btn_set_alarm.setText(format.format(new Date(aYear - 1900,
-						aMonth, aDay)));
-				newItem.alarm = btn_set_alarm.getText().toString();
-				btn_cancel_alarm.setVisibility(View.VISIBLE);
+			public void onNothingSelected(AdapterView<?> parent) {
+				item.unit = parent.getSelectedItem().toString();
 			}
 		};
-
-		btn_cancel_alarm.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				aYear = aMonth = aDay = 0;
-				btn_set_alarm.setText("Đặt Ngày Giờ");
-				btn_cancel_alarm.setVisibility(View.GONE);
-			}
-		});
-
-		btn_set_alarm.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				new DatePickerDialog(AddNew.this, alarmDatePickerListener,
-						aYear, aMonth, aDay).show();
-			}
-		});
-		/* cancel */
-		btn_cancel.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				AddNew.this.finish();
-			}
-		});
-		/* create new product */
-		btn_update.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (!name.getText().toString().equals("")) {
-					// Set name for product
-					newItem.name = name.getText().toString();
-					// Set priority for product
-					int radioId = priority.getCheckedRadioButtonId();
-					if (radioNone.getId() == radioId)
-						newItem.priority = 0;
-					else if (radioLow.getId() == radioId)
-						newItem.priority = 1;
-					else if (radioMedium.getId() == radioId)
-						newItem.priority = 2;
-					else if (radioHard.getId() == radioId)
-						newItem.priority = 3;
-
-					// Set quantity
-					if (!quantity.getText().toString().equals(""))
-						newItem.quantity = Float.valueOf(
-								quantity.getText().toString()).floatValue();
-					else{
-						newItem.quantity=0;
-					}
-
-					// Set price
-					if (!price.getText().toString().equals(""))
-						newItem.price = Float.valueOf(
-								price.getText().toString()).floatValue();
-					else{
-						newItem.price = 0;
-					}
-					// Set status is undone
-					newItem.status = 0;
-
-					ContentValues values = new ContentValues();
-
-					ContentValues valuesName = new ContentValues();
-
-					values.put(ShoppingDatabase.NAME, newItem.name);
-					values.put(ShoppingDatabase.PRIO, newItem.priority);
-					values.put(ShoppingDatabase.QUANT, newItem.quantity);
-					values.put(ShoppingDatabase.PRICE, newItem.price);
-					values.put(ShoppingDatabase.STATUS, newItem.status);
-					values.put(ShoppingDatabase.DUE, newItem.due_date);
-					values.put(ShoppingDatabase.MONEY, "VND");
-
-					if (!newItem.alarm.equals(""))
-						values.put(ShoppingDatabase.ALARM, newItem.alarm);
-					if (!place.getText().toString().equals("")) {
-						values.put(ShoppingDatabase.PLACE, place.getText()
-								.toString());
-						valuesName.put(ShoppingDatabase.PLACE, place.getText()
-								.toString());
-					}
-
-					valuesName.put(ShoppingDatabase.NAME, newItem.name);
-					valuesName.put(ShoppingDatabase.PRICE, newItem.price);
-
-					if (id == -1) {
-						boolean add = true;
-
-							database.insert(values);
-							// Ko insert neu san pham da duoc luu tru trong bang autotext
-							boolean addName = true;
-							for (int i = 0; i < autoName.size(); i++)
-								if (autoName.get(i).compareToIgnoreCase(newItem.name) == 0)
-									addName = false;
-							if (addName)
-								nameData.insert(valuesName);
-							// Ko them neu dia diem da co
-							boolean addAddress = true;
-							for (int i = 0; i < address.size(); i++)
-								if (address.get(i).compareToIgnoreCase(newItem.place) == 0)
-									addAddress = false;
-
-							ContentValues valuesAddr = new ContentValues();
-							if (!place.getText().toString().equals("")) {
-								valuesAddr.put(ShoppingDatabase.PLACE, place
-										.getText().toString());
-								placeData.insert(valuesAddr);
-							}
-
-					} else {
-						database.update(id, values);
-					}
-					database.closeDB();
-					nameData.closeDB();
-					placeData.closeDB();
-
-					AddNew.this.finish();
-				} else {
-					Toast.makeText(getApplicationContext(),
-							"Bạn chưa nhập tên sản phẩm. Vui lòng thử lại!",
-							Toast.LENGTH_SHORT).show();
-				}
-
-			}
-		});
-		if (id != -1) {
-			btn_update.setText("Lưu Lại");
-			Cursor cur = null;
-			cur = database.getItem(id);
-
-			if (cur.moveToFirst()) {
-				ListItem editItem = new ListItem(cur);
-				name.setText(editItem.name);
-				priority.check(editItem.priority);
-				if (!editItem.place.equals("") && !editItem.place.equals(" "))
-					place.setText(editItem.place);
-				if (editItem.quantity > 0)
-					quantity.setText(editItem.quantity + "");
-				if (editItem.price > 0)
-					price.setText(editItem.price + "");
-				btn_set_duedate.setText(editItem.due_date);
-				if (!editItem.alarm.equals("") && !editItem.equals(" "))
-					btn_set_alarm.setText(editItem.alarm);
-
-			}
-
-		}
-
+		edit_unit.setOnItemSelectedListener(spinnerListener);
 	}
-
+	
+	public int getData() {
+		if (name.getText().toString().length() != 0) {
+			//Get name
+			item.name = name.getText().toString();
+			//Get quantity
+			if (edit_quantity.getText().toString().length() != 0)
+				item.quantity = Float.valueOf(edit_quantity.getText().toString()).floatValue();
+			else
+				item.quantity = 0;
+			//Get price
+			if (edit_price.getText().toString().length() != 0)
+				item.price = Float.valueOf(edit_price.getText().toString()).floatValue();
+			else
+				item.price = 0;
+			//Get place
+			if (place.getText().toString().length() != 0)
+				item.place = place.getText().toString();
+			else
+				item.place = " ";
+			return 1;
+		}
+		return 0;
+	}
 }
