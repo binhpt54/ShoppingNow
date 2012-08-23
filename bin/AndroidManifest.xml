@@ -28,9 +28,11 @@
         </activity>
         <activity
             android:name="com.vinova_g12.shoppingnow_app.AddNew"
-            android:label="@string/title_activity_add_new" >
+            android:label="@string/title_activity_add_new">
         </activity>
-        <activity android:name="com.vinova_g12.shoppingnow_app.UpdateItem" >
+        <activity
+            android:name="com.vinova_g12.shoppingnow_app.ActivityChooseDate"
+            android:label="Ngày Hoàn Thành" >
         </activity>
     </application>
 

@@ -275,7 +275,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	public void onResume() {
 		super.onResume();
 		countProduct = 0;
-		category_date_in_week.clear();
+		category_date_in_week = new ArrayList<String>();
 		data = new ArrayList<ListItem>();	
 		db = new ShoppingDatabase(getSherlockActivity().getApplicationContext());
 		db.openDB();

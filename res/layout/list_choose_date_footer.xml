@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+    
+    <Button 
+        android:id="@+id/btn_custom_duedate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/arrow"
+        android:focusable="true"
+        android:text="Chọn Ngày Khác"
+        android:background="@xml/my_btn_ics_transfrent"/>
+    
+
+</LinearLayout>

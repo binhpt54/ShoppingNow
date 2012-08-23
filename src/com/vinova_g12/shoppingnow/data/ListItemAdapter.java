@@ -303,7 +303,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 
 	}
 	
-	public String getDay(Calendar cal) {
+	public static String getDay(Calendar cal) {
 		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
 			return "Thứ Hai";
 		else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY)

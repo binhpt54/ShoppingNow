@@ -136,7 +136,10 @@
 	        <RelativeLayout
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
-	            android:layout_margin="6dp"
+	            android:layout_marginLeft="6dp"
+	            android:layout_marginRight="6dp"
+	            android:layout_marginTop="16dp"
+	            android:layout_marginBottom="16dp"
 	            android:background="@drawable/rect_rounded"
 	            >
 
@@ -148,7 +151,7 @@
 	                android:textOff="Cần Phải Mua"
 	                android:drawableLeft="@drawable/light_no_important"
 	                android:textOn="Cần Phải Mua"
-	                android:gravity="center_vertical"
+	                android:gravity="center"
 	                android:paddingLeft="10dp"
 	                android:textSize="16dp" />
 
@@ -174,12 +177,12 @@
                 <Spinner 
                     android:id="@+id/edit_new_unit"
                     android:layout_width="fill_parent"
-                    android:layout_height="39dp"
+                    android:layout_height="fill_parent"
                     android:layout_weight="2"
 	                android:textSize="16dp"
+	                android:gravity="center"
 	                android:layout_marginRight="4dp"
-	                android:background="@drawable/spinner"
-	                android:paddingLeft="15dp"/>
+	                android:background="@drawable/spinner"/>
                 <Button 
                     android:id="@+id/btn_cancel_quantity"
                     android:layout_width="wrap_content"
@@ -212,8 +215,7 @@
 	                android:layout_height="fill_parent"
 	                android:text="VND"
 	                android:textStyle="bold"
-	                android:layout_marginLeft="2dp"
-	                android:layout_marginRight="3dp"
+	                android:layout_marginRight="4dp"
 	                android:layout_marginBottom="4dp"
 	                android:paddingLeft="10dp"
 	                android:shadowColor="#FFFFFF"
@@ -221,7 +223,7 @@
 	                android:shadowDy="2"
 	                android:shadowRadius="2"
 	                android:gravity="center_vertical"
-	                android:background="@drawable/rect_rounded"
+	                android:background="@xml/rect_rounded_bottom"
 	                android:layout_weight="2"
 	                android:textSize="16dp"/>
                 
@@ -269,19 +271,29 @@
 		                android:textStyle="bold"
 		                android:padding="6dp"
 		                android:background="@drawable/rect_button_rounded"/>
+		            <RelativeLayout
+			            android:layout_width="fill_parent"
+			            android:layout_height="wrap_content"
+			            android:layout_marginLeft="6dp"
+			            android:layout_marginRight="6dp"
+			            android:layout_marginTop="16dp"
+			            android:layout_marginBottom="16dp"
+			            android:background="@drawable/rect_rounded"
+	            		>
 		            
-		            <Button 
-		                android:id="@+id/edit_new_alarm"
-		                android:layout_margin="4dp"
-		                android:text="Hẹn Giờ"
-		                android:textStyle="bold"
-		                android:drawableLeft="@drawable/light_icon_devicce_alram"
-		                android:drawableRight="@drawable/arrow"
-		                android:layout_width="fill_parent"
-		                android:layout_height="fill_parent"
-		                android:textSize="16dp"
-		                android:padding="6dp"
-		                android:background="@drawable/rect_button_rounded"/>
+			            <ToggleButton 
+			                android:id="@+id/edit_new_alarm"
+			                android:textOn="Hẹn Giờ"
+			                android:textOff="Hẹn Giờ"
+			                android:textStyle="bold"
+			                android:drawableLeft="@drawable/light_icon_devicce_alram"
+			                android:layout_width="fill_parent"
+			                android:layout_height="fill_parent"
+			                android:textSize="16dp"
+			                android:gravity="center"
+			                android:paddingLeft="30dp"
+			                android:background="@drawable/btn_toggle"/>
+		            </RelativeLayout>
 		            
 	       	 </LinearLayout>
 	       	 </ScrollView>
