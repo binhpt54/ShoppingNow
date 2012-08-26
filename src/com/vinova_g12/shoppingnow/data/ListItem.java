@@ -40,17 +40,8 @@ public class ListItem {
 		alarm = cursor.getString(8);
 		status = cursor.getInt(9);
 		place = cursor.getString(10);
-		//doneDate = cursor.getLong(11);
+		doneDate = cursor.getLong(11);
 	}
-	/*
-	public ListItem(Cursor cursor, int a) {
-		super();
-		id = cursor.getInt(0);
-		name = cursor.getString(1);
-		unit = cursor.getString(2);
-		price = cursor.getFloat(3);
-	}
-	*/
 	
 	public int compareALphabet(ListItem item) {
 		return this.name.compareTo(item.name);

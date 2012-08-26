@@ -20,6 +20,7 @@ import com.vinova_g12.shoppingnow.fragment.Fragment_ViewbyDate;
 import com.vinova_g12.shoppingnow.quickaction.QuickAction;
 import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -29,6 +30,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Shader.TileMode;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.style.BulletSpan;
 import android.util.Log;
@@ -51,6 +54,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
     public ViewPager mPagerWeek;
     public ViewPager mPagerAlarm;
     public ViewPager mPagerSearch;
+    private String orderBy;
     public TitlePageIndicator mIndicator;
     private ViewPager.OnPageChangeListener pageListener;
     private ActionBar ab;
@@ -59,6 +63,8 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
     //Count of checked
     public static int countChecked;
   	public static List<Integer> list_item_checked;
+  	public static String REQUEST_CREATE = "create";
+  	public static String REQUEST_EDIT = "edit";
   	
   	String[] categoryWeek = new String[] {"Tuần Trước", "Tuần Này", "Tuần Sau"};
   	String[] categoryDate = new String[] {"Hôm Qua", "Hôm Nay", "Ngày Mai"};
@@ -84,6 +90,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(false);
         ab.setDisplayShowTitleEnabled(false);
+    
         db = new ShoppingDatabase(getApplicationContext());
        
         //Setting list navigation
@@ -103,11 +110,11 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         mPager.setAdapter(mAdapter);
         //Setting and bind viewpager with indicator
         mIndicator = (TitlePageIndicator) findViewById(R.id.indicator);
-        mIndicator.setTextSize(20);
+        mIndicator.setTextSize(27);
         mIndicator.setViewPager(mPager);
         mIndicator.setCurrentItem(1);
         mIndicator.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
-        mIndicator.setTitlePadding(50);
+        mIndicator.setTitlePadding(100);
         pageListener = new ViewPager.OnPageChangeListener() {
 			
 			@Override
@@ -181,7 +188,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		case R.id.menu_create:
 			Intent intent = new Intent(getApplicationContext(), AddNew.class);
 			Bundle update = new Bundle();
-			update.putInt("id", -1);
+			update.putInt(REQUEST_CREATE, -1);
 			intent.putExtras(update);
 			startActivity(intent);
 			break;
@@ -195,6 +202,31 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			mIndicator.setViewPager(mPagerSearch);
 			mIndicator.setCurrentItem(0);
 			stateSearch = 1;
+			break;
+		case R.id.menu_orderby_alphabet:
+			orderBy = ShoppingDatabase.NAME;
+			mAdapter.SetorderBy(orderBy);
+			mAdapter.notifyDataSetChanged();
+			break;
+		case R.id.menu_orderby_priority:
+			orderBy = ShoppingDatabase.PRIO;
+			mAdapter.SetorderBy(orderBy);
+			mAdapter.notifyDataSetChanged();
+			break;
+		case R.id.menu_orderby_done_date:
+			orderBy = ShoppingDatabase.DONE_DATE;
+			mAdapter.SetorderBy(orderBy);
+			mAdapter.notifyDataSetChanged();
+			break;
+		case R.id.menu_orderby_status:
+			orderBy = ShoppingDatabase.STATUS;
+			mAdapter.SetorderBy(orderBy);
+			mAdapter.notifyDataSetChanged();
+			break;
+		case R.id.menu_orderby_total:
+			orderBy = ShoppingDatabase.PRICE + "*" + ShoppingDatabase.QUANT;
+			mAdapter.SetorderBy(orderBy);
+			mAdapter.notifyDataSetChanged();
 			break;
 		default:
 			break;

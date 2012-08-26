@@ -7,11 +7,16 @@ import com.example.shoppingnow.R;
 import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 import com.vinova_g12.shoppingnow_app.ActivityChooseDate;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,7 +40,7 @@ public class ListItemChooseDate extends ArrayAdapter<ItemChooseDate>{
 		this.layoutResource = layout;
 		this.data = data;
 	}
-	@Override
+	@SuppressLint("NewApi") @Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
 		if (row == null) {
@@ -46,11 +51,22 @@ public class ListItemChooseDate extends ArrayAdapter<ItemChooseDate>{
 			holder.checked = (ImageView) row.findViewById(R.id.choose_date_checked);
 			holder.title = (TextView) row.findViewById(R.id.choose_date_name);
 			holder.sub = (TextView) row.findViewById(R.id.choose_date_sub);
+			holder.divider1 = (TextView) row.findViewById(R.id.choose_date_divider1);
+			holder.divider2 = (TextView) row.findViewById(R.id.choose_date_divider2);
 			
 			holder.checked.setVisibility(View.INVISIBLE);
 			
 			holder.title.setTypeface(MyTypeFace_Roboto.Roboto_Bold(context));
 			holder.sub.setTypeface(MyTypeFace_Roboto.Roboto_Regular(context));
+			
+			if (position == 7) {
+				holder.checked.setVisibility(View.GONE);
+				holder.divider1.setVisibility(View.GONE);
+				holder.divider2.setVisibility(View.GONE);
+				holder.title.setGravity(Gravity.CENTER);
+				holder.title.setTextColor(Color.parseColor("#b12525"));
+				holder.title.setShadowLayer(1, -1, -1, Color.parseColor("#ffffff"));
+			}
 			
 			holder.title.setText(data.get(position).title);
 			holder.sub.setText(data.get(position).date);
@@ -67,5 +83,7 @@ public class ListItemChooseDate extends ArrayAdapter<ItemChooseDate>{
 		ImageView checked;
 		TextView title;
 		TextView sub;
+		TextView divider1;
+		TextView divider2;
 	}
 }

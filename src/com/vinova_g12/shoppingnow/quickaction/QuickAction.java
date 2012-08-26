@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.actionbarsherlock.R;
+import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 
 /**
  * QuickAction dialog, shows action list as icon and text like the one in Gallery3D app. Currently supports vertical 
@@ -175,6 +176,7 @@ public class QuickAction extends PopupWindows implements OnDismissListener {
 		
 		if (title != null) {
 			text.setText(title);
+			text.setTypeface(MyTypeFace_Roboto.Roboto_Regular(mContext));
 		} else {
 			text.setVisibility(View.GONE);
 		}

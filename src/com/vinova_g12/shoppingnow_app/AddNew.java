@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TooManyListenersException;
 
+import com.actionbarsherlock.internal.widget.IcsAdapterView;
+import com.actionbarsherlock.internal.widget.IcsSpinner;
 import com.example.shoppingnow.R;
 import com.example.shoppingnow.R.layout;
 import com.example.shoppingnow.R.menu;
@@ -26,11 +28,14 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -50,6 +55,8 @@ import android.widget.ToggleButton;
 import android.support.v4.app.NavUtils;
 
 @SuppressLint("ParserError") public class AddNew extends Activity{
+	
+	private int state_action;
 	public static final int REQUEST_CHOOSE_DATE = 261290;
 	public static final String DATE_RECV = "dateGoBack";
 	public static final String DATE_RECV_REVERSE = "dateGoBackReverse";
@@ -58,6 +65,8 @@ import android.support.v4.app.NavUtils;
 	private ListItem item;
 	//Database
 	private ShoppingDatabase shoppingDB;
+	private RepoData nameDB;
+	private PlaceDatabase placeDB;
 	//Button
 	private Button btn_create;
 	private Button btn_save;
@@ -74,22 +83,27 @@ import android.support.v4.app.NavUtils;
 	private EditText edit_quantity;
 	private EditText edit_price;
 	//Spinner unit
-	private Spinner edit_unit;
+	//private Spinner edit_unit;
 	//TextView
 	private TextView total;
 	private TextView money;
 	private ImageView banner;
+	private IcsSpinner edit_unit;
 	
 	private String dateSender;
+	ContentValues valueAutoName, valueAutoPlace;
 	
-	List<String> address = new ArrayList<String>();
+	List<String> autoPlace = new ArrayList<String>();
 	List<String> autoName = new ArrayList<String>();
+	
+	private ArrayAdapter<String> adapterForName;
+	private ArrayAdapter<String> adapterForPlace;
 	
 	SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 	SimpleDateFormat formatReverse = new SimpleDateFormat("yyyy-MM-dd");
 	Calendar today = Calendar.getInstance();
 	
-	String[] itemSpinner = new String[] {"Kilogam", "Gam", "Lạng","Chiếc", "Bó", "Mớ", "Túi", "Gói",  "Bình", "Chai", "Lọ", "Thùng", "Hộp" };
+	String[] itemSpinner = new String[] {"Cân", "Gam", "Lạng","Củ", "Quả","Chiếc", "Bó", "Mớ", "Túi", "Gói",  "Bình", "Chai", "Lọ", "Thùng", "Hộp" };
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -112,8 +126,9 @@ import android.support.v4.app.NavUtils;
 		money = (TextView) findViewById(R.id.money);
 		banner = (ImageView) findViewById(R.id.banner);
 		
+		total.setText("");
 		toggle_priority = (ToggleButton) findViewById(R.id.toggle_priority);
-		edit_unit = (Spinner) findViewById(R.id.edit_new_unit);
+		edit_unit = (IcsSpinner) findViewById(R.id.edit_new_unit);
 		//Set font for widgets
 		btn_create.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
 		btn_save.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
@@ -132,6 +147,10 @@ import android.support.v4.app.NavUtils;
 		
 		//Create database
 		shoppingDB = new ShoppingDatabase(this);
+		nameDB = new RepoData(this);
+		placeDB = new PlaceDatabase(this);
+		
+		setAdapterForAutoComplete();
 		
 		//Create a new item and open database
 		item = new ListItem();
@@ -169,15 +188,34 @@ import android.support.v4.app.NavUtils;
 		};
 		btn_alarm.setOnClickListener(toggleAlarm);
 		//Set adapter for spinner
-		ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemSpinner);
+		final ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, 
+											itemSpinner);
 		adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		edit_unit.setAdapter(adapterSpinner);
+		money.setText("VND/" + edit_unit.getSelectedItem().toString());
+		com.actionbarsherlock.internal.widget.IcsAdapterView.OnItemSelectedListener lis = new IcsAdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(IcsAdapterView<?> parent, View view,
+					int position, long id) {
+				item.unit = parent.getItemAtPosition(position).toString();
+				money.setText("VND/" + item.unit);
+				
+			}
+
+			@Override
+			public void onNothingSelected(IcsAdapterView<?> parent) {
+				item.unit = parent.getSelectedItem().toString();
+				
+			}
+		};
 		OnItemSelectedListener spinnerListener = new OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
 				item.unit = parent.getItemAtPosition(pos).toString();
+				money.setText("VND/" + item.unit);
 			}
 
 			@Override
@@ -185,7 +223,61 @@ import android.support.v4.app.NavUtils;
 				item.unit = parent.getSelectedItem().toString();
 			}
 		};
-		edit_unit.setOnItemSelectedListener(spinnerListener);
+		edit_unit.setOnItemSelectedListener(lis);
+		
+		//Set action for autotext
+		OnItemClickListener autoNameListener = new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
+							long id) {
+							String name = adapterForName.getItem(pos);
+							nameDB.openDB();
+							Cursor cur = null;
+							cur = nameDB.getItemFromName(name);
+							
+							Log.d("Cur size", cur.getColumnCount() + "");
+							if (cur != null) {
+								if (cur.moveToFirst()) {
+									String unit = cur.getString(2);
+									if (cur.getFloat(3) != 0)
+										edit_price.setText(cur.getFloat(3) + "");
+									edit_unit.setSelection(adapterSpinner.getPosition(unit));
+								}
+							}
+							nameDB.closeDB();
+					}
+				};
+		name.setOnItemClickListener(autoNameListener);
+		//Set listener textwatcher. When user enter full quantit and price, 
+		//calculate total price and display to screen
+		TextWatcher textChanged = new TextWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				if (edit_price.getText().length() != 0 && edit_quantity.getText().length() != 0) {
+					Float quant = Float.valueOf(edit_quantity.getText().toString());
+					Float price = Float.valueOf(edit_price.getText().toString());
+					total.setText("Tất Cả = " + ListItemAdapter.optimizePrice((quant * price)+"", "full") + " VND");
+				} else
+					total.setText("");
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		edit_quantity.addTextChangedListener(textChanged);
+		edit_price.addTextChangedListener(textChanged);
 		//Set behavior for button due date
 		OnClickListener btnDueDateListener = new OnClickListener() {
 			@Override
@@ -210,43 +302,21 @@ import android.support.v4.app.NavUtils;
 		OnClickListener btnCreateListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (getData() == 1) {
-					ContentValues valuesProduct = new ContentValues();
-					valuesProduct.put(ShoppingDatabase.NAME, item.name);
-					valuesProduct.put(ShoppingDatabase.PRIO, item.priority);
-					valuesProduct.put(ShoppingDatabase.QUANT, item.quantity);
-					valuesProduct.put(ShoppingDatabase.UNIT, item.unit);
-					valuesProduct.put(ShoppingDatabase.PRICE, item.price);
-					valuesProduct.put(ShoppingDatabase.STATUS, item.status);
-					valuesProduct.put(ShoppingDatabase.DUE, item.due_date);
-					valuesProduct.put(ShoppingDatabase.MONEY, item.money);
-					valuesProduct.put(ShoppingDatabase.PLACE, item.place);
-					valuesProduct.put(ShoppingDatabase.ALARM, item.alarm);
-					
-					shoppingDB.openDB();
-					shoppingDB.insert(valuesProduct);
-					shoppingDB.closeDB();
-					
-					//Set empty UI
-					name.setText("");
-					place.setText("");
-					edit_price.setText("");
-					edit_quantity.setText("");
-					total.setText("");
-					toggle_priority.setChecked(false);
-					
-					Toast.makeText(getApplicationContext(),
-							"Sản phẩm đã được lưu!",
-							Toast.LENGTH_SHORT).show();
-					
-				} else 
-					Toast.makeText(getApplicationContext(),
-							"Bạn chưa nhập tên sản phẩm. Vui lòng thử lại!",
-							Toast.LENGTH_SHORT).show();
+				SaveorCreate();
 				
 			}
 		};
 		btn_create.setOnClickListener(btnCreateListener);
+		
+		//Set behavior for btn save
+		OnClickListener btnSaveListener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				SaveorCreate();
+			}
+		};
+		btn_save.setOnClickListener(btnSaveListener);
+		
 		//Set behavior for btn done
 		OnClickListener btnDoneListener = new OnClickListener() {
 			@Override
@@ -254,6 +324,7 @@ import android.support.v4.app.NavUtils;
 				finish();
 			}
 		};
+		btn_done.setOnClickListener(btnDoneListener);
 		//Set behavior for btn cancel
 		OnClickListener btnCancelListener = new OnClickListener() {
 			
@@ -263,6 +334,72 @@ import android.support.v4.app.NavUtils;
 				
 			}
 		};
+		btn_cancel.setOnClickListener(btnCancelListener);
+		
+		//Get intent with request edit and edit UI - SAVE OR CREATE
+		Intent intent = this.getIntent();
+		Bundle bundle = intent.getExtras();
+		state_action = bundle.getInt(MainActivity.REQUEST_CREATE);
+		if (state_action == -1) {
+			btn_cancel.setVisibility(View.GONE);
+			btn_save.setVisibility(View.GONE);
+			banner.setImageResource(R.drawable.new_banner);
+		} else {
+			btn_save.setVisibility(View.VISIBLE);
+			btn_create.setVisibility(View.GONE);
+			btn_done.setVisibility(View.GONE);
+			banner.setImageResource(R.drawable.edit_banner);
+			
+			Cursor cur = null;
+			shoppingDB.openDB();
+			cur = shoppingDB.getItem(state_action);
+			if (cur != null) {
+				if (cur.moveToFirst()) {
+					ListItem editItem = new ListItem(cur);
+					name.setText(editItem.name);
+					//name.setFocusable(false);
+					
+					//Fixed unit and money
+					edit_unit.setSelection(adapterSpinner.getPosition(editItem.unit));
+					money.setText("VND/" + edit_unit.getSelectedItem().toString());
+					//Fixed priority
+					if (editItem.priority == 0) {
+						toggle_priority.setChecked(false);
+						toggle_priority.setCompoundDrawablesWithIntrinsicBounds(R.drawable.light_no_important, 0, 0, 0);
+						toggle_priority.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
+					}
+					else {
+						toggle_priority.setCompoundDrawablesWithIntrinsicBounds(R.drawable.light_important, 0, 0, 0);
+						toggle_priority.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getApplicationContext()));
+						toggle_priority.setChecked(true);
+					}
+					
+					//Fixed place
+					if (!editItem.place.equals("") && !editItem.place.equals(" "))
+						place.setText(editItem.place);
+					
+					//Fixed quantity and price
+					if (editItem.quantity != 0)
+						edit_quantity.setText(ListItemAdapter.optimizeQuantity(editItem.quantity+""));
+					if (editItem.price != 0)
+						edit_price.setText(ListItemAdapter.optimizePrice(editItem.price + "",""));
+					
+					Calendar cal = Calendar.getInstance();
+					String s = "";
+					try {
+						s = format.format(formatReverse.parse(editItem.due_date));
+						cal.setTime(formatReverse.parse(editItem.due_date));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					btn_due_date.setText(ListItemAdapter.getDay(cal) + ", " + s);
+					
+				}
+			}
+			shoppingDB.closeDB();
+		}
+		
 	}
 	
 	public int getData() {
@@ -316,5 +453,109 @@ import android.support.v4.app.NavUtils;
 			}
 		}
 	}
+	
+	public boolean CheckExistsAutoName() {
+		if (!item.name.equals(""))
+			for (int i=0; i<autoName.size(); i++)
+				if (autoName.get(i).compareToIgnoreCase(item.name) == 0)
+					return true;
+		return false;
+	}
+	
+	public boolean CheckExistsAutoPlace() {
+		if (!item.place.equals(""))
+			for (int i=0; i<autoPlace.size(); i++)
+				if (autoPlace.get(i).compareToIgnoreCase(item.place) == 0)
+					return true;
+		return false;
+	}
+	
+	public void setAdapterForAutoComplete() {
+		//Set adapter for auto name and place
+				nameDB.openDB();
+				autoName = nameDB.getAllNames();
+				adapterForName = new ArrayAdapter<String>(this, R.layout.list_item, autoName);
+				name.setAdapter(adapterForName);
+				name.setTextColor(Color.BLACK);
+				nameDB.closeDB();
+				
+				placeDB.openDB();
+				autoPlace = placeDB.getAllPlaces();
+				adapterForPlace = new ArrayAdapter<String>(this, R.layout.list_item, autoPlace); 
+				place.setAdapter(adapterForPlace);
+				name.setTextColor(Color.BLACK);
+				placeDB.closeDB();
+	}
+	
+	//Only call after function getData
+	public void SaveAutoTextData() {
+		if (!CheckExistsAutoName()) {
+			valueAutoName = new ContentValues();
+			valueAutoName.put(ShoppingDatabase.NAME, item.name);
+			valueAutoName.put(ShoppingDatabase.PRICE, item.price);
+			valueAutoName.put(ShoppingDatabase.UNIT, item.unit);
+
+			nameDB.openDB();
+			nameDB.insert(valueAutoName);
+			nameDB.closeDB();
+		}
+		
+		if (!CheckExistsAutoPlace()) {
+			valueAutoPlace = new ContentValues();
+			valueAutoPlace.put(ShoppingDatabase.PLACE, place
+					.getText().toString());
+			
+			placeDB.openDB();
+			placeDB.insert(valueAutoPlace);
+			placeDB.closeDB();
+		}
+	}
+	
+	public void SaveorCreate() {
+		if (getData() == 1) {
+			ContentValues valuesProduct = new ContentValues();
+			valuesProduct.put(ShoppingDatabase.NAME, item.name);
+			valuesProduct.put(ShoppingDatabase.PRIO, item.priority);
+			valuesProduct.put(ShoppingDatabase.QUANT, item.quantity);
+			valuesProduct.put(ShoppingDatabase.UNIT, item.unit);
+			valuesProduct.put(ShoppingDatabase.PRICE, item.price);
+			valuesProduct.put(ShoppingDatabase.STATUS, item.status);
+			valuesProduct.put(ShoppingDatabase.DUE, item.due_date);
+			valuesProduct.put(ShoppingDatabase.MONEY, item.money);
+			valuesProduct.put(ShoppingDatabase.PLACE, item.place);
+			valuesProduct.put(ShoppingDatabase.ALARM, item.alarm);
+			
+			shoppingDB.openDB();
+			if (state_action == -1) {
+				shoppingDB.insert(valuesProduct);
+			} else {
+				shoppingDB.update(state_action, valuesProduct);
+				finish();
+			}
+			shoppingDB.closeDB();
+			
+			
+			SaveAutoTextData();
+			setAdapterForAutoComplete();
+			
+			//Set empty UI
+			name.setText("");
+			place.setText("");
+			edit_price.setText("");
+			edit_quantity.setText("");
+			total.setText("");
+			toggle_priority.setChecked(false);
+			toggle_priority.setCompoundDrawablesWithIntrinsicBounds(R.drawable.light_no_important, 0, 0, 0);
+			toggle_priority.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
+			Toast.makeText(getApplicationContext(),
+					"Sản phẩm đã được lưu!",
+					Toast.LENGTH_SHORT).show();
+			
+		} else 
+			Toast.makeText(getApplicationContext(),
+					"Bạn chưa nhập tên sản phẩm. Vui lòng thử lại!",
+					Toast.LENGTH_SHORT).show();
+	}
+	
 	
 }

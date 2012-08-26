@@ -11,12 +11,14 @@
         android:layout_marginLeft="6dp"
         android:src="@drawable/light_icon_content_done_x"/>
     <TextView 
+        android:id="@+id/choose_date_divider1"
         android:layout_width="1dp"
         android:layout_height="fill_parent"
         android:layout_marginRight="3dp"
         android:background="#fd5f05"/>
     
     <TextView 
+        android:id="@+id/choose_date_divider2"
         android:layout_width="1dp"
         android:layout_height="fill_parent"
         android:layout_marginRight="10dp"

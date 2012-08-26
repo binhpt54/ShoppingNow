@@ -9,6 +9,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -35,6 +36,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.ShareActionProvider;
 import com.example.shoppingnow.R;
 import com.vinova_g12.shoppingnow.fragment.Fragment_ViewbyDate;
 import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
@@ -54,6 +56,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 	private int flag = 0;
 	private Animation in;
 	private SimpleDateFormat format;
+	private SimpleDateFormat formatReverse;
+	private boolean clear = false;
 	
 	public ListItemAdapter(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
@@ -73,6 +77,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		this.flag = 0;
 		in =  AnimationUtils.loadAnimation(context, R.anim.slide_right_to_left);
 		format = new SimpleDateFormat("dd-MM-yyyy");
+		formatReverse = new SimpleDateFormat("yyyy-MM-dd");
 	}
 	
 	@Override
@@ -93,11 +98,13 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
             holder.sub = (TextView) row.findViewById(R.id.list_item_subtitle);
             holder.section = (TextView) row.findViewById(R.id.list_section_header);
             holder.priority = (TextView) row.findViewById(R.id.list_priority);
+            holder.done_date = (TextView) row.findViewById(R.id.done_date);
             
             holder.name.setTypeface(MyTypeFace_Roboto.Roboto_Medium(context));
-            holder.quantity.setTypeface(MyTypeFace_Roboto.Roboto_Regular(context));
-            holder.price.setTypeface(MyTypeFace_Roboto.Roboto_Regular(context));
+            holder.quantity.setTypeface(MyTypeFace_Roboto.Roboto_Medium(context));
+            holder.price.setTypeface(MyTypeFace_Roboto.Roboto_Medium(context));
             holder.sub.setTypeface(MyTypeFace_Roboto.Roboto_Regular(context));
+            holder.done_date.setTypeface(MyTypeFace_Roboto.Roboto_Regular(context));
  
             row.setTag(holder);
 		} else {
@@ -112,12 +119,12 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 				holder.section.setVisibility(View.VISIBLE);
 				Calendar cal = Calendar.getInstance();
 				try {
-					cal.setTime(format.parse(data.get(position).due_date));
+					cal.setTime(formatReverse.parse(data.get(position).due_date));
+					holder.section.setText(getDay(cal) + ", " + format.format(cal.getTime()));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				holder.section.setText(getDay(cal) + ", " +data.get(position).due_date);
 			}
 		
 		/*Setting view of row
@@ -128,13 +135,17 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		 * Display delete button when list is done
 		 * */
 		if (!selectAll) {
+			clear = false;
 			holder.checkbox.setChecked(false);
 			MainActivity.list_item_checked.clear();
 			Fragment_ViewbyDate.list_item_checked.clear();
 		} else {
 			holder.checkbox.setChecked(true);
-			MainActivity.list_item_checked.clear();
-			Fragment_ViewbyDate.list_item_checked.clear();
+			if (clear == false) {
+				MainActivity.list_item_checked.clear();
+				Fragment_ViewbyDate.list_item_checked.clear();
+				clear = true;
+			}
 			MainActivity.list_item_checked.add(data.get(position).id);
 			Fragment_ViewbyDate.list_item_checked.add(new Integer(position));
 		}
@@ -142,22 +153,19 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		holder.name.setText(data.get(position).name);
 		//Status
 		if (data.get(position).status == 0) {
-			Log.d("Status", "UNDONE");
 			holder.name.setTextColor(Color.parseColor("#000000"));
 			holder.name.setPaintFlags(holder.name.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-			holder.quantity.setVisibility(View.VISIBLE);
-			holder.price.setVisibility(View.VISIBLE);
 			holder.btn_delete.setVisibility(View.GONE);
+			holder.done_date.setVisibility(View.GONE);
 		}
 		else {
-			Log.d("Status", "DONE");
 			holder.name.setTextColor(Color.parseColor("#777777"));
 			holder.name.setPaintFlags(holder.name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			holder.btn_delete.setVisibility(View.VISIBLE);
+			holder.done_date.setVisibility(View.VISIBLE);
+			holder.done_date.setText(getDoneDate(data.get(position).doneDate));
 			holder.btn_delete.setFocusable(false);
 			holder.btn_delete.startAnimation(in);
-			holder.quantity.setVisibility(View.GONE);
-			holder.price.setVisibility(View.GONE);
 			holder.btn_delete.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -172,20 +180,23 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		}
 		//Set priority
 		if (data.get(position).priority == 0)
-			holder.priority.setVisibility(View.INVISIBLE);
+			holder.priority.setVisibility(View.GONE);
 		else
 			holder.priority.setVisibility(View.VISIBLE);
 		
-		//Set quantity and price
-		if (data.get(position).quantity != 0) {
-			holder.quantity.setText(data.get(position).quantity + "");
+		//Set quantity and total
+		if (data.get(position).quantity != 0 && data.get(position).status == 0) {
+			holder.quantity.setText(optimizeQuantity(data.get(position).quantity+"" )+ " " + data.get(position).unit);
 			holder.quantity.setVisibility(View.VISIBLE);
-		}
+		} else
+			holder.quantity.setVisibility(View.GONE);
 		
-		if (data.get(position).price != 0) {
-			holder.price.setText(data.get(position).price + "");
+		if (data.get(position).price != 0 && data.get(position).status == 0 && data.get(position).quantity != 0) {
+			String total = (data.get(position).quantity * data.get(position).price) + "";
+			holder.price.setText(optimizePrice(total,"full") + " VND");
 			holder.price.setVisibility(View.VISIBLE);
-		}
+		} else
+			holder.price.setVisibility(View.GONE);
 		//set place
 		if (!data.get(position).place.equals(" ")) {
 			holder.sub.setText(data.get(position).place);
@@ -235,6 +246,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		TextView section;
 		TextView price;
 		TextView sub;
+		TextView done_date;
 	}
 	
 	class MyActionModeCallBack implements ActionMode.Callback{
@@ -244,7 +256,6 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			activity.getSupportMenuInflater().inflate(R.menu.menu_actionmode, menu);
 			MainActivity.countChecked = 1;
 			Fragment_ViewbyDate.actionMode_running = true;
-			db.openDB();
 			return true;
 		}
 
@@ -257,9 +268,25 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 			switch (item.getItemId()) {
+			case R.id.acm_priority:
+				db.openDB();
+				db.updateSomePriority("Yes", MainActivity.list_item_checked);
+				db.closeDB();
+				selectAll = false;
+				listFrament.notifyDataChanged("");
+				break;
+			case R.id.acm_not_priority:
+				db.openDB();
+				db.updateSomePriority("No", MainActivity.list_item_checked);
+				selectAll = false;
+				listFrament.notifyDataChanged("");
+				db.closeDB();
+				break;
 			case R.id.acm_select_all:
 				selectAll = true;
+				clear = true;
 				listFrament.notifyDataChanged("");
+				Log.d("Size of list item", MainActivity.list_item_checked.size() + "");
 				break;
 			case R.id.acm_unselect_all:
 				selectAll = false;
@@ -267,18 +294,24 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 				break;
 			case R.id.acm_delete:
 				selectAll = false;
+				db.openDB();
 				db.deleteSome(MainActivity.list_item_checked);
-				listFrament.notifyDataChanged("DELETE");
+				db.closeDB();
+				listFrament.notifyDataChanged("");
 				break;
 			case R.id.acm_done:
 				selectAll = false;
+				db.openDB();
 				db.updateSomeStatus("Done", MainActivity.list_item_checked);
-				listFrament.notifyDataChanged("Done");
+				db.closeDB();
+				listFrament.notifyDataChanged("");
 				break;
 			case R.id.acm_undone:
 				selectAll = false;
+				db.openDB();
 				db.updateSomeStatus("Undone", MainActivity.list_item_checked);
-				listFrament.notifyDataChanged("Undone");
+				db.closeDB();
+				listFrament.notifyDataChanged("");
 				break;
 			case R.id.acm_share:
 				selectAll = false;
@@ -298,7 +331,6 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 			Fragment_ViewbyDate.actionMode_running = false;
 			MainActivity.countChecked = 0;
 			listFrament.notifyDataChanged("");
-			db.closeDB();
 		}
 
 	}
@@ -317,5 +349,76 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 		else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
 			return "Thứ Bảy";
 		return "Chủ Nhật";
+	}
+	
+	public static String optimizeQuantity(String quantity) {
+		String newQuantity = new String();
+		if (quantity.endsWith("0")) {
+			Log.d("String optimizer", "End of ");
+			newQuantity = quantity.substring(0, quantity.length()-2);
+		}
+		else newQuantity = quantity;
+		return newQuantity;
+	}
+	
+	public static String optimizePrice(String price, String option) {
+		String newPrice = new String();
+		if (price.endsWith("0")) {
+			newPrice = price.substring(0, price.length()-2);
+		}
+		else newPrice = price;
+		if(option.equals("full")) {
+			if (newPrice.length() > 9) {
+				newPrice = newPrice.substring(0, newPrice.length()-9) + ","
+							+newPrice.substring(newPrice.length()-9,newPrice.length()-6) + ","
+							+ newPrice.substring(newPrice.length() -6, newPrice.length()-3) + ","
+							+ newPrice.substring(newPrice.length()-3,newPrice.length());
+				return newPrice;
+			}
+			
+			if (newPrice.length() > 6) {
+				newPrice = newPrice.substring(0,newPrice.length()-6) + ","
+							+ newPrice.substring(newPrice.length() -6, newPrice.length()-3) + ","
+							+ newPrice.substring(newPrice.length()-3,newPrice.length());
+				return newPrice;
+			}
+			
+			if (newPrice.length() > 3) {
+				newPrice = newPrice.substring(0, newPrice.length() - 3) + "," 
+							+ newPrice.substring(newPrice.length()-3,newPrice.length());
+				return newPrice;
+			}
+		}
+		return newPrice;
+	}
+	
+	public String getDoneDate(long done_date) {
+		String s = new String();
+		s = "";
+		long one_minutes = 60000;
+		long one_hours = 60 * one_minutes;
+		long one_day = 24 * one_hours;
+		long one_month = 30 * one_day;
+		long one_year = 12 * one_month;
+		
+		Calendar today = Calendar.getInstance();
+		long temp = today.getTimeInMillis();
+		if (done_date != 0) {
+			temp = temp - done_date;
+			if (temp < 1000)
+				s =  "Vừa Mới";
+			else if (temp >= 1000 && temp < one_minutes) {
+				s = (temp / 1000) + " giây trước";
+			} else if (temp >= one_minutes && temp < one_hours)
+				s = (temp / one_minutes) + " phút trước";
+			else if (temp >= one_hours && temp < one_day)
+				s = (temp / one_hours) + " giờ trước";
+			else if (temp >= one_day && temp < one_month)
+				s = (temp / one_day) + " ngày trước";
+			else if (temp >= one_month && temp < one_year)
+				s = (temp / one_month) + " năm trước";
+		}
+		Log.d("DONE DATE", s + "");
+		return s;
 	}
 }

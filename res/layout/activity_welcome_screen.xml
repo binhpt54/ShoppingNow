@@ -1,16 +1,78 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/shoppingnow"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@xml/bg_welcome" >
 
-    <ProgressBar
-        android:id="@+id/progress_welcome"
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/progressbar" />
+
+    <TextView
+        android:id="@+id/welcome_title4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:indeterminateDrawable="@xml/custom_progress_bar_circle" 
-        android:layout_marginBottom="50dp" />
+        android:layout_marginTop="75dp"
+        android:shadowColor="#FFFFFF"
+        android:shadowDx="1"
+        android:shadowDy="-1"
+        android:shadowRadius="1"
+        android:text="VINOVA"
+        android:textColor="#000000"
+        android:textSize="40dp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/welcome_title1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/welcome_title4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:shadowColor="#783404"
+        android:shadowDx="-1"
+        android:shadowDy="-1"
+        android:shadowRadius="1"
+        android:text="SHOPPING"
+        android:textColor="#FFFFFF"
+        android:textSize="50dp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/welcome_title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/welcome_title1"
+        android:layout_alignTop="@+id/welcome_title1"
+        android:layout_marginTop="40dp"
+        android:shadowColor="#783404"
+        android:shadowDx="-1"
+        android:shadowDy="-1"
+        android:shadowRadius="1"
+        android:text="NOW"
+        android:textColor="#FFFFFF"
+        android:textSize="100dp"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/welcome_title3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/welcome_title2"
+        android:layout_below="@+id/welcome_title2"
+        android:layout_marginTop="18dp"
+        android:shadowColor="#FFFFFF"
+        android:shadowDx="-1"
+        android:shadowDy="-1"
+        android:shadowRadius="1"
+        android:text="MUA SẮM HIỆU QUẢ"
+        android:textColor="#000000"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:visibility="visible" />
 
 </RelativeLayout>

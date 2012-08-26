@@ -174,7 +174,7 @@
 	                android:inputType="numberDecimal"
 	                android:padding="10dp"
 	                android:background="@xml/rect_rounded_top"/>
-                <Spinner 
+                <com.actionbarsherlock.internal.widget.IcsSpinner
                     android:id="@+id/edit_new_unit"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
@@ -206,7 +206,8 @@
 	                android:layout_weight="1"
 	                android:textSize="16dp"
 	                android:hint="Giá"
-	                android:inputType="numberDecimal"
+	                android:inputType="number"
+	                android:numeric="integer"
 	                android:padding="10dp"
 	                android:background="@xml/rect_rounded_bottom"/>
            	 	<TextView 

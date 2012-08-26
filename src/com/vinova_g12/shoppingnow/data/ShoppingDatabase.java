@@ -42,13 +42,16 @@ public class ShoppingDatabase {
 			+ " float not null default 0," + UNIT + " text ," + PRICE
 			+ " float default 0," + MONEY + " text," + DUE + " text," + ALARM
 			+ " text default \" \"," + STATUS + " integer default 0," + PLACE
-			+ " text default \" \" " + ")";
+			+ " text default \" \", " 
+			+ DONE_DATE + " long default 0"
+			+ ")";
 	private static final String DROP_TABLE = "drop table if exists "
 			+ TABLE_NAME;
 	private DataHelper mHelper;
 	private Calendar today, tomorrow, yesterday, thisweek, lastweek, nextweek,
 			later;
 	private SimpleDateFormat format;
+	private SimpleDateFormat formatReverse;
 
 	public ShoppingDatabase(Context context) {
 		today = Calendar.getInstance();
@@ -61,7 +64,8 @@ public class ShoppingDatabase {
 		lastweek = Calendar.getInstance();
 		lastweek.setFirstDayOfWeek(Calendar.MONDAY);
 		later = Calendar.getInstance();
-		format = new SimpleDateFormat("dd-MM-yyyy");
+		format = new SimpleDateFormat("yyyy-MM-dd");
+		formatReverse = new SimpleDateFormat("dd-MM-yyyy");
 		this.mContext = context;
 	}
 
@@ -94,31 +98,39 @@ public class ShoppingDatabase {
 	}
 
 	// Get all item in a date (Today, Tomorrow, Yesterday)
-	public Cursor getAll_inDate(String date) {
+	public Cursor getAll_inDate(String date, String col) {
 		Cursor cur = null;
 		String sql;
+		String orderBy = "";
+		if (!col.equals(""))
+			orderBy = " order by " + col;
+		today = Calendar.getInstance();
+		tomorrow = Calendar.getInstance();
+		yesterday = Calendar.getInstance();
+		
+		today.setFirstDayOfWeek(Calendar.MONDAY);
+		tomorrow.setFirstDayOfWeek(Calendar.MONDAY);
+		yesterday.setFirstDayOfWeek(Calendar.MONDAY);
+		
 		if (date.equals("Today")) {
 			date = format.format(today.getTime());
 			Log.v("DataHelper", date);
 			sql = "select * from " + TABLE_NAME + " where " + DUE + "=\""
-					+ date + "\"";
-			Log.v("DataHelper", sql);
+					+ date + "\"" + orderBy;
 			cur = shoppingDB.rawQuery(sql, null);
 			return cur;
 		} else if (date.equals("Tomorrow")) {
 			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
 			date = format.format(tomorrow.getTime());
-			Log.v("Tomorrow", date);
 			sql = "select * from " + TABLE_NAME + " where " + DUE + "=\""
-					+ date + "\"";
+					+ date + "\"" + orderBy;
 			cur = shoppingDB.rawQuery(sql, null);
 			return cur;
 		} else if (date.equals("Yesterday")) {
 			yesterday.add(Calendar.DAY_OF_MONTH, -1);
 			date = format.format(yesterday.getTime());
-			Log.v("Yesterday", date);
 			sql = "select * from " + TABLE_NAME + " where " + DUE + "=\""
-					+ date + "\"";
+					+ date + "\"" + orderBy;
 			cur = shoppingDB.rawQuery(sql, null);
 			return cur;
 		}
@@ -126,18 +138,31 @@ public class ShoppingDatabase {
 	}
 
 	// Get all item in a week (This week, Next week, last week)
-	public Cursor getAll_inWeek(String week) {
+	public Cursor getAll_inWeek(String week, String col) {
 		Cursor cursor = null;
 		String sql;
+		String orderby = " order by " + DUE;
+		if (!col.equals(""))
+			orderby = orderby + "," + col;
 		List<String> date_in_this_week = new ArrayList<String>();
 		List<String> date_in_next_week = new ArrayList<String>();
 		List<String> date_in_last_week = new ArrayList<String>();
+		
+		thisweek = Calendar.getInstance();
+		nextweek = Calendar.getInstance();
+		lastweek = Calendar.getInstance();
+		
+		thisweek.setFirstDayOfWeek(Calendar.MONDAY);
+		nextweek.setFirstDayOfWeek(Calendar.MONDAY);
+		lastweek.setFirstDayOfWeek(Calendar.MONDAY);
+		
 		if (week.equals("This week")) {
 			thisweek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+			Log.d("Monday this week", formatReverse.format(thisweek.getTime()));
 			date_in_this_week.add(format.format(thisweek.getTime()));
-			while (thisweek.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-				thisweek.add(Calendar.DAY_OF_WEEK, 1);
+			for (int i=0; i<7; i++) {
 				date_in_this_week.add(format.format(thisweek.getTime()));
+				thisweek.add(Calendar.DAY_OF_WEEK, 1);
 			}
 
 			sql = "select * from shoppingItem where due_date IN (";
@@ -149,6 +174,7 @@ public class ShoppingDatabase {
 				else
 					sql += "\")";
 			}
+			sql += orderby;
 			Log.d("Select week", sql);
 			cursor = shoppingDB.rawQuery(sql, null);
 			return cursor;
@@ -156,10 +182,11 @@ public class ShoppingDatabase {
 		if (week.equals("Next week")) {
 			nextweek.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 			nextweek.add(Calendar.DAY_OF_WEEK, 1);
+			Log.d("Monday next week", formatReverse.format(nextweek.getTime()));
 			date_in_next_week.add(format.format(nextweek.getTime()));
-			while (nextweek.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-				nextweek.add(Calendar.DAY_OF_MONTH, 1);
+			for (int i=0; i<7; i++) {
 				date_in_next_week.add(format.format(nextweek.getTime()));
+				nextweek.add(Calendar.DAY_OF_MONTH, 1);
 			}
 			sql = "select * from shoppingItem where due_date IN (";
 			for (int i = 0; i < date_in_next_week.size(); i++) {
@@ -170,6 +197,7 @@ public class ShoppingDatabase {
 				else
 					sql += "\")";
 			}
+			sql += orderby;
 			Log.d("Select week", sql);
 			cursor = shoppingDB.rawQuery(sql, null);
 			return cursor;
@@ -178,10 +206,11 @@ public class ShoppingDatabase {
 		if (week.equals("Last week")) {
 			lastweek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 			lastweek.add(Calendar.DAY_OF_WEEK, -1);
+			Log.d("Sunday last week", formatReverse.format(lastweek.getTime()));
 			date_in_last_week.add(format.format(lastweek.getTime()));
-			while (lastweek.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-				lastweek.add(Calendar.DAY_OF_MONTH, -1);
+			for (int i=0; i<7; i++) {
 				date_in_last_week.add(format.format(lastweek.getTime()));
+				lastweek.add(Calendar.DAY_OF_MONTH, -1);
 			}
 			sql = "select * from shoppingItem where due_date IN (";
 			for (int i = 0; i < date_in_last_week.size(); i++) {
@@ -192,6 +221,7 @@ public class ShoppingDatabase {
 				else
 					sql += "\")";
 			}
+			sql += orderby;
 			Log.d("Select week", sql);
 			cursor = shoppingDB.rawQuery(sql, null);
 			return cursor;
@@ -224,7 +254,6 @@ public class ShoppingDatabase {
 
 		String sql = "select * from " + TABLE_NAME + " where " + PLACE
 				+ " like \"%" + addr + "%\"";
-		Log.w("sqlabc", sql);
 		Cursor cursor = shoppingDB.rawQuery(sql, null);
 		return cursor;
 	}
@@ -232,16 +261,17 @@ public class ShoppingDatabase {
 	private ListItem cursorToItem(Cursor cursor) {
 		ListItem item = new ListItem();
 		item.id = cursor.getInt(0);
+		item.name = cursor.getString(1);
 		item.priority = cursor.getInt(2);
 		item.quantity = cursor.getInt(3);
-		item.price = cursor.getInt(5);
-		item.status = cursor.getInt(10);
-		item.name = cursor.getString(1);
 		item.unit = cursor.getString(4);
+		item.price = cursor.getInt(5);
 		item.money = cursor.getString(6);
-		item.place = cursor.getString(7);
-		item.due_date = cursor.getString(8);
-		item.alarm = cursor.getString(9);
+		item.place = cursor.getString(10);
+		item.due_date = cursor.getString(7);
+		item.alarm = cursor.getString(8);
+		item.status = cursor.getInt(9);
+		item.doneDate = cursor.getLong(11);
 
 		return item;
 	}
@@ -272,9 +302,24 @@ public class ShoppingDatabase {
 	public long updateStatus(String stt, int id) {
 		ContentValues values = new ContentValues();
 		if (stt.equals("Done")) {
+			Calendar cal = Calendar.getInstance();
 			values.put(STATUS, 1);
-		} else
+			values.put(DONE_DATE, cal.getTimeInMillis());
+		} else {
 			values.put(STATUS, 0);
+			values.put(DONE_DATE, 0);
+		}
+		return shoppingDB.update(TABLE_NAME, values, ID + "=" + id, null);
+	}
+	
+	public long updatePriority(String stt, int id) {
+		ContentValues values = new ContentValues();
+		if (stt.equals("Yes")) {
+			Calendar cal = Calendar.getInstance();
+			values.put(PRIO, 1);
+		} else {
+			values.put(PRIO, 0);
+		}
 		return shoppingDB.update(TABLE_NAME, values, ID + "=" + id, null);
 	}
 
@@ -282,12 +327,16 @@ public class ShoppingDatabase {
 		for (int i = 0; i < id.size(); i++)
 			updateStatus(stt, id.get(i));
 	}
+	
+	public void updateSomePriority(String stt, List<Integer> id) {
+		for (int i = 0; i < id.size(); i++)
+			updatePriority(stt, id.get(i));
+	}
 
 	public List<String> search(String str) {
 		List<String> items = new ArrayList<String>();
 		String sql = "select * from " + TABLE_NAME + " where name like \"%"
 				+ str + "%\"";
-		Log.w("Search", sql);
 		Cursor cursor = shoppingDB.rawQuery(sql, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
@@ -297,7 +346,6 @@ public class ShoppingDatabase {
 		}
 		
 		for (int i=0;i<items.size();i++)
-			Log.w("Search",i + " " + items.get(i));
 		cursor.close();
 		return items;
 	}
@@ -311,7 +359,6 @@ public class ShoppingDatabase {
 		public void onCreate(SQLiteDatabase db) {
 			try {
 				db.execSQL(DATABASE_CREATE);
-				Log.v("DataHelper", "Database is created");
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 			}
@@ -319,10 +366,8 @@ public class ShoppingDatabase {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Log.i("DataHelper", "Updating database...");
 			db.execSQL(DROP_TABLE);
 			onCreate(db);
 		}
 	}
-
 }

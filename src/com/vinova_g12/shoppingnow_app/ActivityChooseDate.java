@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class ActivityChooseDate extends ListActivity{
 	private Calendar today = Calendar.getInstance();
@@ -98,8 +99,16 @@ public class ActivityChooseDate extends ListActivity{
 		dayBack = data.get(position).title;
 		dateBack = data.get(position).date;
 		dateBackReverse = data.get(position).dateReverse;
-		adapter.notifyDataSetChanged();
+		if (position != 7) {
+			intentRecv.putExtra(AddNew.DATE_RECV, dateBack);
+			intentRecv.putExtra(AddNew.DATE_RECV_REVERSE, dateBackReverse);
+			intentRecv.putExtra(AddNew.DAY_RECV, dayBack);
+			setResult(RESULT_OK, intentRecv);
+			finish();
+		} else 
+			Toast.makeText(getApplicationContext(), "Dialog Date Slider", 0).show();
 	}
+	
 	
 	
 	public void getDateFromToday() {
@@ -128,5 +137,10 @@ public class ActivityChooseDate extends ListActivity{
 			data.add(item);
 			cal.add(Calendar.DAY_OF_WEEK, 1);
 		}
+		ItemChooseDate item = new ItemChooseDate();
+		item.date = "";
+		item.dateReverse = "";
+		item.title = "Chọn Ngày Khác";
+		data.add(item);
 	}
 }

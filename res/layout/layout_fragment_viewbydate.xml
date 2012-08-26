@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#fff7dd"
+        android:listSelector="@drawable/item_pressed"
         android:cacheColorHint="@android:color/transparent"
 	    android:drawSelectorOnTop="true">
     </ListView>
@@ -27,6 +28,7 @@
 	        android:src="@drawable/calendar_empty" />
 
 	    <TextView
+	        android:id="@+id/textView1"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:gravity="center"

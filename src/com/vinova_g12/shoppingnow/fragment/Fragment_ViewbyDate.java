@@ -24,6 +24,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListFragment;
@@ -33,12 +34,15 @@ import com.vinova_g12.shoppingnow.data.ListItemAdapter;
 import com.vinova_g12.shoppingnow.data.ShoppingDatabase;
 import com.vinova_g12.shoppingnow.quickaction.ActionItem;
 import com.vinova_g12.shoppingnow.quickaction.QuickAction;
+import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 import com.vinova_g12.shoppingnow_app.AddNew;
 import com.vinova_g12.shoppingnow_app.MainActivity;
 @SuppressLint({ "ParserError", "ParserError" })
 public class Fragment_ViewbyDate extends SherlockListFragment{
 	//Attributes of class
-	ListItemAdapter adapter;
+	private TextView textView1;
+	private TextView textView2;
+	public ListItemAdapter adapter;
 	List<ListItem> data;
 	ShoppingDatabase db;
 	private Cursor mCursor;
@@ -53,6 +57,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	private static final int ID_SHARE = 5;	
 	private static final int ID_VIEW_PLACE = 6;
 	private static final int ID_UNDONE = 7;
+	private static final int ID_PRIORITY = 8;
 	private QuickAction quickAction;
 	private QuickAction quickAction2;
 	private QuickAction.OnActionItemClickListener quickActionListener;
@@ -64,6 +69,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	private int checked = -1;
 
 	private int sort = 0;
+	private String orderBy = "";
 	
 	
 	//Create a new object Fragment with mContent is content
@@ -72,9 +78,22 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 		return fragment;
 	}
 	
+	//Create a new object Fragment with mContent is content
+	public static Fragment_ViewbyDate newInstance(String content, String orderBy) {
+			Fragment_ViewbyDate fragment = new Fragment_ViewbyDate(content,orderBy);
+			return fragment;
+	}
+	
 	public Fragment_ViewbyDate(String content) {
 		super();
 		mContent = content;
+		category_date_in_week = new ArrayList<String>();
+	}
+	
+	public Fragment_ViewbyDate(String content, String orderBy) {
+		super();
+		mContent = content;
+		this.orderBy = orderBy;
 		category_date_in_week = new ArrayList<String>();
 	}
 	
@@ -83,55 +102,40 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	}
 	
 	//Notify to activity, event data of list changed. Activity have to invadilate listview
-	public void notifyDataChanged(String cmd) {
+	public void notifyDataChanged(String orderBy) {
 		category_date_in_week.clear();
-		Log.d("Category in week", category_date_in_week.size() + "");
-		if (cmd.equals("DELETE")) {
-			if (list_item_checked.size() != 0)
-				for (int i=0; i<list_item_checked.size(); i++) {
-					adapter.remove(data.get(list_item_checked.get(i)));
-				}
-		} else if (cmd.equals("Undone")) {
-			for (int i=0; i<list_item_checked.size(); i++)
-				data.get(i).status = 0;
-			} else if (cmd.equals("Done")) {
-				for (int i=0; i<list_item_checked.size(); i++)
-					data.get(i).status = 1;
-			} else if (!cmd.equals("")) {
-				int pos = Integer.parseInt(cmd);
-				Log.d("Delete button clicked", "" + pos);
-				if (pos >= 0 && pos < 10000000) {
-					adapter.remove(data.get(pos));
-				}
-			}
+		add_data_to_Adapter(orderBy);
 		adapter.notifyDataSetChanged();
 	}
 	
-	public void add_data_to_Adapter() {
+	public void add_data_to_Adapter(String orderby) {
+		db.openDB();
 		if (mContent.equals("Hôm Nay")) {
-			mCursor = db.getAll_inDate("Today");
+			mCursor = db.getAll_inDate("Today",orderby);
 			bindData();
 		}
 		else if (mContent.equals("Ngày Mai")) {
-			mCursor = db.getAll_inDate("Tomorrow");
+			mCursor = db.getAll_inDate("Tomorrow",orderby);
 			bindData();
 		} else if (mContent.equals("Hôm Qua")) {
-			mCursor = db.getAll_inDate("Yesterday");
+			mCursor = db.getAll_inDate("Yesterday",orderby);
 			bindData();
 		} else if (mContent.equals("Tuần Trước")) {
-			mCursor = db.getAll_inWeek("Last week");
+			mCursor = db.getAll_inWeek("Last week",orderby);
 			bindData();
 		} else if (mContent.equals("Tuần Này")) {
-			mCursor = db.getAll_inWeek("This week");
+			mCursor = db.getAll_inWeek("This week",orderby);
 			bindData();
 		} else if (mContent.equals("Tuần Sau")) {
-			mCursor = db.getAll_inWeek("Next week");
+			mCursor = db.getAll_inWeek("Next week",orderby);
 			bindData();
 		}
+		db.closeDB();
 	}
 	
 	//Add data from cursor to list adapter of list fragment
 	public void bindData() {
+		data.clear();
 		if (mCursor.moveToFirst()) {
 			do {
 				countProduct ++;
@@ -149,7 +153,18 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 		this.getListView().setDividerHeight(2);
 		LayoutAnimationController controller 
 		   = AnimationUtils.loadLayoutAnimation(getSherlockActivity(), R.anim.list_animation);
-		this.getListView().setLayoutAnimation(controller);
+		LayoutAnimationController controller2
+		   = AnimationUtils.loadLayoutAnimation(getSherlockActivity(), R.anim.list_animation_right_left);
+		if (mContent.equals("Ngày Mai") || mContent.equals("Tuần Sau"))
+			this.getListView().setLayoutAnimation(controller2);
+		else
+			this.getListView().setLayoutAnimation(controller);
+		textView1 = (TextView) getActivity().findViewById(R.id.textView1);
+		textView2 = (TextView) getActivity().findViewById(R.id.textView2);
+		
+		textView1.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getActivity()));
+		textView2.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getActivity()));
+		
 		this.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
@@ -161,13 +176,15 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 						quickAction.show(arg1);
 					else quickAction2.show(arg1);
 				checked = pos;
-				Toast.makeText(getActivity(), "Clicked2 " + pos, Toast.LENGTH_LONG).show();
+				//Toast.makeText(getActivity(), "Clicked2 " + pos, Toast.LENGTH_LONG).show();
 			}
 		});
 	}
 	
 	public void createQuickAction() {
 		//Create action items
+				ActionItem priority = new ActionItem(ID_PRIORITY, "Cần Mua", 
+						getResources().getDrawable(R.drawable.light_icon_priority));
 				ActionItem doneItem = new ActionItem(ID_DONE, "Xong", 
 						getResources().getDrawable(R.drawable.icon_content_done));
 				ActionItem deleteItem = new ActionItem(ID_DELETE, "Xóa", 
@@ -185,6 +202,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 				//Create quickaction window
 				quickAction = new QuickAction(getSherlockActivity(), QuickAction.HORIZONTAL);
 				//Add action items into quickaction
+				quickAction.addActionItem(priority);
 				quickAction.addActionItem(doneItem);
 				quickAction.addActionItem(deleteItem);
 				quickAction.addActionItem(editItem);
@@ -195,6 +213,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 				//Create quickaction window
 				quickAction2 = new QuickAction(getSherlockActivity(), QuickAction.HORIZONTAL);
 				//Add action items into quickaction
+				quickAction2.addActionItem(priority);
 				quickAction2.addActionItem(undoneItem);
 				quickAction2.addActionItem(deleteItem);
 				quickAction2.addActionItem(alertItem);
@@ -205,26 +224,41 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 					
 					@Override
 					public void onItemClick(QuickAction source, int pos, int actionId) {
-						db.openDB();
 						ActionItem actionItem = quickAction.getActionItem(pos);
 						//Filter action item have clicked
 						switch (actionId) {
+							case ID_PRIORITY:
+								if (data.get(checked).priority == 0) {
+									db.openDB();
+									db.updatePriority("Yes", data.get(checked).id);
+									db.closeDB();
+								} else {
+									db.openDB();
+									db.updatePriority("No", data.get(checked).id);
+									db.closeDB();
+								}
+								notifyDataChanged("");
+								break;
 							case ID_ALERT:
 								break;
 							case ID_DELETE:
+								db.openDB();
 								db.delete(data.get(checked).id);
+								db.closeDB();
 								data.remove(checked);
 								notifyDataChanged("");
 								break;
 							case ID_DONE:
+								db.openDB();
 								db.updateStatus("Done", data.get(checked).id);
 								data.get(checked).status = 1;
+								db.closeDB();
 								notifyDataChanged("");
 								break;
 							case ID_EDIT:
 								Intent intent = new Intent(getActivity(),AddNew.class);
 								Bundle update = new Bundle();
-								update.putInt ("id", data.get(checked).id);
+								update.putInt (MainActivity.REQUEST_CREATE, data.get(checked).id);
 								intent.putExtras(update);
 								startActivity(intent);
 								notifyDataChanged("");
@@ -236,15 +270,16 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 								notifyDataChanged("");
 								break;
 							case ID_UNDONE:
+								db.openDB();
 								db.updateStatus("Undone", data.get(checked).id);
 								data.get(checked).status = 0;
+								db.closeDB();
 								notifyDataChanged("");
 								break;
 			
 							default:
 								break;
 						}
-						db.closeDB();
 					}
 				};
 
@@ -273,81 +308,19 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 
 	@Override
 	public void onResume() {
+		Log.d("Fragment View By Date", mContent + " " + "Is running with sort by" + orderBy);
 		super.onResume();
 		countProduct = 0;
 		category_date_in_week = new ArrayList<String>();
 		data = new ArrayList<ListItem>();	
 		db = new ShoppingDatabase(getSherlockActivity().getApplicationContext());
-		db.openDB();
-		add_data_to_Adapter();
-		comparator = new Comparator<ListItem>() {
-			
-			@Override
-			public int compare(ListItem lhs, ListItem rhs) {
-				if (sort == 0) {
-					Log.d("Sort by", "Alphabet");
-					return lhs.compareALphabet(rhs);
-				}
-				if (sort == 1)
-					return lhs.comparePriority(rhs);
-				return lhs.comparePrice(rhs);
-			}
-		};
+		add_data_to_Adapter(orderBy);
 		// Setup adapter for list view
-				adapter = new ListItemAdapter(this,getSherlockActivity(), R.layout.list_item_row, data);
-				
-				//sort
-				if (adapter.getCount() > 1) {
-					adapter.sort(comparator);
-					adapter.notifyDataSetChanged();
-				}
-				
-				setListAdapter(adapter);
-				db.closeDB();
+		adapter = new ListItemAdapter(this,getSherlockActivity(), R.layout.list_item_row, data);
+		setListAdapter(adapter);
 	}
-	
-	private class SearchData extends AsyncTask<String, Long, Void> {
-		List<ListItem> dataSearch;
-		protected void onPreExecute() {
-			super.onPreExecute();
-			getSherlockActivity().setSupportProgressBarVisibility(true);
-			data = new ArrayList<ListItem>();
-			dataSearch = new ArrayList<ListItem>();
-		}
-
-		@Override
-		protected Void doInBackground(String... params) {
-			dataSearch = db.getAllItems();
-			int length;
-			length = MainActivity.search_bar.length();
-			for (int i=0; i<dataSearch.size(); i++) {
-				if (length <= dataSearch.get(i).name.length())
-					if (MainActivity.search_bar.getText().toString().
-							equalsIgnoreCase((String) data.get(i).name.subSequence(0, length))) {
-						data.add(dataSearch.get(i));
-					}	
-			}
-			publishProgress();
-			return null;
-		}
-		
-		@Override
-		protected void onProgressUpdate(Long... values) {
-			super.onProgressUpdate(values);
-			adapter.notifyDataSetChanged();
-
-		}
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			getSherlockActivity().setSupportProgressBarVisibility(false);
-		}
-		
-	}
-
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		db.closeDB();
 	}
 }

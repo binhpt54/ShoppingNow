@@ -6,7 +6,21 @@
         android:icon="@drawable/light_search"
         android:actionLayout="@layout/collapsible_edittext"/>
     
-    <item android:id="@+id/menu_sort" android:showAsAction="ifRoom" android:title="Sắp Xếp" android:icon="@drawable/icon_sort" />
+    <item android:id="@+id/menu_sort" android:showAsAction="ifRoom" android:title="Sắp Xếp" android:icon="@drawable/icon_sort"> 
+    	   <menu>
+			<group android:id="@+id/menu_nav_group"
+				android:checkableBehavior="single">
+				
+				<item android:id="@+id/menu_orderby_alphabet" android:title="Theo Tên" android:checked="true" />
+
+				<item android:id="@+id/menu_orderby_priority" android:title="Theo Độ Ưu Tiên" />
+
+				<item android:id="@+id/menu_orderby_total" android:title="Theo Giá Tiền" />
+				<item android:id="@+id/menu_orderby_done_date" android:title="Theo Ngày Hoàn Thành" />
+				<item android:id="@+id/menu_orderby_status" android:title="Theo Trạng Thái" />
+			</group>
+		</menu>
+    </item>
     <item android:id="@+id/menu_refresh" android:icon="@drawable/icon_navigation_refresh" android:showAsAction="ifRoom" android:title="Làm Mới Danh Sách" />
     
     

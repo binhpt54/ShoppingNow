@@ -17,11 +17,11 @@
         android:layout_height="40dp"
         android:layout_width="fill_parent"
         android:background="@xml/bg_titileviewpager"
-        android:textColor="#AAFFFFFF"
+        android:textColor="#AA000000"
         app:footerColor="#FFAA2222"
         app:footerLineHeight="0dp"
         app:footerIndicatorStyle="none"
-        app:selectedColor="#FFFFFFFF"
+        app:selectedColor="#FF000000"
         app:selectedBold="true"
         />
     
@@ -57,5 +57,9 @@
         android:layout_weight="1"
         android:visibility="gone"
         />
+    <TextView 
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#b4b3b3"/>
 
 </LinearLayout>

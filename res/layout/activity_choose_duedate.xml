@@ -53,6 +53,7 @@
         android:id="@id/android:list"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
+        android:listSelector="@drawable/item_pressed"
         android:cacheColorHint="@android:color/transparent"
 	    android:drawSelectorOnTop="true">>
         
