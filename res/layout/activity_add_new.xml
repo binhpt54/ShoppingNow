@@ -120,6 +120,16 @@
 	                android:layout_alignParentRight="true"
 	                android:layout_alignParentTop="true"
 	                android:src="@drawable/new_banner" />
+
+	            <Button
+	                android:id="@+id/delete_name"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_alignBaseline="@+id/edit_new_title"
+	                android:layout_alignBottom="@+id/edit_new_title"
+	                android:layout_toLeftOf="@+id/banner"
+	                android:visibility="gone"
+	                android:background="@xml/my_btn_delete_circle" />
 	            
 	        </RelativeLayout>
 	        
@@ -244,21 +254,37 @@
 		                android:shadowRadius="2"
 		                android:layout_weight="1"
 		                android:textSize="16dp"/>
+					<RelativeLayout 
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content">
 					
-					<AutoCompleteTextView 
-		                android:id="@+id/edit_new_place"
-		                android:layout_margin="4dp"
-		                android:inputType="textCapWords"
-		                android:imeOptions="actionDone"
-		                android:layout_width="fill_parent"
-		                android:drawableLeft="@drawable/light_place"
-		                android:layout_height="wrap_content"
-		                android:hint="Địa Điểm Mua Sắm"
-		                android:completionThreshold="1"
-		                android:textColor="#000000"
-		                android:textSize="16dp"
-		                android:padding="6dp"
-		                android:background="@drawable/rect_button_rounded"/>
+						<AutoCompleteTextView 
+			                android:id="@+id/edit_new_place"
+			                android:layout_margin="4dp"
+			                android:inputType="textCapWords"
+			                android:imeOptions="actionDone"
+			                android:layout_width="fill_parent"
+			                android:drawableLeft="@drawable/light_place"
+			                android:layout_height="wrap_content"
+			                android:hint="Địa Điểm Mua Sắm"
+			                android:completionThreshold="1"
+			                android:textColor="#000000"
+			                android:textSize="16dp"
+			                android:padding="6dp"
+			                android:background="@drawable/rect_button_rounded"/>
+
+						<Button
+						    android:id="@+id/delete_place"
+						    android:layout_width="wrap_content"
+						    android:layout_height="wrap_content"
+						    android:layout_alignBaseline="@+id/edit_new_place"
+						    android:layout_alignBottom="@+id/edit_new_place"
+						    android:layout_alignRight="@+id/edit_new_place"
+						    android:layout_marginRight="21dp"
+						    android:background="@xml/my_btn_delete_circle"
+						    android:visibility="gone" />
+
+					</RelativeLayout>
 	            
 		            <Button 
 		                android:id="@+id/edit_new_duedate"

@@ -29,6 +29,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -54,7 +56,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.support.v4.app.NavUtils;
 
-@SuppressLint("ParserError") public class AddNew extends Activity{
+public class AddNew extends Activity{
 	
 	private int state_action;
 	public static final int REQUEST_CHOOSE_DATE = 261290;
@@ -73,6 +75,8 @@ import android.support.v4.app.NavUtils;
 	private Button btn_done;
 	private Button btn_cancel;
 	private Button btn_due_date;
+	private Button btn_delete_name;
+	private Button btn_delete_place;
 	private ToggleButton btn_alarm;
 	//Autocomplate name and place
 	private AutoCompleteTextView name;
@@ -136,6 +140,8 @@ import android.support.v4.app.NavUtils;
 		btn_cancel.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
 		edit_quantity.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
 		edit_price.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
+		btn_delete_name = (Button) findViewById(R.id.delete_name);
+		btn_delete_place = (Button) findViewById(R.id.delete_place);
 		
 		btn_due_date.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getApplicationContext()));
 		btn_alarm.setTypeface(MyTypeFace_Roboto.Roboto_Bold(getApplicationContext()));
@@ -240,8 +246,10 @@ import android.support.v4.app.NavUtils;
 							if (cur != null) {
 								if (cur.moveToFirst()) {
 									String unit = cur.getString(2);
-									if (cur.getFloat(3) != 0)
-										edit_price.setText(cur.getFloat(3) + "");
+									if (cur.getFloat(3) != 0) {
+										String priceOptimize = cur.getFloat(3) + "";
+										edit_price.setText(ListItemAdapter.optimizePrice(priceOptimize, ""));
+									}
 									edit_unit.setSelection(adapterSpinner.getPosition(unit));
 								}
 							}
@@ -249,6 +257,78 @@ import android.support.v4.app.NavUtils;
 					}
 				};
 		name.setOnItemClickListener(autoNameListener);
+		//Text changed listener for name
+		TextWatcher nameListener = new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				if (name.getText().length() != 0) {
+					btn_delete_name.setVisibility(View.VISIBLE);
+					
+				}
+				else
+					btn_delete_name.setVisibility(View.GONE);
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		name.addTextChangedListener(nameListener);
+		//Text changed listener for place
+		TextWatcher placeListener = new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				if (place.getText().length() != 0)
+					btn_delete_place.setVisibility(View.VISIBLE);
+				else
+					btn_delete_place.setVisibility(View.GONE);
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		place.addTextChangedListener(placeListener);
+		//Button delete place and name listener. When clicked, make empty place and name edittext
+		OnClickListener emptyNameListener = new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+					Log.d("Btn DELETE", "Clicked");
+					name.setText("");
+			}
+		};
+		
+		OnClickListener emptyPlaceListener = new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+					place.setText("");
+			}
+		};
+		name.setOnClickListener(emptyNameListener);
+		place.setOnClickListener(emptyPlaceListener);
 		//Set listener textwatcher. When user enter full quantit and price, 
 		//calculate total price and display to screen
 		TextWatcher textChanged = new TextWatcher() {
@@ -489,15 +569,20 @@ import android.support.v4.app.NavUtils;
 	
 	//Only call after function getData
 	public void SaveAutoTextData() {
+		valueAutoName = new ContentValues();
+		valueAutoName.put(ShoppingDatabase.NAME, item.name);
+		valueAutoName.put(ShoppingDatabase.PRICE, item.price);
+		valueAutoName.put(ShoppingDatabase.UNIT, item.unit);
+		
 		if (!CheckExistsAutoName()) {
-			valueAutoName = new ContentValues();
-			valueAutoName.put(ShoppingDatabase.NAME, item.name);
-			valueAutoName.put(ShoppingDatabase.PRICE, item.price);
-			valueAutoName.put(ShoppingDatabase.UNIT, item.unit);
-
 			nameDB.openDB();
 			nameDB.insert(valueAutoName);
 			nameDB.closeDB();
+		} else if (state_action != -1) {
+			nameDB.openDB();
+			Cursor cur = nameDB.getItemFromName(item.name);
+			cur.moveToFirst();
+			nameDB.update(cur.getInt(0), valueAutoName);
 		}
 		
 		if (!CheckExistsAutoPlace()) {
@@ -525,22 +610,23 @@ import android.support.v4.app.NavUtils;
 			valuesProduct.put(ShoppingDatabase.PLACE, item.place);
 			valuesProduct.put(ShoppingDatabase.ALARM, item.alarm);
 			
-			shoppingDB.openDB();
 			if (state_action == -1) {
+				shoppingDB.openDB();
 				shoppingDB.insert(valuesProduct);
+				shoppingDB.closeDB();
 			} else {
+				shoppingDB.openDB();
 				shoppingDB.update(state_action, valuesProduct);
+				shoppingDB.closeDB();
+				
 				finish();
 			}
-			shoppingDB.closeDB();
-			
 			
 			SaveAutoTextData();
 			setAdapterForAutoComplete();
 			
 			//Set empty UI
 			name.setText("");
-			place.setText("");
 			edit_price.setText("");
 			edit_quantity.setText("");
 			total.setText("");

@@ -364,6 +364,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 	public static String optimizePrice(String price, String option) {
 		String newPrice = new String();
 		if (price.endsWith("0")) {
+			Log.d("End of 0", "OK");
 			newPrice = price.substring(0, price.length()-2);
 		}
 		else newPrice = price;
