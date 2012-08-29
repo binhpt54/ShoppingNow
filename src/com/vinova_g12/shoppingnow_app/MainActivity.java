@@ -33,6 +33,8 @@ import android.graphics.Color;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.style.BulletSpan;
 import android.util.Log;
 import android.view.Menu;
@@ -46,7 +48,7 @@ import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 
-@SuppressLint({ "ParserError", "NewApi" })
+@SuppressLint({ "ParserError", "NewApi", "ParserError" })
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.OnNavigationListener{
 
 	private FragmentAdapter_Viewbydate mAdapter;
@@ -62,9 +64,13 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
     public static EditText search_bar;
     //Count of checked
     public static int countChecked;
+    private int posSorted = -1;
   	public static List<Integer> list_item_checked;
-  	public static String REQUEST_CREATE = "create";
-  	public static String REQUEST_EDIT = "edit";
+  	public static final String REQUEST_CREATE = "create";
+  	public static final String REQUEST_EDIT = "edit";
+  	public static final int REQUEST_SORT = 90;
+  	public static final String REQUEST_ORDEYBY = "orderby";
+  	public static final String POSITION_SORTED = "position";
   	
   	String[] categoryWeek = new String[] {"Tuần Trước", "Tuần Này", "Tuần Sau"};
   	String[] categoryDate = new String[] {"Hôm Qua", "Hôm Nay", "Ngày Mai"};
@@ -101,7 +107,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         getSupportActionBar().setListNavigationCallbacks(list, this);
         
-        mAdapter = new FragmentTitleAdapter_Viewbydate(getSupportFragmentManager(), categoryDate);
+        mAdapter = new FragmentTitleAdapter_Viewbydate(this, getSupportFragmentManager(), categoryDate);
 
         mPager = (ViewPager)findViewById(R.id.pager);
         mPagerWeek = (ViewPager) findViewById(R.id.pager1);
@@ -110,7 +116,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         mPager.setAdapter(mAdapter);
         //Setting and bind viewpager with indicator
         mIndicator = (TitlePageIndicator) findViewById(R.id.indicator);
-        mIndicator.setTextSize(27);
+        mIndicator.setTextSize(21);
         mIndicator.setViewPager(mPager);
         mIndicator.setCurrentItem(1);
         mIndicator.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
@@ -144,6 +150,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
 		com.actionbarsherlock.view.MenuItem item = (com.actionbarsherlock.view.MenuItem) menu.findItem(R.id.menu_search);
 		search_bar = (EditText)item.getActionView();
+		//auto Show and hide keyboard
 		item.setOnActionExpandListener(new OnActionExpandListener() {
 			
 			@Override
@@ -193,7 +200,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			startActivity(intent);
 			break;
 		case R.id.menu_search:
-			mAdapter = new FragmentTitleAdapter_Viewbydate(getSupportFragmentManager(), categorySearch);
+			mAdapter = new FragmentTitleAdapter_Viewbydate(this, getSupportFragmentManager(), categorySearch);
 			mPagerSearch.setAdapter(mAdapter);
 			mPager.setVisibility(View.GONE);
 			mPagerAlarm.setVisibility(View.GONE);
@@ -201,33 +208,38 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			mPagerSearch.setVisibility(View.VISIBLE);
 			mIndicator.setViewPager(mPagerSearch);
 			mIndicator.setCurrentItem(0);
+			
+			TextWatcher searchChangedListener = new TextWatcher() {
+				
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before, int count) {
+					mAdapter.notifyDataSetChanged();
+					
+				}
+				
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void afterTextChanged(Editable s) {
+					// TODO Auto-generated method stub
+					
+				}
+			};
+			search_bar.addTextChangedListener(searchChangedListener);
 			stateSearch = 1;
 			break;
-		case R.id.menu_orderby_alphabet:
-			orderBy = ShoppingDatabase.NAME;
-			mAdapter.SetorderBy(orderBy);
-			mAdapter.notifyDataSetChanged();
-			break;
-		case R.id.menu_orderby_priority:
-			orderBy = ShoppingDatabase.PRIO;
-			mAdapter.SetorderBy(orderBy);
-			mAdapter.notifyDataSetChanged();
-			break;
-		case R.id.menu_orderby_done_date:
-			orderBy = ShoppingDatabase.DONE_DATE;
-			mAdapter.SetorderBy(orderBy);
-			mAdapter.notifyDataSetChanged();
-			break;
-		case R.id.menu_orderby_status:
-			orderBy = ShoppingDatabase.STATUS;
-			mAdapter.SetorderBy(orderBy);
-			mAdapter.notifyDataSetChanged();
-			break;
-		case R.id.menu_orderby_total:
-			orderBy = ShoppingDatabase.PRICE + "*" + ShoppingDatabase.QUANT;
-			mAdapter.SetorderBy(orderBy);
-			mAdapter.notifyDataSetChanged();
-			break;
+		case R.id.menu_sort:
+			Intent intentSort = new Intent(getApplicationContext(), ActivitySort.class);
+			Bundle bundle = new Bundle();
+			bundle.putInt(POSITION_SORTED, posSorted);
+			intentSort.putExtras(bundle);
+			startActivityForResult(intentSort, REQUEST_SORT);
+		
 		default:
 			break;
 		}
@@ -235,13 +247,14 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	}
 
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		setSupportProgressBarIndeterminateVisibility(true);
 		setPagerView(itemPosition);
 		return true;
 	}
 	
 	public void setPagerView(int itemPosition) {
 		if (itemPosition == 0) {
-			mAdapter = new FragmentTitleAdapter_Viewbydate(getSupportFragmentManager(), categoryDate);
+			mAdapter = new FragmentTitleAdapter_Viewbydate(this, getSupportFragmentManager(), categoryDate);
 			stateView = 1;
 			mPager.setAdapter(mAdapter);
 			mPager.setVisibility(View.VISIBLE);
@@ -251,7 +264,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			mIndicator.setViewPager(mPager);
 		}
 		else if (itemPosition == 1) {
-			mAdapter = new FragmentTitleAdapter_Viewbydate(getSupportFragmentManager(), categoryWeek);
+			mAdapter = new FragmentTitleAdapter_Viewbydate(this, getSupportFragmentManager(), categoryWeek);
 			stateView = 2;
 			mPagerWeek.setAdapter(mAdapter);
 			mPager.setVisibility(View.GONE);
@@ -261,7 +274,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 			mIndicator.setViewPager(mPagerWeek);
 		}
 		else if (itemPosition == 2) {
-			mAdapter = new FragmentTitleAdapter_Viewbydate(getSupportFragmentManager(), categoryAlarm);
+			mAdapter = new FragmentTitleAdapter_Viewbydate(this, getSupportFragmentManager(), categoryAlarm);
 			stateView = 3;
 			mPagerAlarm.setAdapter(mAdapter);
 			mPager.setVisibility(View.GONE);
@@ -276,6 +289,21 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         	mIndicator.setCurrentItem(0);
         else
         	mIndicator.setCurrentItem(1);
-		
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == REQUEST_SORT) {
+			if (resultCode == RESULT_OK) {
+				orderBy = data.getExtras().getString(MainActivity.REQUEST_ORDEYBY);
+				Log.d("ORDERBY", orderBy);
+				posSorted = data.getExtras().getInt(MainActivity.POSITION_SORTED);
+				Log.d("ORDERBY", posSorted + "");
+				mAdapter.SetorderBy(orderBy);
+				mAdapter.notifyDataSetChanged();
+			}
+		}
 	}
 }

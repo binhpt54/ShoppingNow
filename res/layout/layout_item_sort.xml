@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp" >
+    
+    <RadioButton
+	    android:id="@+id/radio_sort"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:gravity="center"
+	    android:button="@xml/radio_ics"
+	    android:focusable="true" />
+
+    <TextView
+        android:id="@+id/title_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="38dp"
+        android:gravity="center_vertical"
+        android:text="Theo Tên"
+        android:textSize="20dp" />
+
+</RelativeLayout>

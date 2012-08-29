@@ -1,5 +1,7 @@
 package com.vinova_g12.shoppingnow.fragment;
 
+import com.vinova_g12.shoppingnow_app.MainActivity;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,6 +14,7 @@ public class FragmentAdapter_Viewbydate extends FragmentStatePagerAdapter{
 	protected static String[] CONTENT = new String[] { "Hôm Qua", "Hôm Nay","Ngày Mai" };
 	private int mCount = CONTENT.length;
 	private String orderBy = "";
+	private MainActivity activity;
 	
 	
 	public void SetorderBy(String col) {
@@ -27,19 +30,20 @@ public class FragmentAdapter_Viewbydate extends FragmentStatePagerAdapter{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public FragmentAdapter_Viewbydate(FragmentManager fm, String[] cont) {
+	public FragmentAdapter_Viewbydate(MainActivity act, FragmentManager fm, String[] cont) {
 		super(fm);
+		this.activity = act;
 		CONTENT = cont;
 		mCount = CONTENT.length;
 	}
 
 	@Override
 	public Fragment_ViewbyDate getItem(int position) {
-		Log.d("Fragment GET ITEM", CONTENT[position % CONTENT.length]);
+		Log.d("Fragment GET ITEM", CONTENT[position % CONTENT.length] + " with " + orderBy);
 		if (orderBy.equals(""))
-			return Fragment_ViewbyDate.newInstance(CONTENT[position % CONTENT.length]);
+			return Fragment_ViewbyDate.newInstance(activity,CONTENT[position % CONTENT.length]);
 		else
-			return Fragment_ViewbyDate.newInstance(CONTENT[position % CONTENT.length], orderBy);
+			return Fragment_ViewbyDate.newInstance(activity,CONTENT[position % CONTENT.length], orderBy);
 	}
 	
 

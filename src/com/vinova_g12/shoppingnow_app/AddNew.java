@@ -107,7 +107,7 @@ public class AddNew extends Activity{
 	SimpleDateFormat formatReverse = new SimpleDateFormat("yyyy-MM-dd");
 	Calendar today = Calendar.getInstance();
 	
-	String[] itemSpinner = new String[] {"Cân", "Gam", "Lạng","Củ", "Quả","Chiếc", "Bó", "Mớ", "Túi", "Gói",  "Bình", "Chai", "Lọ", "Thùng", "Hộp" };
+	String[] itemSpinner = new String[] {"Con","Thanh","Que","Cân", "Gam", "Lạng","Củ", "Quả","Chiếc", "Bó", "Mớ", "Túi", "Gói",  "Bình", "Chai", "Lọ", "Thùng", "Hộp" };
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

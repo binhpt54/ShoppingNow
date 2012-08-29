@@ -34,6 +34,12 @@
             android:name="com.vinova_g12.shoppingnow_app.ActivityChooseDate"
             android:label="Ngày Hoàn Thành" >
         </activity>
+        
+        <activity
+            android:name="com.vinova_g12.shoppingnow_app.ActivitySort"
+            android:label="Sắp Xếp" 
+            android:theme="@style/Theme.Sherlock.Light.Dialog">
+        </activity>
     </application>
 
 </manifest>

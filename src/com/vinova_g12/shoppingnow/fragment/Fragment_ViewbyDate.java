@@ -1,5 +1,6 @@
 package com.vinova_g12.shoppingnow.fragment;
 
+import java.security.PublicKey;
 import java.text.Bidi;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,17 +38,17 @@ import com.vinova_g12.shoppingnow.quickaction.QuickAction;
 import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 import com.vinova_g12.shoppingnow_app.AddNew;
 import com.vinova_g12.shoppingnow_app.MainActivity;
-@SuppressLint({ "ParserError", "ParserError" })
-public class Fragment_ViewbyDate extends SherlockListFragment{
+
+@SuppressLint("ParserError") public class Fragment_ViewbyDate extends SherlockListFragment{
 	//Attributes of class
-	private TextView textView1;
-	private TextView textView2;
+	public TextView textView1;
+	public TextView textView2;
 	public ListItemAdapter adapter;
 	List<ListItem> data;
 	ShoppingDatabase db;
-	private Cursor mCursor;
-	private String mContent = "";
-	private int countProduct = 0;
+	public Cursor mCursor;
+	public String mContent = "";
+	public int countProduct = 0;
 	public Fragment_ViewbyDate fragment;
 	//ID of action item
 	private static final int ID_DONE = 1;
@@ -64,34 +65,36 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	public static boolean actionMode_running = false;
 	public static List<Integer> list_item_checked;
 	public static List<String> category_date_in_week;
-	private Comparator<ListItem> comparator;
+	public Comparator<ListItem> comparator;
 	//Id of item checked for quickaction
-	private int checked = -1;
-
-	private int sort = 0;
-	private String orderBy = "";
+	public int checked = -1;
+	public MainActivity activity;
+	public int sort = 0;
+	public String orderBy = "";
 	
 	
 	//Create a new object Fragment with mContent is content
-	public static Fragment_ViewbyDate newInstance(String content) {
-		Fragment_ViewbyDate fragment = new Fragment_ViewbyDate(content);
+	public static Fragment_ViewbyDate newInstance(MainActivity act, String content) {
+		Fragment_ViewbyDate fragment = new Fragment_ViewbyDate(act, content);
 		return fragment;
 	}
 	
 	//Create a new object Fragment with mContent is content
-	public static Fragment_ViewbyDate newInstance(String content, String orderBy) {
-			Fragment_ViewbyDate fragment = new Fragment_ViewbyDate(content,orderBy);
+	public static Fragment_ViewbyDate newInstance(MainActivity act, String content, String orderBy) {
+			Fragment_ViewbyDate fragment = new Fragment_ViewbyDate(act, content,orderBy);
 			return fragment;
 	}
 	
-	public Fragment_ViewbyDate(String content) {
+	public Fragment_ViewbyDate(MainActivity act, String content) {
 		super();
+		this.activity = act;
 		mContent = content;
 		category_date_in_week = new ArrayList<String>();
 	}
 	
-	public Fragment_ViewbyDate(String content, String orderBy) {
+	public Fragment_ViewbyDate(MainActivity act, String content, String orderBy) {
 		super();
+		this.activity = act;
 		mContent = content;
 		this.orderBy = orderBy;
 		category_date_in_week = new ArrayList<String>();
@@ -129,6 +132,8 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 		} else if (mContent.equals("Tuần Sau")) {
 			mCursor = db.getAll_inWeek("Next week",orderby);
 			bindData();
+		} else if (mContent.equals("Tìm Kiếm")) {
+			dataFromEdittext(orderby);
 		}
 		db.closeDB();
 	}
@@ -195,7 +200,7 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 						getResources().getDrawable(R.drawable.icon_devicce_alram));
 				ActionItem shareItem = new ActionItem(ID_SHARE, "Chia Sẻ", 
 						getResources().getDrawable(R.drawable.icon_share));
-				ActionItem viewPlace = new ActionItem(ID_VIEW_PLACE, "Cùng Địa Điểm",
+				ActionItem viewPlace = new ActionItem(ID_VIEW_PLACE, "Cùng ĐĐ",
 						getResources().getDrawable(R.drawable.location_place));
 				ActionItem undoneItem = new ActionItem(ID_UNDONE, "Chưa Xong", 
 						getResources().getDrawable(R.drawable.icon_content_undone));
@@ -315,6 +320,8 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 		data = new ArrayList<ListItem>();	
 		db = new ShoppingDatabase(getSherlockActivity().getApplicationContext());
 		add_data_to_Adapter(orderBy);
+		Log.d("THREAD DONE", data.size() + "");
+		//add_data_to_Adapter(orderBy);
 		// Setup adapter for list view
 		adapter = new ListItemAdapter(this,getSherlockActivity(), R.layout.list_item_row, data);
 		setListAdapter(adapter);
@@ -322,5 +329,14 @@ public class Fragment_ViewbyDate extends SherlockListFragment{
 	@Override
 	public void onDetach() {
 		super.onDetach();
+	}
+	
+	public void dataFromEdittext(String orderBy) {
+		data.clear();
+		List<ListItem> dataSearch = new ArrayList<ListItem>();
+		EditText searchBar = MainActivity.search_bar;
+		int length = searchBar.length();
+		if (length > 0)
+			data = db.getAllItemsOrderbyWeek(searchBar.getText().toString(), orderBy);
 	}
 }

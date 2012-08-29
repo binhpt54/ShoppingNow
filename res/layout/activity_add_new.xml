@@ -129,6 +129,7 @@
 	                android:layout_alignBottom="@+id/edit_new_title"
 	                android:layout_toLeftOf="@+id/banner"
 	                android:visibility="gone"
+	                android:focusable="false"
 	                android:background="@xml/my_btn_delete_circle" />
 	            
 	        </RelativeLayout>
@@ -192,6 +193,7 @@
 	                android:textSize="16dp"
 	                android:gravity="center"
 	                android:layout_marginRight="4dp"
+	                android:drawingCacheQuality="auto"
 	                android:background="@drawable/spinner"/>
                 <Button 
                     android:id="@+id/btn_cancel_quantity"
@@ -281,6 +283,7 @@
 						    android:layout_alignBottom="@+id/edit_new_place"
 						    android:layout_alignRight="@+id/edit_new_place"
 						    android:layout_marginRight="21dp"
+						    android:focusable="false"
 						    android:background="@xml/my_btn_delete_circle"
 						    android:visibility="gone" />
 

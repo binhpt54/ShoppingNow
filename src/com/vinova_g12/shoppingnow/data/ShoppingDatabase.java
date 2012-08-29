@@ -236,8 +236,27 @@ public class ShoppingDatabase {
 
 	public List<ListItem> getAllItems() {
 		List<ListItem> items = new ArrayList<ListItem>();
-		Cursor cursor = shoppingDB.query(TABLE_NAME, allColumns, null, null,
+		Cursor cursor = shoppingDB.query(TABLE_NAME, null, null, null,
 				null, null, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			ListItem item = cursorToItem(cursor);
+			items.add(item);
+			cursor.moveToNext();
+		}
+
+		cursor.close();
+		return items;
+	}
+	
+	public List<ListItem> getAllItemsOrderbyWeek(String search, String col) {
+		List<ListItem> items = new ArrayList<ListItem>();
+		String sql = "select * from shoppingItem where name like '%"
+				+ search + "%' order by due_date";
+		if (!col.equals(""))
+			sql = sql + "," + col;
+		Cursor cursor = shoppingDB.rawQuery(sql, null);
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {

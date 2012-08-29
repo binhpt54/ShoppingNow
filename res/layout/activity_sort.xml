@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    <ToggleButton 
+        android:id="@+id/btn_up_or_down"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="6dp"
+        android:background="@drawable/switch_up_down_sort"
+        android:textOn=""
+        android:textOff=""/>
+    <RadioGroup 
+        android:id="@+id/group_sort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton 
+            android:id="@+id/sort_by_name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Tên"
+            android:textSize="20dp"
+            android:button="@xml/radio_ics"/>
+        <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c5c5c5"/>
+        
+        <RadioButton 
+            android:id="@+id/sort_by_priority"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Độ Ưu Tiên"
+            android:textSize="20dp"
+            android:button="@xml/radio_ics"/>
+        <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c5c5c5"/>
+        
+        <RadioButton 
+            android:id="@+id/sort_by_total"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Tổng Tiền"
+            android:textSize="20dp"
+            android:button="@xml/radio_ics"/>
+        <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c5c5c5"/>
+        <RadioButton 
+            android:id="@+id/sort_by_donedate"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Thời Gian Hoàn Thành"
+            android:textSize="20dp"
+            android:button="@xml/radio_ics"/>
+        <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c5c5c5"/>
+        <RadioButton 
+            android:id="@+id/sort_by_status"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Trạng Thái(Xong/Chưa)"
+            android:textSize="20dp"
+            android:button="@xml/radio_ics"/>
+    </RadioGroup>
+    
+    <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="6dp"
+            android:background="#EFc76508"/>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+        <Button 
+            android:id="@+id/sort_done"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:text="Xong"
+            android:gravity="center"
+            android:textSize="20dp"/>
+        <TextView 
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#EFc76508"/>
+        <Button 
+            android:id="@+id/sort_cancel"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:textSize="20dp"
+            android:text="Hủy"/>
+        
+    </LinearLayout>
+    
+
+</LinearLayout>
