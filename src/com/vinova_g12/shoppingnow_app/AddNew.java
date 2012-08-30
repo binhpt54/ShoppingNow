@@ -241,8 +241,7 @@ public class AddNew extends Activity{
 							nameDB.openDB();
 							Cursor cur = null;
 							cur = nameDB.getItemFromName(name);
-							
-							Log.d("Cur size", cur.getColumnCount() + "");
+						
 							if (cur != null) {
 								if (cur.moveToFirst()) {
 									String unit = cur.getString(2);

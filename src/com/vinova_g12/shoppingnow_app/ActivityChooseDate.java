@@ -1,5 +1,6 @@
 package com.vinova_g12.shoppingnow_app;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ActivityChooseDate extends ListActivity{
@@ -34,8 +36,11 @@ public class ActivityChooseDate extends ListActivity{
 	private Button btn_custom_due_date;
 	private Button btn_save;
 	private Button btn_cancel;
+	private TextView selectDifferent;
 	private String dayBack, dateBack, dateBackReverse;
-	
+	public static final int REQUESR_CHOOSE_DIFFERENT = 90;
+	public static final String DAY_DIFFERENT = "day_different";
+	String temp = "";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -44,10 +49,13 @@ public class ActivityChooseDate extends ListActivity{
 		
 		btn_save = (Button) findViewById(R.id.btn_save_duedate);
 		btn_cancel = (Button) findViewById(R.id.btn_cancel_duedate);
+		selectDifferent = (TextView) findViewById(R.id.choose_different_day);
+		btn_custom_due_date = (Button) findViewById(R.id.btn_choose_diff);
 		
+		btn_custom_due_date.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
 		btn_save.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
 		btn_cancel.setTypeface(MyTypeFace_Roboto.Roboto_Regular(getApplicationContext()));
-		
+		selectDifferent.setTypeface(MyTypeFace_Roboto.Roboto_Medium(getApplicationContext()));
 		today.setFirstDayOfWeek(Calendar.MONDAY);
 		
 		dayBack = "Hôm Nay";
@@ -79,16 +87,21 @@ public class ActivityChooseDate extends ListActivity{
 			}
 		};
 		btn_cancel.setOnClickListener(cancelListener);
+		
+		OnClickListener customListener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent2 = new Intent(getApplicationContext(), ChooseDifferentDate.class);
+				startActivityForResult(intent2, REQUESR_CHOOSE_DIFFERENT);
+			}
+		};
+		btn_custom_due_date.setOnClickListener(customListener);
+		
 		//Get 7 date after
 		getDateFromToday();
 		//Create adapter
 		adapter = new ListItemChooseDate(this, R.layout.list_item_choose_duedate, data);
 		setListAdapter(adapter);
-		//Set footer view
-		View footer = View.inflate(this, R.layout.list_choose_date_footer, null);
-		getListView().addFooterView(footer);
-		btn_custom_due_date = (Button) footer.findViewById(R.id.btn_custom_duedate);
-		btn_custom_due_date.setTypeface(MyTypeFace_Roboto.Roboto_Black(getApplicationContext()));
 	}
 
 	@Override
@@ -105,11 +118,8 @@ public class ActivityChooseDate extends ListActivity{
 			intentRecv.putExtra(AddNew.DAY_RECV, dayBack);
 			setResult(RESULT_OK, intentRecv);
 			finish();
-		} else 
-			Toast.makeText(getApplicationContext(), "Dialog Date Slider", 0).show();
+		}
 	}
-	
-	
 	
 	public void getDateFromToday() {
 		Calendar cal = Calendar.getInstance();
@@ -137,10 +147,30 @@ public class ActivityChooseDate extends ListActivity{
 			data.add(item);
 			cal.add(Calendar.DAY_OF_WEEK, 1);
 		}
-		ItemChooseDate item = new ItemChooseDate();
-		item.date = "";
-		item.dateReverse = "";
-		item.title = "Chọn Ngày Khác";
-		data.add(item);
 	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, intent);
+		if (requestCode == REQUESR_CHOOSE_DIFFERENT) {
+			if (resultCode == RESULT_OK) {
+				temp = intent.getExtras().getString(DAY_DIFFERENT);
+				Calendar cal = Calendar.getInstance();
+				try {
+					cal.setTime(format.parse(temp));
+					dayBack = ListItemAdapter.getDay(cal);
+					dateBack = temp;
+					dateBackReverse = formatReverse.format(cal.getTime());
+
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				btn_custom_due_date.setText("Đã chọn: " + temp);
+			}
+		}
+	}
+	
+	
 }

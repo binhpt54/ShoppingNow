@@ -34,7 +34,7 @@
 	        android:id="@+id/choose_date_name"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
-	        android:textSize="25dp"
+	        android:textSize="18dp"
 	 		android:layout_marginTop="4dp"
 	 		android:gravity="center_vertical"
 	        android:textColor="#000000"
@@ -54,7 +54,7 @@
 	        android:shadowDy="2"
 	        android:shadowRadius="2"
             android:text="23-08-2012"
-            android:textSize="15dp"/>
+            android:textSize="14dp"/>
         
     </LinearLayout>
     

@@ -40,6 +40,12 @@
             android:label="Sắp Xếp" 
             android:theme="@style/Theme.Sherlock.Light.Dialog">
         </activity>
+        
+        <activity
+            android:name="com.vinova_g12.shoppingnow_app.ChooseDifferentDate"
+            android:label="Chọn Ngày Hoàn Thành" 
+            android:theme="@style/Theme.Sherlock.Light.Dialog">
+        </activity>
     </application>
 
 </manifest>

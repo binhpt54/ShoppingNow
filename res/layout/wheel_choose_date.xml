@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_dialog"
+    android:orientation="vertical" >
+    
+    <TextView 
+            android:id="@+id/date_selected"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:textSize="20dp"
+            android:layout_margin="6dp"
+            android:text="Chọn Ngày"
+            android:background="@drawable/rect_rounded"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:shadowColor="#FFFFFF"
+		    android:shadowDx="0"
+		    android:shadowDy="-1"
+		    android:shadowRadius="1"/>
+    
+    <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@xml/bg_divider_gradient2"
+        android:layout_margin="6dp">
+        <LinearLayout 
+            android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@xml/bg_divider_gradient2"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginBottom="10dp"
+	        android:orientation="vertical">
+	        
+            <TextView 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textSize="16dp"
+	            android:text="Ngày"
+	            android:gravity="center"
+	            android:textColor="#FFFFFF"
+	            android:shadowColor="#000000"
+			    android:shadowDx="0"
+			    android:shadowDy="-1"
+			    android:shadowRadius="1"/>
+	        
+	        
+            <kankan.wheel.widget.WheelView android:id="@+id/day"
+	            android:layout_height="wrap_content"
+	            android:layout_width="46dp"/>
+            
+        </LinearLayout>
+        
+        <LinearLayout 
+            android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@xml/bg_divider_gradient2"
+	        android:layout_marginBottom="10dp"
+	        android:orientation="vertical">
+            
+            <TextView 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textSize="16dp"
+	            android:text="Tháng"
+	            android:gravity="center"
+	            android:textColor="#FFFFFF"
+	            android:shadowColor="#000000"
+			    android:shadowDx="0"
+			    android:shadowDy="-1"
+			    android:shadowRadius="1"/>
+            
+            <kankan.wheel.widget.WheelView android:id="@+id/month"
+	            android:layout_height="wrap_content"
+	            android:layout_width="150dp"/>
+            </LinearLayout>
+            
+        <LinearLayout 
+            android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@xml/bg_divider_gradient2"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginBottom="10dp"
+	        android:orientation="vertical">
+            
+            <TextView 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textSize="16dp"
+	            android:text="Năm"
+	            android:gravity="center"
+	            android:textColor="#FFFFFF"
+	            android:shadowColor="#000000"
+			    android:shadowDx="0"
+			    android:shadowDy="-1"
+			    android:shadowRadius="1"/>
+            
+            <kankan.wheel.widget.WheelView android:id="@+id/year"
+	            android:layout_height="wrap_content"
+	            android:layout_width="wrap_content"/>   
+            </LinearLayout>
+    </LinearLayout> 
+    
+     <TextView 
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EFc76508"/>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+        <Button 
+            android:id="@+id/choose_done"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:text="Xong"
+            android:gravity="center"
+            android:textSize="20dp"/>
+        <TextView 
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#EFc76508"/>
+        <Button 
+            android:id="@+id/choose_cancel"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:textSize="20dp"
+            android:text="Hủy"/>
+        
+    </LinearLayout> 
+</LinearLayout>

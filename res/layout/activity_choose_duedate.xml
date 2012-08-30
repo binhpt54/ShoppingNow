@@ -48,6 +48,27 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="8dp"
 		        android:background="@xml/bg_divider_gradient"/>
+    
+    <TextView 
+        android:id="@+id/choose_different_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:padding="6dp"
+        android:background="@drawable/rect_rounded"
+        android:layout_margin="6dp"
+        android:visibility="gone"/>
+    <Button 
+        android:id="@+id/btn_choose_diff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:text="Chọn ngày khác"
+        android:padding="6dp"
+        android:background="@drawable/rect_button_rounded"
+        android:layout_margin="6dp"/>
 
     <ListView 
         android:id="@id/android:list"

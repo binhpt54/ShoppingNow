@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
@@ -25,7 +26,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ToggleButton;
 
-public class ActivitySort extends SherlockActivity{
+public class ActivitySort extends Activity{
 	private Button btn_done;
 	private Button btn_cancel;
 	private ToggleButton btn_toggle;
@@ -39,8 +40,8 @@ public class ActivitySort extends SherlockActivity{
 	private String orderBy = "";
 	private Intent intent;
 	private int posSelected = -1;
-	public static final String ASC = " asc";
-	public static final String DESC = " desc";
+	public static final String ASC = " desc";
+	public static final String DESC = " asc";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

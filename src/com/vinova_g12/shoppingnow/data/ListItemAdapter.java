@@ -211,7 +211,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 					MainActivity.list_item_checked.add(id_item);
 					Fragment_ViewbyDate.list_item_checked.add(pos_item);
 					MainActivity.countChecked ++;
-					Toast.makeText(context,""+ MainActivity.countChecked, Toast.LENGTH_SHORT).show();
+					//Toast.makeText(context,""+ MainActivity.countChecked, Toast.LENGTH_SHORT).show();
 					if (MainActivity.countChecked != 0) {
 						if (actionMode == null) {
 							actionMode = activity.startActionMode(new MyActionModeCallBack());
@@ -224,7 +224,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 					if (actionMode != null) {
 							MainActivity.countChecked --;
 							Fragment_ViewbyDate.list_item_checked.remove(pos_item);
-							Toast.makeText(context,""+ MainActivity.countChecked, Toast.LENGTH_SHORT).show();
+							//Toast.makeText(context,""+ MainActivity.countChecked, Toast.LENGTH_SHORT).show();
 							actionMode.setTitle(MainActivity.countChecked + " Đã Chọn");
 							if (MainActivity.countChecked == 0) {
 								actionMode.finish();
