@@ -23,15 +23,25 @@
         android:text="VINOVA"
         android:textColor="#000000"
         android:textSize="40dp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="47dp"
+        android:src="@drawable/logo_vinova"
         android:visibility="visible" />
 
     <TextView
         android:id="@+id/welcome_title1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/welcome_title4"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp"
+        android:layout_alignLeft="@+id/logo"
+        android:layout_below="@+id/logo"
+        android:layout_marginTop="30dp"
         android:shadowColor="#783404"
         android:shadowDx="-1"
         android:shadowDy="-1"
@@ -43,11 +53,11 @@
 
     <TextView
         android:id="@+id/welcome_title2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/welcome_title1"
-        android:layout_alignTop="@+id/welcome_title1"
-        android:layout_marginTop="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/welcome_title1"
+        android:gravity="center"
         android:shadowColor="#783404"
         android:shadowDx="-1"
         android:shadowDy="-1"
@@ -62,9 +72,9 @@
         android:id="@+id/welcome_title3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/welcome_title2"
         android:layout_below="@+id/welcome_title2"
-        android:layout_marginTop="18dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="21dp"
         android:shadowColor="#FFFFFF"
         android:shadowDx="-1"
         android:shadowDy="-1"

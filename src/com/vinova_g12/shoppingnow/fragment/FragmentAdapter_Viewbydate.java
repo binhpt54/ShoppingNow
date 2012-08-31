@@ -2,6 +2,7 @@ package com.vinova_g12.shoppingnow.fragment;
 
 import com.vinova_g12.shoppingnow_app.MainActivity;
 
+import android.annotation.SuppressLint;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,6 +16,7 @@ public class FragmentAdapter_Viewbydate extends FragmentStatePagerAdapter{
 	private int mCount = CONTENT.length;
 	private String orderBy = "";
 	private MainActivity activity;
+	public String placeView;
 	
 	
 	public void SetorderBy(String col) {
@@ -22,6 +24,10 @@ public class FragmentAdapter_Viewbydate extends FragmentStatePagerAdapter{
 	}
 	public static void setContent(String[] cont) {
 		CONTENT = cont;
+	}
+	
+	public void setPlaceView(String place) {
+		placeView = place;
 	}
 	
 	public FragmentAdapter_Viewbydate(FragmentManager fm) {
@@ -36,14 +42,28 @@ public class FragmentAdapter_Viewbydate extends FragmentStatePagerAdapter{
 		CONTENT = cont;
 		mCount = CONTENT.length;
 	}
+	
+	public FragmentAdapter_Viewbydate(String place,MainActivity act, FragmentManager fm, String[] cont) {
+		super(fm);
+		placeView = place;
+		this.activity = act;
+		CONTENT = cont;
+		mCount = CONTENT.length;
+	}
 
 	@Override
 	public Fragment_ViewbyDate getItem(int position) {
 		Log.d("Fragment GET ITEM", CONTENT[position % CONTENT.length] + " with " + orderBy);
-		if (orderBy.equals(""))
-			return Fragment_ViewbyDate.newInstance(activity,CONTENT[position % CONTENT.length]);
+		if (!CONTENT[0].equals("Cùng Địa Điểm"))
+			if (orderBy.equals(""))
+				return Fragment_ViewbyDate.newInstance(activity,CONTENT[position % CONTENT.length]);
+			else
+				return Fragment_ViewbyDate.newInstance(activity,CONTENT[position % CONTENT.length], orderBy);
 		else
-			return Fragment_ViewbyDate.newInstance(activity,CONTENT[position % CONTENT.length], orderBy);
+			if (orderBy.equals(""))
+				return Fragment_ViewbyDate.newInstance(placeView, activity, CONTENT[position % CONTENT.length]);
+			else
+				return Fragment_ViewbyDate.newInstance(placeView, activity, CONTENT[position % CONTENT.length], orderBy);
 	}
 	
 

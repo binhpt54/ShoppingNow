@@ -1,27 +1,41 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_create" android:showAsAction="always" android:title="Tạo Mới" android:icon="@drawable/light_content_new" />
-    <item android:id="@+id/menu_search"
-        android:showAsAction="always|collapseActionView"
-        android:title="Tìm Kiếm"
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_create"
+        android:icon="@drawable/light_content_new"
+        android:showAsAction="always"
+        android:title="Tạo Mới"/>
+    <item
+        android:id="@+id/menu_search"
+        android:actionLayout="@layout/collapsible_edittext"
         android:icon="@drawable/light_search"
-        android:actionLayout="@layout/collapsible_edittext"/>
-    
-    <item android:id="@+id/menu_sort" android:showAsAction="ifRoom" android:title="Sắp Xếp" android:icon="@drawable/icon_sort"> 
-    	   
+        android:showAsAction="always|collapseActionView"
+        android:title="Tìm Kiếm"/>
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@drawable/icon_sort"
+        android:showAsAction="ifRoom"
+        android:title="Sắp Xếp">
     </item>
-    <item android:id="@+id/menu_refresh" android:icon="@drawable/icon_navigation_refresh" android:showAsAction="ifRoom" android:title="Làm Mới Danh Sách" />
-    
-    
-    
-    <item 
+    <item
+        android:id="@+id/menu_refresh"
+        android:icon="@drawable/icon_navigation_refresh"
+        android:showAsAction="ifRoom"
+        android:title="Làm Mới Danh Sách"/>
+    <item
         android:id="@+id/menu_help"
         android:icon="@drawable/icon_action_help"
         android:showAsAction="never"
         android:title="Giúp Đỡ"/>
-    
-    <item 
+    <item
         android:id="@+id/menu_about"
         android:icon="@drawable/icon_action_about"
         android:showAsAction="never"
-        android:title="Giới Thiệu"/><item android:id="@+id/menu_setting" android:icon="@drawable/icon_action_setting" android:showAsAction="never" android:title="Cài Đặt" />
+        android:title="Giới Thiệu"/>
+    <item
+        android:id="@+id/menu_setting"
+        android:icon="@drawable/icon_action_setting"
+        android:showAsAction="never"
+        android:title="Cài Đặt"/>
+
 </menu>

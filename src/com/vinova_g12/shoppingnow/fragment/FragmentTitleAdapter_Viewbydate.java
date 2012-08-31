@@ -16,6 +16,11 @@ public class FragmentTitleAdapter_Viewbydate extends FragmentAdapter_Viewbydate{
 		// TODO Auto-generated constructor stub
 	}
 	
+	public FragmentTitleAdapter_Viewbydate(String place, MainActivity act, FragmentManager fm, String[] cont) {
+		super(place, act, fm,cont);
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Override
     public CharSequence getPageTitle(int position) {
         return FragmentAdapter_Viewbydate.CONTENT[position % CONTENT.length];

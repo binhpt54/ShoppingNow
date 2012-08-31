@@ -12,6 +12,7 @@
             android:textSize="20dp"
             android:layout_margin="6dp"
             android:text="Chọn Ngày"
+            android:drawableLeft="@drawable/light_calendar"
             android:background="@drawable/rect_rounded"
             android:gravity="center"
             android:textColor="#000000"

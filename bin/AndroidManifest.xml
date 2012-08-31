@@ -13,8 +13,8 @@
         android:theme="@style/Theme.Sherlock.Light.ForceOverflow" >
         <activity
             android:name="com.vinova_g12.shoppingnow_app.WelcomeScreen"
-            android:label="@string/title_activity_main" 
-            android:theme="@android:style/Theme.NoTitleBar">
+            android:label="@string/title_activity_main"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,28 +23,37 @@
         </activity>
         <activity
             android:name="com.vinova_g12.shoppingnow_app.MainActivity"
-            android:label="@string/title_activity_main" 
-            android:uiOptions="splitActionBarWhenNarrow">
+            android:label="@string/title_activity_main"
+            android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
         <activity
             android:name="com.vinova_g12.shoppingnow_app.AddNew"
-            android:label="@string/title_activity_add_new">
+            android:label="@string/title_activity_add_new" >
         </activity>
         <activity
             android:name="com.vinova_g12.shoppingnow_app.ActivityChooseDate"
             android:label="Ngày Hoàn Thành" >
         </activity>
-        
         <activity
             android:name="com.vinova_g12.shoppingnow_app.ActivitySort"
-            android:label="Sắp Xếp" 
-            android:theme="@style/Theme.Sherlock.Light.Dialog">
+            android:label="Sắp Xếp"
+            android:theme="@style/ActivityDialog" >
+        </activity>
+        <activity
+            android:name="com.vinova_g12.shoppingnow_app.ChooseDifferentDate"
+            android:label="Chọn Ngày Hoàn Thành"
+            android:theme="@style/ActivityDialog" >
+        </activity>
+        <activity
+            android:name="com.vinova_g12.shoppingnow_app.ActivityChooseAlarm"
+            android:label="Chọn Ngày Hoàn Thành"
+            android:theme="@style/ActivityDialog" >
         </activity>
         
         <activity
-            android:name="com.vinova_g12.shoppingnow_app.ChooseDifferentDate"
-            android:label="Chọn Ngày Hoàn Thành" 
-            android:theme="@style/Theme.Sherlock.Light.Dialog">
+            android:name="com.vinova_g12.shoppingnow_app.ActivityChooseShare"
+            android:label="Chọn Nội Dung Chia Sẻ"
+            android:theme="@style/ActivityDialog" >
         </activity>
     </application>
 

@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="Tên"
+            android:textColor="#000000"
             android:textSize="20dp"
             android:button="@xml/radio_ics"/>
         <TextView 
@@ -41,6 +42,7 @@
             android:layout_width="match_parent"
             android:text="Độ Ưu Tiên"
             android:textSize="20dp"
+            android:textColor="#000000"
             android:button="@xml/radio_ics"/>
         <TextView 
             android:layout_width="fill_parent"
@@ -52,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="Tổng Tiền"
+            android:textColor="#000000"
             android:textSize="20dp"
             android:button="@xml/radio_ics"/>
         <TextView 
@@ -64,6 +67,7 @@
             android:layout_width="match_parent"
             android:text="Thời Gian Hoàn Thành"
             android:textSize="20dp"
+            android:textColor="#000000"
             android:button="@xml/radio_ics"/>
         <TextView 
             android:layout_width="fill_parent"
@@ -75,6 +79,7 @@
             android:layout_width="match_parent"
             android:text="Trạng Thái(Xong/Chưa)"
             android:textSize="20dp"
+            android:textColor="#000000"
             android:button="@xml/radio_ics"/>
     </RadioGroup>
     
@@ -110,7 +115,6 @@
             android:background="@xml/my_btn_ics_transfrent"
             android:textSize="20dp"
             android:text="Hủy"/>
-        
     </LinearLayout>
     
 </LinearLayout>

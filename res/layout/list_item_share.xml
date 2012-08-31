@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+	    <CheckBox
+		     android:id="@+id/share_item_checkbox"
+		     android:layout_width="wrap_content"
+		     android:layout_height="match_parent"
+		     android:gravity="center"
+		     android:button="@xml/checkbox_ics"
+		     android:focusable="false" />
+	    <TextView
+		        android:id="@+id/share_item_name"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:paddingLeft="2dp"
+		        android:layout_weight="1"
+		        android:gravity="center_vertical"
+		        android:text="TextView"
+		        android:textSize="18dp"
+		        android:shadowColor="#FAFFFF"
+			    android:shadowDx="1"
+			    android:shadowDy="1"
+			    android:shadowRadius="1" />
+    </LinearLayout>
+    
+
+</LinearLayout>

@@ -96,6 +96,24 @@ public class ShoppingDatabase {
 			return shoppingDB.update(TABLE_NAME, values, ID + "=" + id, null);
 		return -1;
 	}
+	
+	public List<ListItem> getAlarmProduct(String col) {
+		List<ListItem> items = new ArrayList<ListItem>();
+		String sql = "select * from shoppingItem where alarm_date <> \"\" order by alarm_date";
+		if (!col.equals(""))
+			sql = sql + "," + col;
+		Cursor cursor = shoppingDB.rawQuery(sql, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			ListItem item = cursorToItem(cursor);
+			items.add(item);
+			cursor.moveToNext();
+		}
+
+		cursor.close();
+		return items;
+	}
 
 	// Get all item in a date (Today, Tomorrow, Yesterday)
 	public Cursor getAll_inDate(String date, String col) {
@@ -254,6 +272,25 @@ public class ShoppingDatabase {
 		List<ListItem> items = new ArrayList<ListItem>();
 		String sql = "select * from shoppingItem where name like '%"
 				+ search + "%' order by due_date";
+		if (!col.equals(""))
+			sql = sql + "," + col;
+		Cursor cursor = shoppingDB.rawQuery(sql, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			ListItem item = cursorToItem(cursor);
+			items.add(item);
+			cursor.moveToNext();
+		}
+
+		cursor.close();
+		return items;
+	}
+	
+	public List<ListItem> getItemFromAdrress(String addr, String col) {
+		List<ListItem> items = new ArrayList<ListItem>();
+		String sql = "select * from shoppingItem where place like '%"
+				+ addr + "%' order by due_date";
 		if (!col.equals(""))
 			sql = sql + "," + col;
 		Cursor cursor = shoppingDB.rawQuery(sql, null);

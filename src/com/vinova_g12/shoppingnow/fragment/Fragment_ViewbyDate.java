@@ -2,16 +2,21 @@ package com.vinova_g12.shoppingnow.fragment;
 
 import java.security.PublicKey;
 import java.text.Bidi;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -36,6 +41,8 @@ import com.vinova_g12.shoppingnow.data.ShoppingDatabase;
 import com.vinova_g12.shoppingnow.quickaction.ActionItem;
 import com.vinova_g12.shoppingnow.quickaction.QuickAction;
 import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
+import com.vinova_g12.shoppingnow_app.ActivityChooseAlarm;
+import com.vinova_g12.shoppingnow_app.ActivityChooseShare;
 import com.vinova_g12.shoppingnow_app.AddNew;
 import com.vinova_g12.shoppingnow_app.MainActivity;
 
@@ -71,11 +78,18 @@ import com.vinova_g12.shoppingnow_app.MainActivity;
 	public MainActivity activity;
 	public int sort = 0;
 	public String orderBy = "";
-	
+	public String placeView;
+	SimpleDateFormat formatAlarm = new SimpleDateFormat("HH:mm dd-MM-yyyy");
+	SimpleDateFormat formatAlarmReverse = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
 	//Create a new object Fragment with mContent is content
 	public static Fragment_ViewbyDate newInstance(MainActivity act, String content) {
 		Fragment_ViewbyDate fragment = new Fragment_ViewbyDate(act, content);
+		return fragment;
+	}
+	
+	public static Fragment_ViewbyDate newInstance(String place, MainActivity act, String content) {
+		Fragment_ViewbyDate fragment = new Fragment_ViewbyDate(place, act, content);
 		return fragment;
 	}
 	
@@ -85,6 +99,11 @@ import com.vinova_g12.shoppingnow_app.MainActivity;
 			return fragment;
 	}
 	
+	public static Fragment_ViewbyDate newInstance(String place, MainActivity act, String content, String orderBy) {
+		Fragment_ViewbyDate fragment = new Fragment_ViewbyDate(place, act, content,orderBy);
+		return fragment;
+}
+	
 	public Fragment_ViewbyDate(MainActivity act, String content) {
 		super();
 		this.activity = act;
@@ -92,10 +111,29 @@ import com.vinova_g12.shoppingnow_app.MainActivity;
 		category_date_in_week = new ArrayList<String>();
 	}
 	
+	public Fragment_ViewbyDate(String place, MainActivity act, String content) {
+		super();
+		placeView = place;
+		this.activity = act;
+		mContent = content;
+		category_date_in_week = new ArrayList<String>();
+	}
+	
+	
+	
 	public Fragment_ViewbyDate(MainActivity act, String content, String orderBy) {
 		super();
 		this.activity = act;
 		mContent = content;
+		this.orderBy = orderBy;
+		category_date_in_week = new ArrayList<String>();
+	}
+	
+	public Fragment_ViewbyDate(String place, MainActivity act, String content, String orderBy) {
+		super();
+		this.activity = act;
+		mContent = content;
+		placeView = place;
 		this.orderBy = orderBy;
 		category_date_in_week = new ArrayList<String>();
 	}
@@ -134,6 +172,10 @@ import com.vinova_g12.shoppingnow_app.MainActivity;
 			bindData();
 		} else if (mContent.equals("Tìm Kiếm")) {
 			dataFromEdittext(orderby);
+		} else if (mContent.equals("Cùng Địa Điểm"))
+			data = db.getItemFromAdrress(placeView, orderby);
+		else if (mContent.equals("Hẹn Giờ")) {
+			data = db.getAlarmProduct(orderBy);
 		}
 		db.closeDB();
 	}
@@ -245,6 +287,8 @@ import com.vinova_g12.shoppingnow_app.MainActivity;
 								notifyDataChanged("");
 								break;
 							case ID_ALERT:
+								Intent intentAlart = new Intent(getActivity(),ActivityChooseAlarm.class);
+								startActivityForResult(intentAlart, AddNew.ALARM_REQUEST);
 								break;
 							case ID_DELETE:
 								db.openDB();
@@ -269,10 +313,15 @@ import com.vinova_g12.shoppingnow_app.MainActivity;
 								notifyDataChanged("");
 								break;
 							case ID_SHARE:
-								notifyDataChanged("");
+								Intent intentShare = new Intent(getActivity(), ActivityChooseShare.class);
+								startActivityForResult(intentShare, MainActivity.REQUEST_SHARE_CONTENT);
 								break;
 							case ID_VIEW_PLACE:
-								notifyDataChanged("");
+								if (data.get(checked).place.equals("") 
+										|| data.get(checked).place.equals(" "))
+									Toast.makeText(getSherlockActivity(), "Sản phẩm không có địa điểm", 0).show();
+								else
+									activity.setViewPlaceFragment(data.get(checked).place);
 								break;
 							case ID_UNDONE:
 								db.openDB();
@@ -339,4 +388,51 @@ import com.vinova_g12.shoppingnow_app.MainActivity;
 		if (length > 0)
 			data = db.getAllItemsOrderbyWeek(searchBar.getText().toString(), orderBy);
 	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, intent);
+		if (requestCode == AddNew.ALARM_REQUEST) {
+			if (resultCode == FragmentActivity.RESULT_OK) {
+				String alarm_date = intent.getExtras().getString("alarm_date");
+				Log.w("ALARM DATE", alarm_date);
+				Calendar cal = Calendar.getInstance();
+				try {
+					cal.setTime(formatAlarm.parse(alarm_date));
+					data.get(checked).alarm = formatAlarmReverse.format(cal.getTime());
+					ContentValues value = new ContentValues();
+					value.put(ShoppingDatabase.ALARM, formatAlarmReverse.format(cal.getTime()));
+					db.openDB();
+					db.update(data.get(checked).id, value);
+					db.closeDB();
+					//Start service Alarm
+					Toast.makeText(activity, "Sản phẩm đã được hẹn giờ vào lúc : " + alarm_date, 1).show();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} else if (requestCode == MainActivity.REQUEST_SHARE_CONTENT) {
+			if (resultCode == FragmentActivity.RESULT_OK) {
+				String contentShare = intent.getExtras().getString("content");
+				String share = "";
+				if (contentShare.contains("ƯuTiên"))
+					share += "Đồ Cần Mua :";
+				else if (contentShare.contains("Tên"))
+					share += data.get(checked).name;
+				else if (contentShare.contains("Giá"))
+					share = share + "-" + data.get(checked).price + "VND/" + data.get(checked).unit;
+				else if (contentShare.contains("SốLượng"))
+					share = share + "-" + data.get(checked).quantity + " " + data.get(checked).unit;
+				else if (contentShare.contains("ĐịaChỉ"))
+					share = share + "-" + data.get(checked).place;
+				Intent intentChosseShare = new Intent(Intent.ACTION_SEND);
+				intent.setType("text/plain");
+				intent.putExtra(Intent.EXTRA_TEXT, share);
+				startActivity(Intent.createChooser(intent, "Chia sẻ bằng : "));
+			}
+		}
+	}
+	
 }

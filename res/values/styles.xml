@@ -1,4 +1,9 @@
 <resources>
+    
+    <style name="ActivityDialog" parent="@android:style/Theme.Dialog">      
+   		<item name="android:windowBackground">@drawable/bg_dialog</item>   
+   		<item name="android:windowNoTitle">true</item>
+	</style>
 
     <style name="AppTheme" parent="android:Theme.Light" />
     <style name="Animations" />

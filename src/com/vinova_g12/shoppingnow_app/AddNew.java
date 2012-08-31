@@ -64,6 +64,8 @@ public class AddNew extends Activity{
 	public static final String DATE_RECV_REVERSE = "dateGoBackReverse";
 	public static final String DAY_RECV = "dayGoBack";
 	public static final String DATE_SENDER = "dateSender";
+	public static final int ALARM_REQUEST = 26;
+	public static final int ALARM_MANY_REQUEST = 62;
 	private ListItem item;
 	//Database
 	private ShoppingDatabase shoppingDB;
@@ -93,6 +95,7 @@ public class AddNew extends Activity{
 	private TextView money;
 	private ImageView banner;
 	private IcsSpinner edit_unit;
+	private boolean alarm_ok = false;
 	
 	private String dateSender;
 	ContentValues valueAutoName, valueAutoPlace;
@@ -105,6 +108,9 @@ public class AddNew extends Activity{
 	
 	SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 	SimpleDateFormat formatReverse = new SimpleDateFormat("yyyy-MM-dd");
+	SimpleDateFormat formatAlarm = new SimpleDateFormat("HH:mm dd-MM-yyyy");
+	SimpleDateFormat formatAlarmReverse = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	SimpleDateFormat formatHour = new SimpleDateFormat("HH:mm ");
 	Calendar today = Calendar.getInstance();
 	
 	String[] itemSpinner = new String[] {"Con","Thanh","Que","Cân", "Gam", "Lạng","Củ", "Quả","Chiếc", "Bó", "Mớ", "Túi", "Gói",  "Bình", "Chai", "Lọ", "Thùng", "Hộp" };
@@ -183,13 +189,13 @@ public class AddNew extends Activity{
 		View.OnClickListener toggleAlarm = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (item.alarm.equals(" ")) {
-					item.alarm = format.format(today.getTime());
-					//Show dialog date slider
+				if (!alarm_ok) {
+					Intent intent3 = new Intent(getApplicationContext(), ActivityChooseAlarm.class);
+					intent3.putExtra("many", false);
+					startActivityForResult(intent3, ALARM_REQUEST);
 				} else {
 					item.alarm = " ";
 				}
-				
 			}
 		};
 		btn_alarm.setOnClickListener(toggleAlarm);
@@ -529,6 +535,21 @@ public class AddNew extends Activity{
 					e.printStackTrace();
 				}
 				btn_due_date.setText(ListItemAdapter.getDay(cal) + ", " + s);
+			}
+		} else if (requestCode == ALARM_REQUEST) {
+			if (resultCode == RESULT_OK) {
+				String alarm_date = data.getExtras().getString("alarm_date");
+				Log.w("ALARM DATE", alarm_date);
+				Calendar cal = Calendar.getInstance();
+				try {
+					cal.setTime(formatAlarm.parse(alarm_date));
+					item.alarm = formatAlarmReverse.format(cal.getTime());
+					btn_alarm.setText(formatHour.format(cal.getTime())
+							+ ListItemAdapter.getDay(cal) + ", " + format.format(cal.getTime()));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}

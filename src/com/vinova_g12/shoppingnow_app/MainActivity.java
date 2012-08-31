@@ -1,6 +1,9 @@
 package com.vinova_g12.shoppingnow_app;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -27,6 +30,7 @@ import android.os.SystemClock;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -71,17 +75,23 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
   	public static final int REQUEST_SORT = 90;
   	public static final String REQUEST_ORDEYBY = "orderby";
   	public static final String POSITION_SORTED = "position";
+  	public static final int REQUEST_SHARE_CONTENT = 9;
+  	
+  	SimpleDateFormat formatAlarm = new SimpleDateFormat("HH:mm dd-MM-yyyy");
+	SimpleDateFormat formatAlarmReverse = new SimpleDateFormat("yyyy-MM-dd HH:mm");
   	
   	String[] categoryWeek = new String[] {"Tuần Trước", "Tuần Này", "Tuần Sau"};
   	String[] categoryDate = new String[] {"Hôm Qua", "Hôm Nay", "Ngày Mai"};
-  	String[] categoryAlarm = new String[] {"Nhắc Nhở"};
+  	String[] categoryAlarm = new String[] {"Hẹn Giờ"};
   	String[] categorySearch = new String[] {"Tìm Kiếm"};
+  	String[] categoryViewPlace = new String[] {"Cùng Địa Điểm"};
   	/*State of view
   	 * is 1 if view by date
   	 * is 2 if view by week
   	 * is 3 if view by alram*/
   	public static int stateView = 0;
   	public static int stateSearch = 0;
+  	public static int alarmView = 0;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,7 +118,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         getSupportActionBar().setListNavigationCallbacks(list, this);
         
         mAdapter = new FragmentTitleAdapter_Viewbydate(this, getSupportFragmentManager(), categoryDate);
-
+        alarmView = 0;
         mPager = (ViewPager)findViewById(R.id.pager);
         mPagerWeek = (ViewPager) findViewById(R.id.pager1);
         mPagerAlarm = (ViewPager) findViewById(R.id.pager2);
@@ -247,7 +257,6 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	}
 
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		setSupportProgressBarIndeterminateVisibility(true);
 		setPagerView(itemPosition);
 		return true;
 	}
@@ -256,6 +265,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		if (itemPosition == 0) {
 			mAdapter = new FragmentTitleAdapter_Viewbydate(this, getSupportFragmentManager(), categoryDate);
 			stateView = 1;
+			alarmView = 0;
 			mPager.setAdapter(mAdapter);
 			mPager.setVisibility(View.VISIBLE);
 			mPagerAlarm.setVisibility(View.GONE);
@@ -266,6 +276,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		else if (itemPosition == 1) {
 			mAdapter = new FragmentTitleAdapter_Viewbydate(this, getSupportFragmentManager(), categoryWeek);
 			stateView = 2;
+			alarmView = 0;
 			mPagerWeek.setAdapter(mAdapter);
 			mPager.setVisibility(View.GONE);
 			mPagerAlarm.setVisibility(View.GONE);
@@ -275,7 +286,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		}
 		else if (itemPosition == 2) {
 			mAdapter = new FragmentTitleAdapter_Viewbydate(this, getSupportFragmentManager(), categoryAlarm);
-			stateView = 3;
+			alarmView = 1;
 			mPagerAlarm.setAdapter(mAdapter);
 			mPager.setVisibility(View.GONE);
 			mPagerAlarm.setVisibility(View.VISIBLE);
@@ -304,6 +315,38 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 				mAdapter.SetorderBy(orderBy);
 				mAdapter.notifyDataSetChanged();
 			}
+		} else if (requestCode == AddNew.ALARM_REQUEST) {
+			if (resultCode == RESULT_OK) {
+				String alarm_date = data.getExtras().getString("alarm_date");
+				Log.w("ALARM DATE", alarm_date);
+				Calendar cal = Calendar.getInstance();
+				try {
+					cal.setTime(formatAlarm.parse(alarm_date));
+					//data.get(checked).alarm = formatAlarmReverse.format(cal.getTime());
+					db.openDB();
+					for (int i=0; i < list_item_checked.size(); i++) {
+						ContentValues value = new ContentValues();
+						value.put(ShoppingDatabase.ALARM, formatAlarmReverse.format(cal.getTime()));
+						db.update(list_item_checked.get(i), value);
+					}
+					db.closeDB();
+					Toast.makeText(this, list_item_checked.size() + " sản phẩm đã được hẹn giờ vào lúc : " + alarm_date, 1).show();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
+	}
+	
+	public void setViewPlaceFragment(String place) {
+		mAdapter = new FragmentTitleAdapter_Viewbydate(place, this, getSupportFragmentManager(), categoryViewPlace);
+		mPagerSearch.setAdapter(mAdapter);
+		mPager.setVisibility(View.GONE);
+		mPagerAlarm.setVisibility(View.GONE);
+		mPagerWeek.setVisibility(View.GONE);
+		mPagerSearch.setVisibility(View.VISIBLE);
+		mIndicator.setViewPager(mPagerSearch);
+		mIndicator.setCurrentItem(0);
 	}
 }

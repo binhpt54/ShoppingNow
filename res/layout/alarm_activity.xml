@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/alarm_selected"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin="6dp"
+        android:background="@drawable/rect_rounded"
+        android:drawableLeft="@drawable/light_icon_devicce_alram"
+        android:gravity="center"
+        android:shadowColor="#FFFFFF"
+        android:shadowDx="0"
+        android:shadowDy="-1"
+        android:shadowRadius="1"
+        android:text="Chọn Ngày Giờ"
+        android:textColor="#000000"
+        android:textSize="18dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="6dp" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:background="@xml/bg_divider_gradient2"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:maxLines="1"
+                android:shadowDy="-1"
+                android:shadowRadius="1"
+                android:text="Ngày"
+                android:textColor="#FFFFFF"
+                android:textSize="16dp" />
+
+            <kankan.wheel.widget.WheelView
+                android:id="@+id/alarm_day"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:background="@xml/bg_divider_gradient2"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:maxLines="1"
+                android:shadowDy="-1"
+                android:shadowRadius="1"
+                android:text="Giờ"
+                android:textColor="#FFFFFF"
+                android:textSize="16dp" />
+
+            <kankan.wheel.widget.WheelView
+                android:id="@+id/alarm_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:background="@xml/bg_divider_gradient2"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="-1"
+                android:shadowRadius="1"
+                android:text="Phút"
+                android:textColor="#FFFFFF"
+                android:textSize="16dp" />
+
+            <kankan.wheel.widget.WheelView
+                android:id="@+id/alarm_mins"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EFc76508" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/alarm_done"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:gravity="center"
+            android:text="Đặt"
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#EFc76508" />
+
+        <Button
+            android:id="@+id/alarm_cancel"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@xml/my_btn_ics_transfrent"
+            android:gravity="center"
+            android:text="Hủy"
+            android:textSize="20dp" />
+    </LinearLayout>
+
+</LinearLayout>
