@@ -3,6 +3,7 @@ package com.vinova_g12.shoppingnow_app;
 import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 
 import kankan.wheel.R;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +14,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ActivityChooseShare extends Activity {
+@SuppressLint("ParserError") public class ActivityChooseShare extends Activity {
 	private TextView title;
 	private CheckBox cb_name;
 	private CheckBox cb_price;
@@ -63,6 +64,7 @@ public class ActivityChooseShare extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				getDataShare();
 				if (shareContent.equals(""))
 					Toast.makeText(getApplicationContext(),
 							"Bạn cần chọn ít nhất 1 nội dung để chia sẻ!", 0)
@@ -87,16 +89,16 @@ public class ActivityChooseShare extends Activity {
 		btn_cancel.setOnClickListener(cancelListener);
 	}
 
-	public void getDate() {
+	public void getDataShare() {
 		if (cb_name.isChecked())
 			shareContent += "Tên ";
-		else if (cb_place.isChecked())
+		if (cb_place.isChecked())
 			shareContent += "ĐịaChỉ ";
-		else if (cb_price.isChecked())
+		if (cb_price.isChecked())
 			shareContent += "Giá ";
-		else if (cb_quantity.isChecked())
+		if (cb_quantity.isChecked())
 			shareContent += "SốLượng ";
-		else if (cb_priority.isChecked())
+		if (cb_priority.isChecked())
 			shareContent += "ƯuTiên ";
 	}
 
