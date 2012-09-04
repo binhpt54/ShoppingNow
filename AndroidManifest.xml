@@ -6,6 +6,7 @@
     <uses-sdk
         android:minSdkVersion="6"
         android:targetSdkVersion="15" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
 
     <application
         android:icon="@drawable/ic_launcher"

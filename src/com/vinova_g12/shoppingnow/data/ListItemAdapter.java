@@ -41,6 +41,7 @@ import com.example.shoppingnow.R;
 import com.vinova_g12.shoppingnow.fragment.Fragment_ViewbyDate;
 import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 import com.vinova_g12.shoppingnow_app.ActivityChooseAlarm;
+import com.vinova_g12.shoppingnow_app.ActivityChooseShare;
 import com.vinova_g12.shoppingnow_app.AddNew;
 import com.vinova_g12.shoppingnow_app.MainActivity;
 
@@ -365,11 +366,12 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 				listFrament.notifyDataChanged("");
 				break;
 			case R.id.acm_share:
-				selectAll = false;
+				Intent intentShare = new Intent(activity, ActivityChooseShare.class);
+				activity.startActivityForResult(intentShare, MainActivity.REQUEST_SHARE_CONTENT);
 				break;
 			case R.id.acm_alert:
 				selectAll = false;
-				Intent intent = new Intent(activity, ActivityChooseAlarm.class);
+				Intent intent = new Intent(activity, ActivityChooseShare.class);
 				activity.startActivityForResult(intent, AddNew.ALARM_REQUEST);
 				break;
 

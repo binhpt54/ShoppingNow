@@ -21,6 +21,7 @@ import com.vinova_g12.shoppingnow.data.ShoppingDatabase;
 import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 
 import android.os.Bundle;
+import android.provider.AlarmClock;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -397,6 +398,12 @@ public class AddNew extends Activity{
 		OnClickListener btnSaveListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
+				Intent openNewAlarm = new Intent(AlarmClock.ACTION_SET_ALARM);
+		        openNewAlarm.putExtra(AlarmClock.EXTRA_HOUR, 0);
+		        openNewAlarm.putExtra(AlarmClock.EXTRA_MINUTES, 32);
+		        openNewAlarm.putExtra(AlarmClock.EXTRA_SKIP_UI, false);
+		        startActivity(openNewAlarm);
 				SaveorCreate();
 			}
 		};

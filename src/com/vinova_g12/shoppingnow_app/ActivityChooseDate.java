@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -102,6 +104,10 @@ public class ActivityChooseDate extends ListActivity{
 		//Create adapter
 		adapter = new ListItemChooseDate(this, R.layout.list_item_choose_duedate, data);
 		setListAdapter(adapter);
+		LayoutAnimationController controller2 = AnimationUtils
+				.loadLayoutAnimation(this,
+						R.anim.list_animation_right_left);
+		this.getListView().setLayoutAnimation(controller2);
 	}
 
 	@Override
