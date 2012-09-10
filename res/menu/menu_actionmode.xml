@@ -26,12 +26,6 @@
         android:title="Xong">
     </item>
     <item
-        android:id="@+id/acm_alert"
-        android:icon="@drawable/light_icon_devicce_alram"
-        android:showAsAction="ifRoom"
-        android:title="Hẹn Giờ">
-    </item>
-    <item
         android:id="@+id/acm_undone"
         android:icon="@drawable/icon_content_select_all"
         android:showAsAction="never"

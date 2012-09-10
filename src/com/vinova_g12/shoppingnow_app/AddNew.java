@@ -18,13 +18,16 @@ import com.vinova_g12.shoppingnow.data.ListItemAdapter;
 import com.vinova_g12.shoppingnow.data.PlaceDatabase;
 import com.vinova_g12.shoppingnow.data.RepoData;
 import com.vinova_g12.shoppingnow.data.ShoppingDatabase;
+import com.vinova_g12.shoppingnow.services.MyAlarmService;
 import com.vinova_g12.shoppingnow.ui.MyTypeFace_Roboto;
 
 import android.os.Bundle;
 import android.provider.AlarmClock;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -126,6 +129,7 @@ public class AddNew extends Activity{
 		btn_cancel = (Button) findViewById(R.id.btn_cancel);
 		btn_due_date = (Button) findViewById(R.id.edit_new_duedate);
 		btn_alarm = (ToggleButton) findViewById(R.id.edit_new_alarm);
+		btn_alarm.setVisibility(View.GONE);
 		
 		name = (AutoCompleteTextView) findViewById(R.id.edit_new_title);
 		place = (AutoCompleteTextView) findViewById(R.id.edit_new_place);
@@ -289,7 +293,7 @@ public class AddNew extends Activity{
 				
 			}
 		};
-		name.addTextChangedListener(nameListener);
+		//name.addTextChangedListener(nameListener);
 		//Text changed listener for place
 		TextWatcher placeListener = new TextWatcher() {
 			
@@ -315,7 +319,7 @@ public class AddNew extends Activity{
 				
 			}
 		};
-		place.addTextChangedListener(placeListener);
+		//place.addTextChangedListener(placeListener);
 		//Button delete place and name listener. When clicked, make empty place and name edittext
 		OnClickListener emptyNameListener = new OnClickListener() {
 			
@@ -398,12 +402,12 @@ public class AddNew extends Activity{
 		OnClickListener btnSaveListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
+				/*
 				Intent openNewAlarm = new Intent(AlarmClock.ACTION_SET_ALARM);
-		        openNewAlarm.putExtra(AlarmClock.EXTRA_HOUR, 0);
-		        openNewAlarm.putExtra(AlarmClock.EXTRA_MINUTES, 32);
+		        openNewAlarm.putExtra(AlarmClock.EXTRA_HOUR, 00);
+		        openNewAlarm.putExtra(AlarmClock.EXTRA_MINUTES, 01);
 		        openNewAlarm.putExtra(AlarmClock.EXTRA_SKIP_UI, false);
-		        startActivity(openNewAlarm);
+		        startActivity(openNewAlarm);*/
 				SaveorCreate();
 			}
 		};
@@ -640,6 +644,7 @@ public class AddNew extends Activity{
 			if (state_action == -1) {
 				shoppingDB.openDB();
 				shoppingDB.insert(valuesProduct);
+				setAlarmOn(item.priority);
 				shoppingDB.closeDB();
 			} else {
 				shoppingDB.openDB();
@@ -670,5 +675,41 @@ public class AddNew extends Activity{
 					Toast.LENGTH_SHORT).show();
 	}
 	
+	public void setAlarmOn(int id){
+		PendingIntent pendingIntent;
+		Intent myIntent = new Intent(AddNew.this, MyAlarmService.class);
+		Bundle b = new Bundle();
+		b.putInt("id_service", state_action);
+		Log.w("Send to service ",state_action+"");
+		myIntent.putExtras(b);
+		pendingIntent = PendingIntent.getService(AddNew.this, id,
+				myIntent, 0);
+
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(System.currentTimeMillis());
+		try {
+			cal.setTime(formatReverse.parse(item.due_date));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		long time = Calendar.getInstance().getTimeInMillis();
+		time = time + 180000;
+		cal.add(Calendar.HOUR, 12);
+		cal.add(Calendar.MINUTE, 30);		
+		
+		/*alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+				calendar.getTimeInMillis(), 10000, pendingIntent);*/
+		alarmManager.set(AlarmManager.RTC_WAKEUP, time,pendingIntent);
+		
+
+	     Toast.makeText(AddNew.this, "Start Alarm", Toast.LENGTH_LONG).show();
+	}
+	
+	public void setAlarmOff(){
+		 stopService(new Intent(AddNew.this,MyAlarmService.class));
+	}
 	
 }

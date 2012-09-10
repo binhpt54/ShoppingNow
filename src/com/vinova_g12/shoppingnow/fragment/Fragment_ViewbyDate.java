@@ -253,8 +253,6 @@ public class Fragment_ViewbyDate extends SherlockListFragment {
 				.getDrawable(R.drawable.icon_action_discard));
 		ActionItem editItem = new ActionItem(ID_EDIT, "Sửa", getResources()
 				.getDrawable(R.drawable.icon_content_edit));
-		ActionItem alertItem = new ActionItem(ID_ALERT, "Nhắc Nhở",
-				getResources().getDrawable(R.drawable.icon_devicce_alram));
 		ActionItem shareItem = new ActionItem(ID_SHARE, "Chia Sẻ",
 				getResources().getDrawable(R.drawable.icon_share));
 		ActionItem viewPlace = new ActionItem(ID_VIEW_PLACE, "Cùng ĐĐ",
@@ -269,7 +267,6 @@ public class Fragment_ViewbyDate extends SherlockListFragment {
 		quickAction.addActionItem(doneItem);
 		quickAction.addActionItem(deleteItem);
 		quickAction.addActionItem(editItem);
-		quickAction.addActionItem(alertItem);
 		quickAction.addActionItem(shareItem);
 		quickAction.addActionItem(viewPlace);
 
@@ -280,7 +277,6 @@ public class Fragment_ViewbyDate extends SherlockListFragment {
 		quickAction2.addActionItem(priority);
 		quickAction2.addActionItem(undoneItem);
 		quickAction2.addActionItem(deleteItem);
-		quickAction2.addActionItem(alertItem);
 		quickAction2.addActionItem(shareItem);
 		quickAction2.addActionItem(viewPlace);
 
@@ -302,11 +298,6 @@ public class Fragment_ViewbyDate extends SherlockListFragment {
 						db.closeDB();
 					}
 					notifyDataChanged("");
-					break;
-				case ID_ALERT:
-					Intent intentAlart = new Intent(getActivity(),
-							ActivityChooseAlarm.class);
-					startActivityForResult(intentAlart, AddNew.ALARM_REQUEST);
 					break;
 				case ID_DELETE:
 					db.openDB();

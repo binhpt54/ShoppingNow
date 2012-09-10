@@ -369,11 +369,6 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 				Intent intentShare = new Intent(activity, ActivityChooseShare.class);
 				activity.startActivityForResult(intentShare, MainActivity.REQUEST_SHARE_CONTENT);
 				break;
-			case R.id.acm_alert:
-				selectAll = false;
-				Intent intent = new Intent(activity, ActivityChooseShare.class);
-				activity.startActivityForResult(intent, AddNew.ALARM_REQUEST);
-				break;
 
 			default:
 				break;

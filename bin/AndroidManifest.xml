@@ -56,6 +56,9 @@
             android:label="Chọn Nội Dung Chia Sẻ"
             android:theme="@style/ActivityDialog" >
         </activity>
+        <service 
+            android:name="com.vinova_g12.shoppingnow.alarmservice.MyAlarmService"/>
+        
     </application>
 
 </manifest>
